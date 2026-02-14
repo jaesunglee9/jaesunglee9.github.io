@@ -1,0 +1,84 @@
+/* 1. Define the Font */
+@font-face {
+    font-family: 'EtBembo';
+    src: url('../fonts/et-bembo/et-bembo-roman-old.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'EtBembo';
+    src: url('../fonts/et-bembo-italic-old.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'EtBembo';
+    src: url('../fonts/et-bembo-bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* 2. Global Typography */
+body {
+    font-family: 'EtBembo', Georgia, 'Times New Roman', serif;
+    font-size: 22px;        /* EtBembo looks better slightly large */
+    line-height: 1.6;       /* Give it room to breathe */
+    color: #222;            /* Pure black (#000) is too harsh on screens */
+    max-width: 700px;       /* Optimal reading width */
+    margin: 40px auto;      /* Center the layout */
+    padding: 0 20px;
+    background-color: #faf9f6; /* "Off-white" paper color looks classic */
+}
+
+/* 3. Headlines */
+h1, h2, h3, h4 {
+    font-weight: normal;    /* EtBembo is elegant; don't force bold */
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    color: #111;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    border-bottom: 2px solid #222; /* Classic "Book Title" look */
+    padding-bottom: 0.5em;
+}
+
+/* 4. Links */
+a {
+    color: #8b0000;         /* Dark Red (Classic academic look) */
+    text-decoration: none;
+    border-bottom: 1px solid #8b0000; /* Subtle underline */
+}
+a:hover {
+    background-color: #fff0f0;
+}
+
+/* 5. Code Blocks (Keep them simple) */
+pre {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    font-size: 0.85em;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Courier New', monospace; /* Contrast font */
+}
+
+.todo { color: #cc0000; font-weight: bold; }
+.done { color: #006600; font-weight: bold; }
+.tag { float: right; color: #777; font-size: 0.8em; }
+
+table {
+    border-collapse: collapse;
+    margin: 20px 0;
+    width: 100%;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Horizontal lines only */
+}
+th {
+    border-bottom: 2px solid #222; /* Thicker line for header */
+}
