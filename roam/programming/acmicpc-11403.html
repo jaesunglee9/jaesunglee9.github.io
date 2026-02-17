@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-11403</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-11403</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+가중치 없는 방향 그래프 G가 주어졌을 때, 모든 정점 (i, j)에 대해서, i에서 j로 가는 길이가 양수인 경로가 있는지 없는지 구하는 프로그램을 작성하시오.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 정점의 개수 N (1 ≤ N ≤ 100)이 주어진다. 둘째 줄부터 N개 줄에는 그래프의 인접 행렬이 주어진다. i번째 줄의 j번째 숫자가 1인 경우에는 i에서 j로 가는 간선이 존재한다는 뜻이고, 0인 경우는 없다는 뜻이다. i번째 줄의 i번째 숫자는 항상 0이다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+총 N개의 줄에 걸쳐서 문제의 정답을 인접행렬 형식으로 출력한다. 정점 i에서 j로 가는 길이가 양수인 경로가 있으면 i번째 줄의 j번째 숫자를 1로, 없으면 0으로 출력해야 한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+3
+0 1 0
+0 0 1
+1 0 0
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1 1 1
+1 1 1
+1 1 1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+7
+0 0 0 1 0 0 0
+0 0 0 0 0 0 1
+0 0 0 0 0 0 0
+0 0 0 0 1 1 0
+1 0 0 0 0 0 0
+0 0 0 0 0 0 1
+0 0 1 0 0 0 0
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+1 0 1 1 1 1 1
+0 0 1 0 0 0 1
+0 0 0 0 0 0 0
+1 0 1 1 1 1 1
+1 0 1 1 1 1 1
+0 0 1 0 0 0 1
+0 0 1 0 0 0 0
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Approach</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+This question asks us for each node pair i, j if their exists a path. for all possible pairs. <a href="../main/floyd_warshall_algorithm.html#ID-4c211c78-fcec-47e3-8d6b-e4c71bbcc11c">Floyd-Warshall Algorithm</a> is a natural fit. However, since not the distance does not have to be computed, the logic may be simplified a bit. It may even be possible to use bitmasking.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-10026</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-10026</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57"></h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+문제
+</p>
+
+<p>
+A little known fact about cows is the fact that they are red-green colorblind, meaning that red and green look identical to them.  This makes it especially difficult to design artwork that is appealing to cows as well as humans.
+</p>
+
+<p>
+Consider a square painting that is described by an N x N grid of characters (1 &lt;= N &lt;= 100), each one either R (red), G (green), or B (blue).  A painting is interesting if it has many colored "regions" that can be distinguished from each-other.  Two characters belong to the same region if they are directly adjacent (east, west, north, or south), and if they are indistinguishable in color.  For example, the painting
+</p>
+
+<p>
+RRRBB
+GGBBB
+BBBRR
+BBRRR
+RRRRR
+</p>
+
+<p>
+has 4 regions (2 red, 1 blue, and 1 green) if viewed by a human, but only 3regions (2 red-green, 1 blue) if viewed by a cow.  
+</p>
+
+<p>
+Given a painting as input, please help compute the number of regions in the painting when viewed by a human and by a cow.
+입력
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Line 1: The integer N.</h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Lines 2..1+N: Each line contains a string with N characters, describing one row of a painting.</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+출력
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Line 1: Two space-separated integers, telling the number of regions in the painting when viewed by a human and by a cow.</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+5
+RRRBB
+GGBBB
+BBBRR
+BBRRR
+RRRRR
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+4 3
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Source</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/10026">https://www.acmicpc.net/problem/10026</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Remark</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+A standard <a href="../main/breadth_first_search.html#ID-8acb2539-670e-4986-b6e8-38102dff761f">Breadth First Search</a> problem, but I believe that I became more adept at its application. In this problem I used string argument to differentiate logic.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Constraint Satisfaction Problems</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Constraint Satisfaction Problems</h1>
+</header><p>
+In tree search and the likes, The plan, (path), which was a sequence of actions, was necessary.
+</p>
+
+<p>
+Here we talk about factorized representation of the world, represented as a set of variables.
+Note that there is a general trend: The atomic representation is most general, but intractable,
+Imposing further constraints upon the world and its dynamics allow more tractable analysis.
+Choosing said constraints carefully is important for expressive power and tractability.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">CSP</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Anyway, reformulating the world, the CSP is defined as:
+X, the set of variables (X1, X2, &#x2026;)
+D, the set of domains (D1, D2, &#x2026;) for each variable,
+C, the set of constraints.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Map coloring</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+variables: {WA, NT, Q, NSW, V, SA, T}
+domains: {red, green, blue}
+constraints: implicit is WA != NT, explicit is (WA, NT) state possible states (diff colors)
+</p>
+
+<p>
+Solutions are assignments that satisfy all constraints.
+</p>
+
+<p>
+Ex) n-queens
+Variables X<sub>ij</sub> is a binary variable that says whether the queen is there or not
+D is (0, 1) naturally
+constraints:
+for all (X<sub>ij</sub>, X<sub>ik</sub>) must be 00, 01, 10 (no two queens shall be on the same column
+for all (X<sub>ij</sub>, X<sub>kj</sub>) must be 00 01 10 (no two queens shall be on the same row
+for all (X<sub>ij</sub>, X<sub>i</sub>+k<sub>j</sub>+k) must be 00 10 01 (no two queen on one diagonal)
+for all (X<sub>ij</sub>, X<sub>i</sub>+k<sub>j</sub><sub>k</sub>) must be 00 10 01 (on the other diagonal)
+</p>
+
+<p>
+sum of all Xij must be N ( the length of the side of the board)
+</p>
+
+<p>
+or, since only one queen per column
+domain is 1 to N
+constraints are reduced so that
+Qi, Qj are not in conflict for all i, j
+</p>
+
+<p>
+or it can be explicitly said, but is long
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">constraint graphs</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+binary csp (each constraint relates at most two variables)
+this can be captured with a graph, so those are called binary constraint graph
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Different varieties</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Finite domains
+O(d<sup>n</sup>) assignments
+Infinite domains
+linear solvable, nonlinear undecidable
+</p>
+
+<p>
+Continuous variables
+linear constraints polynomial solvable
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Varieties of constraints</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Unary: SA != green (only 1 variable)
+binary SA != WA 2
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Constraint propagation</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+a type of inference
+This method can be done during search, or before search.
+However the lecture treats constraint propagation as part of the search.
+</p>
+
+<p>
+arc consistency is when for every x in tail(where arrow begins), there is y which can be assigned without constraing
+violation. Note that during constraint propagation, if Xi domain gets smaller, recheck all neighbors of Xi
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Backtracking search</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Choose one variable, and perform dfs search for possible path while checking for constraints.
+This is possible because variable assignments are commutative.
+</p>
+
+<p>
+generally the search is like this:
+given the csp, fix unassigned variable, check for constraint violation, if it works, add it, and  do another
+</p>
+
+<p>
+if it doesn't work, fix the variable to a different variable and do it again. It either returns a solution or failure.
+</p>
+
+<p>
+Note that by using inference or filtering, you can terminate the search earlier.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Improving backtracking</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<ul class="org-ul">
+<li>filtering : detect inevitable failure early</li>
+<li>ordering: imposing preference on assigning values to variable</li>
+<li>structure: exploit the problem structure</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Forwar checking (filtering)</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+during search, for any assigned variable X, delete from other variable's domain any value inconsistent with X via
+constraint. Now you can understand why you define the domain for each variable
+this is a form of constraint propagation.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">mainitaining arc consistency</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Although the text does not explicitly say it, This algorithm is as follows
+Do forward checking, do Constraint Propagation all over again, and if any domain becomes empty, early failure
+</p>
+
+<p>
+arc consistency is not all-powerful. while it constrains the search space, it does not let us know about the
+properties of the search space itself.
+so, one solution, multiple solution, no solution, all are possible.
+</p>
+
+<p>
+so, for triangle graph, each arcs may be consistent, but the triangle may not.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Ordering</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Variable ordering: minimum remaining values heuristic
+when choosing a variable for backtrack search,  choose the variable with fewest legal values
+why? most constrained variable means the search space is small. It can fail fast.
+</p>
+
+<p>
+Value ordering: least constraining values heuristic.
+once the variable has been chosen, you would like an order of which values in the domain to search.
+choose the variable with most degrees of freedom why? We would like to fail fast, and we just care about 1 solution
+value that rules out least choices
+</p>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">structure</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+structure is important. If the csp of size n can be divided into subproblems of size c,
+what was O(d<sup>n</sup>) is now (d<sup>c</sup> * n/c)
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Tree structured CSP</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+O(nd<sup>2</sup>)
+</p>
+
+<p>
+do directed arc consistency
+trees of n node has n-1 edges, so for each edge, compare all combination of domain which is d<sup>2</sup>
+</p>
+
+<p>
+n-1 * d<sup>2</sup>
+note that you have to start from the childmost node
+</p>
+
+<p>
+just choose leftover values of the domain, starting from the root.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">cutset conditioning</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+from csp, remove part of the graph that makes the graph cyclic.
+</p>
+
+<p>
+for that subset, assign values possible under constraint (do it for all possible asignments, but just take one for now)
+</p>
+
+<p>
+remove domain values that conflict with the assigned subset values
+</p>
+
+<p>
+do tree structed csp search
+</p>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">tree decomposition</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<p>
+later
+</p>
+</div>
+</section>
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">min conflict</h2>
+<div class="outline-text-2" id="text-org0043671">
+<p>
+choose queen in conflict
+</p>
+
+<p>
+move it to space where it will have least conflict
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queue(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Queue(Data Structure)</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">FIFO</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+First in, First out
+Elements are added at the REAR, and removed from FRONT.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Linear Array Representation</h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Overflow &amp; Underflow</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Before insertion, check for overflow(If queue is full). If REAR = MAX - 1,
+Before deletion, check for underflow(If queue is empty). If FRONT = -1, and REAR = -1
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Linked List Representation of Queues</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+If FRONT = REAR = NULL, The queue is empty.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Insert</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Step 1. Allocate memory for new node as PTR
+Step 2. Set PTR-&gt;data = val
+Step 3. If FRONT = NULL  // Empty
+                     SET FRONT = REAR = PTR
+                     SET FRONT -&gt; NEXT = REAR -&gt; NEXT = NULL
+             ELSE
+                     SET REAR-&gt; NEXT = PTR
+                     SET REAR = PTR
+                     SET REAR-&gt;NEXT = NULL
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Delete</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Step 1. If FRONT = NULL
+        write underflow
+ Step 2. SET PTR = FRONT   // Essentially, 
+ Step 3. SET FRONT = FRONT -&gt; NExT
+ Step 4. FREE PTR
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Circular Queue</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+A drawback of linear queue is that once you insert certain amount of elements, you will not be able to insert any more elements even if there are remaining free memory space due to delete operation.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Insertion in Circular Queue</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+Check three conditions:
+</p>
+<ol class="org-ol">
+<li>If FRONT = 0 and REAR = MAX - 1, queue is full</li>
+<li>If REAR != MAX - 1, queue is no full, increment rear as linear queue</li>
+<li>If FRONT != 0 and REAR = MAX-1, queue is not full, go to front and REAR = 0, insert as linear queue</li>
+</ol>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Deletion in Circular Queue</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<ol class="org-ol">
+<li>If FRONT = -1, no elements underflow</li>
+<li>If Queue is not empty, FRONT = REAR, delete element at front, and set front and rear to -1</li>
+<li>if queue is not empty, and FROnt = max - 1, after deletion, front is set to 0.</li>
+</ol>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Dequeue</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+A double ended queue, can insert and delete from left and right
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Priority Queue</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Three elements: Data, Priority, and Next.
+Insert if priority is higher or equal to.
+Delete at front
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Local Search</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Local Search</h1>
+</header><p>
+Local search means the search space is local. Only the current(and possibly some other states) are kept and
+used for search. When would we do local search? when the global state i.e. path is irrelevant.
+Only the passing the goal test(finding the goal node) is important.
+</p>
+
+<p>
+Examples where local search works is when you are trying to find some configuration that satisfies given constraints,
+or when you wish to find optimal configuration.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Iterative improvement</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Keep single state and improve it
+</p>
+
+<p>
+Let us use the n-queens as an example for local search
+The goal is to have n queens with no conflicts
+States is the board, and the location of the queens,
+Actions, is to move a queen.
+Heuristics is the number of conflicts.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Hill Climbing</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+n-queens- choose successor state ( the state with lowest conflict)
+If the value of the successor is lower than or equal to the current value, you are in local maxima, which may be
+global, but regardless you will not be able to find better solution, so you  return with current value
+you may use sideways moves to escape the said local maxima, but it may not always work
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Simulated annealing</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The rationale behind this method is that since hill climbing finds local(greedy) optima, given that search space is
+dense and smooth, It may suffice to attempt search on multiple points, even if the points are random.
+</p>
+
+<p>
+In simulated annealing, allowing bad moves is similar to attempting new search in given local manifold
+</p>
+
+<p>
+so If the successor is better than current, than move there obviously, but even if it isn't, with probability
+e<sup>(dE/T)</sup>, It goes there..
+</p>
+
+<p>
+It guarantees convergence asusming T decreases slowly enough.
+Proof: adjacen states x, y with E(y) &gt; E(x)
+assume x can move to y and vice versa, and outdegrees are equal.
+Then ?
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Local Beam Search</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+K copies of local search with random initializations
+forr each iteration
+generate all successors from current states,
+choose best K to be the new current states.
+</p>
+
+<p>
+The searches communicate
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Genetic algorithns</h2>
+</section>
+
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Local search in continuous state space</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<ol class="org-ol">
+<li>discretize it grid with delta increment</li>
+<li>choose perterbations to the state
+hill climbing, simulated annealing</li>
+<li>gradient analytically.</li>
+</ol>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

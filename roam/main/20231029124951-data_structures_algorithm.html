@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Data Structures/Algorithm</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Data Structures/Algorithm</h1>
+</header><p>
+Programs must be efficient(use minimum possible time and space complexity)
+data must be managed efficiently
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Data structures</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Array
+Linked list
+Queue
+Stack
+Binary tree
+Hash tables
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Elementary data structure basic Organization</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+data: value/ set of values
+record: collection of data items
+file: collection of related records
+primary key: data that uniquely identifies rcord
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Classification of Data Structures</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+-Primitive data structures : fundamental data types supported by programming language
+real, character, integer, boolean
+-Non-primitive data structures : created using primitive data structures
+linked lists, stacks, trees, graphs
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Linear / Non-linear structures</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+linear: elements are stored in sequential order
+Array, Linked lists, stacks, queue
+</p>
+
+<p>
+can be represented by sequential memory locations
+or links
+</p>
+
+<p>
+Non linear: non sequential memory
+trees/ graphs
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Arrays</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+index starts from zero
+limitations: fixed size, contiguous memory locations(may not be available), insertions/deletions are problematic
+because elements need to be shifted.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Linked lists</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+elements form a sequential list
+no need of worrying about memory size
+last node has null pointer
+</p>
+
+<p>
+insert/delete operations are easy
+search is slower, requires more memory space
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Stacks</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+linear and insertion/deletion is done at only one end, top of the stack
+linear array,
+has variable top ( address of topmost element)
+variable max (maximum number of elements possible)
+</p>
+
+<p>
+if top = null: stack is empty
+if top = max-1 : stack is full
+</p>
+
+<p>
+stack operations: push, pop, peek
+push: adds element to the top
+pop: removes(and returns) the element from the top
+peek: returns the topmost element without deletion
+</p>
+
+<p>
+before push, check for overflow conditions
+before pop, underflow conditions
+</p>
+
+<p>
+advantage: LIFO structure
+disadvantage: slow access to other elements
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Queue</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+FIFO structure
+added from the rear, removed from the front
+</p>
+
+<p>
+like queues, check for overflow conditions(full when rear = max -1)
+</p>
+
+<p>
+check for underflow conditions(front = Null, rear = null)
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Trees</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+non-linear data structure
+every node contains left pointer, right pointer, and data element.
+The root elemet is topmost node
+</p>
+
+<p>
+binary tree: root node, left and right subtrees
+</p>
+
+<p>
+if root = NULL then empty
+</p>
+
+<p>
+R is root, T1 is left, T2 is right
+</p>
+
+<p>
+advantages: quick search, insert, delete
+</p>
+
+<p>
+disadvantages: complicated deletion algorithm
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">graphs</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+no restriction of parents/ children
+</p>
+
+<p>
+best real world model
+slow and complex
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Operations</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Traversing: accessing each data exactly once
+Searching: finding location of data items
+Inserting: adding data to data structures
+deleting: removing data from datta structures
+sorting: arranging data according to some order
+merging: combining data into single data structures.
+</p>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Abstract data type</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+when we use any data structure, we want to put data in, we want to take data out, we don't want to know how these
+data are arranged and sorted, stored. And so, we don't. we ignore all the unnecessary cruft, and just expose
+necessary values and set of operations.
+Such is called encapsulation
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Algorithm</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+formally defined procedure for performing some calculation
+blueprint
+well-defined algorithms always provides an answer and is guranteed to terminate
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Time/Space complexity</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+amount of resources need fo execution
+O(n)
+Make sure how fast each statement condition grows
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-07662</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-07662</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+A dual priority queue is a data structure in which we can insert and delete data like a typical queue. Its difference from a typical queue is that when an item is to be deleted from the queue either an item with highest priority or with lowest priority in it is deleted according to the operation for deletion. There are two operations for the dual priority queue, one for inserting an item into it, the other for deleting an item from it. Deletion operation itself has two parameters: one for deleting an item with highest priority from it, and the other for deleting an item with lowest priority. 
+</p>
+
+<p>
+Suppose there is a dual priority queue Q which stores integers only. The value of each integer in Q is considered the priority of itself. 
+</p>
+
+<p>
+Given a list of operations, write a program that processes the operations for Q and shows the minimum and maximum numbers in Q after finishing the operations. 
+입력
+</p>
+
+<p>
+Your program is to read from standard input. The input consists of T test cases. The number of test cases T is given in the first line of the input. Each test case starts with a line containing an integer k (k ≤ 1,000,000), the number of operations for Q. In the next k lines, each line contains either ‘D’ or ‘I’ followed by an integer n. Operation ‘I n’ means inserting integer n into Q. Note that the same integers can be inserted into Q. Operation ‘D 1’ means deleting the maximum number from Q. While Operation ‘D -1’ is used to delete the minimum number from Q. If there are two or more maxima (minima) in Q when the operation is ‘D 1’(‘D -1’), only one of them is deleted. 
+</p>
+
+<p>
+If Q is empty when the operation is ‘D’ you can ignore it. Each input to be inserted into Q is a an integer between -231 and 231-1, inclusive.
+출력
+</p>
+
+<p>
+Your program is to write to standard output. For each test case, print the maximum and the minimum numbers among those which remain in Q. The two numbers should be printed in a line separated by a blank. If Q is empty at the end, print ‘EMPTY’. 
+예제 입력 1
+</p>
+
+<p>
+2
+7
+I 16
+I -5643
+D -1
+D 1
+D 1
+I 123
+D -1
+9
+I -45
+I 653
+D 1
+I -642
+I 45
+I 97
+D 1
+D -1
+I 333
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+EMPTY
+333 -45
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/7662">https://www.acmicpc.net/problem/7662</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Approach</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">sol0</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<p>
+Solved using C++ STL multiset. Since multiset is always ordered, it is trivial to pop minimum or maximum from the set. multiset utlizes a specific kind of <a href="../main/balanced_binary_tree.html#ID-413702c8-d080-452e-8ac5-216ee62d9445">Balanced Binary Tree</a> data structure, a  <a href="../main/red_black_tree.html#ID-d67d04e0-42d9-4bc9-92b4-a594d3d5d454">Red-Black Tree</a> underneath.
+</p>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">sol1</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+Solved using Two heaps with lazy deletion. Quite neat, and faster than multiset solution too. when deleting a number, mark it as invalid. when popping, ignore invalid number until you arrive at valid one. 
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

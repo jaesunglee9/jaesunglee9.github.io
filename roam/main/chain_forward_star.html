@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chain Forward Star</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Chain Forward Star</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Graph representation.</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<ol class="org-ol">
+<li>The "Chain Forward Star" (Array-based Graph)
+It mimics a Linked List but uses array indices instead of pointers.</li>
+</ol>
+
+<p>
+The most significant difference is how the graph is stored.
+</p>
+
+<p>
+Your Code (vector&lt;vector&lt;int&gt;&gt;):
+</p>
+
+<p>
+You create N separate dynamic vectors.
+</p>
+
+<p>
+Overhead: Every time you do al[u].push<sub>back</sub>(v), the vector might need to resize (reallocate memory and copy data).
+</p>
+
+<p>
+Memory: The vectors are scattered in the Heap memory. Accessing al[u] requires following a pointer to a specific location, then following another pointer to the data. This causes Cache Misses.
+</p>
+
+<p>
+Faster Code (Arrays head, to, nextEdge):
+</p>
+
+<p>
+This technique is called Chain Forward Star. It implements an adjacency list using only static arrays.
+</p>
+
+<p>
+Memory: All edge data is stored in one contiguous block (to and nextEdge arrays).
+</p>
+
+<p>
+Speed: Accessing edges is extremely fast because it’s just integer array indexing, which is CPU-friendly and minimizes cache misses.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">2. Mechanism: How does it work?</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Imagine you want to implement a linked list, but you are forbidden from using struct Node* or new/malloc. How would you do it? You would use arrays as your "memory bank."
+</p>
+
+<p>
+This structure uses three static arrays to manage the graph:
+</p>
+
+<p>
+head[u]: Stores the ID of the first edge connected to node u. (Initialized to -1).
+</p>
+
+<p>
+to[edge<sub>id</sub>]: Stores the destination node of the edge with ID edge<sub>id</sub>.
+</p>
+
+<p>
+next[edge<sub>id</sub>]: Stores the ID of the next edge connected to the same starting node. (This acts like the next pointer in a linked list).
+</p>
+
+<p>
+Insertion Logic (The "Magic")
+</p>
+
+<p>
+When you add an edge u -&gt; v, you don't append it to the end. You insert it at the head (like a stack).
+</p>
+
+<p>
+Code Breakdown:
+C++
+</p>
+
+<p>
+int head[MAXN]; <i>/ Start of the list for each node
+int to[MAXM];   /</i> Destination of edge i
+int nextEdge[MAXM]; <i>/ "Pointer" to the next edge
+int eid = 0;    /</i> Unique ID for every edge
+</p>
+
+<p>
+// Initialization
+fill(head, head + MAXN, -1); 
+</p>
+
+<p>
+void addEdge(int u, int v) {
+    to[eid] = v;          <i>/ 1. Create the edge node
+    nextEdge[eid] = head[u]; /</i> 2. Link new node to the current head (Old 1st becomes 2nd)
+    head[u] = eid;        <i>/ 3. Update head to point to this new node
+    eid++;                /</i> 4. Prepare ID for next edge
+}
+</p>
+
+<p>
+Step-by-Step Example: Let's say we have edges 1-&gt;2 and 1-&gt;3.
+</p>
+
+<p>
+Start: head[1] = -1
+</p>
+
+<p>
+Add 1-&gt;2 (ID 0):
+</p>
+
+<p>
+to[0] = 2
+</p>
+
+<p>
+next[0] = head[1] (which is -1)
+</p>
+
+<p>
+head[1] = 0
+</p>
+
+<p>
+Result: Node 1 points to Edge 0. Edge 0 points to -1 (End).
+</p>
+
+<p>
+Add 1-&gt;3 (ID 1):
+</p>
+
+<p>
+to[1] = 3
+</p>
+
+<p>
+next[1] = head[1] (which is 0)
+</p>
+
+<p>
+head[1] = 1
+</p>
+
+<p>
+Result: Node 1 points to Edge 1. Edge 1 points to Edge 0. Edge 0 points to -1.
+</p>
+
+<p>
+Traversal Logic: You start at head[u] and follow the next indices until you hit -1.
+C++
+</p>
+
+<p>
+for (int i = head[u]; i != -1; i = nextEdge[i]) {
+    int v = to[i];
+    // Process edge u -&gt; v
+}
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">3. Why is it so much faster? (Speedups)</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The performance gap usually comes from Memory Management, not Big-O complexity.
+</p>
+
+<p>
+No Dynamic Allocation (The Biggest Factor):
+</p>
+
+<p>
+vector&lt;int&gt; adj[N] requires N separate heap allocations. As you push<sub>back</sub>, vectors re-allocate and copy data when they grow.
+</p>
+
+<p>
+Chain Forward Star allocates one giant block of memory (to[MAXM]) at compile time (BSS segment). There is zero runtime overhead for memory management.
+</p>
+
+<p>
+Cache Efficiency (CPU Friendly):
+</p>
+
+<p>
+Vectors are objects that contain pointers to data. To read adj[u][i], the CPU loads the vector header, follows a pointer to the heap, and then reads the data. This is "Pointer Chasing."
+</p>
+
+<p>
+Arrays are flat. head[u] gives an integer index. The CPU just does simple arithmetic (base<sub>address</sub> + index * 4).
+</p>
+
+<p>
+Smaller Memory Footprint:
+</p>
+
+<p>
+A vector object itself takes 24 bytes (start ptr, end ptr, capacity ptr) before storing any data. For 1,000,000 nodes, that's 24MB of just empty vector headers.
+</p>
+
+<p>
+head[N] takes 4MB.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">4. Limitations &amp; When NOT to use it</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Despite the speed, modern C++ usage often prefers vector for good reasons. Here is why you might avoid Chain Forward Star:
+</p>
+
+<p>
+Fixed Size (Hard Limit):
+</p>
+
+<p>
+You must know the maximum number of edges (MAXM) at compile time.
+</p>
+
+<p>
+If you underestimate MAXM, your program crashes (Segfault).
+</p>
+
+<p>
+If you overestimate too much, you waste memory. vector adapts to the exact size needed.
+</p>
+
+<p>
+Poor Locality for Traversal (Subtle):
+</p>
+
+<p>
+In a vector, the neighbors [2, 3, 5] are stored side-by-side in memory. The CPU fetches them all in one "cache line."
+</p>
+
+<p>
+In Chain Forward Star, if edge 1-&gt;2 is ID 0 and edge 1-&gt;3 is ID 1000, they are far apart in the to[] array. The CPU has to jump around memory. (Note: The lack of dynamic allocation overhead usually outweighs this disadvantage, but strictly speaking, vector has better spatial locality for reading neighbors).
+</p>
+
+<p>
+Reverse Insertion Order:
+</p>
+
+<p>
+Because you insert at the head, the edges appear in LIFO (Last In First Out) order.
+</p>
+
+<p>
+If you add 1-&gt;2, then 1-&gt;3, the traversal will see 3 first, then 2. If order matters, this is a bug source.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Caution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">1. The Correct Implementation</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+You must initialize head to -1. In C++, global arrays default to 0, and local arrays are undefined (garbage). Since 0 is a valid edge index in your to[] array, iterating until 0 will cause logic errors or infinite loops. You need -1 as the "NULL" terminator.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Why "Stack Overflow" is a Risk</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+This struct is huge.
+</p>
+
+<p>
+MAXN = 1,000,000 (4MB)
+</p>
+
+<p>
+MAXM = 2,000,000 (8MB)
+</p>
+
+<p>
+next array (8MB)
+</p>
+
+<p>
+Total: ~20MB.
+</p>
+
+<p>
+The default Stack size for a C++ program is often limited (e.g., 1MB ~ 8MB on Windows/Linux by default).
+</p>
+
+<p>
+Bad: int main() { CFS g; &#x2026; } → Crash immediately (Stack Overflow).
+</p>
+
+<p>
+Good: CFS g; (Global scope) → Goes into the Data Segment (BSS), which handles gigabytes easily.
+</p>
+
+<p>
+Good: static CFS g; inside a function.
+</p>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">or use a static keyword</h4>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Edge Count: If the graph is Bidirectional (undirected), did you set MAXM to be 2 × N? (A common bug is setting MAXM = MAXN and getting segfaults when adding the reverse edges).</h3>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">template based implementation.</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+template &lt;int N, int M&gt;
+struct CFS {
+    int head[N];
+    int to[M];
+    int next[M];
+    int ecnt;
+</p>
+
+<p>
+CFS() { 
+    ecnt = 0; 
+    memset(head, -1, sizeof(head)); 
+}
+</p>
+
+<p>
+    void addEdge(int u, int v) {
+        to[ecnt] = v;
+        next[ecnt] = head[u];
+        head[u] = ecnt;
+        ecnt++;
+    }
+};
+</p>
+
+<p>
+// Usage
+CFS&lt;100001, 200002&gt; graph;
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

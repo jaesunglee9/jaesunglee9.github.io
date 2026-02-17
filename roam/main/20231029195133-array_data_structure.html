@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Array(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Array(Data Structure)</h1>
+</header><p>
+Arrays are collection of similar data elements
+Generally of same data type.
+stored in consecutive memory locations, referenced by index
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Declaration</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Declaraing an array means you are specifying data type, name, size.
+This is intuitive in that what you want to do is to designate select block
+in computer memory so that it is addressable. You can't do that without knowing
+data type, or by not giving it a name, or how much data you will put in.
+type name[size];
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Access</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+index starts from 0 to size-1
+To traversere array, use loops
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">addresses</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<p>
+Addresses are consecutive, so
+A[k] = BA(A) + w(k - lower bound)
+</p>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">length</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+Length = upper<sub>bound</sub> - lower<sub>bound</sub> + 1
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Storage</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<ol class="org-ol">
+<li>Initialization during declaration
+type array<sub>name</sub>[size]={list of values};</li>
+<li>Input elements from keyboard</li>
+<li>Assign values to individual elements</li>
+</ol>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Operations</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Traversal</h3>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Insertion</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+insertion at the end
+Step 1: Set upper<sub>bound</sub> = upper<sub>bound</sub> + 1
+Step 2: Set A[upper<sub>bound</sub>] = VAL
+Step 3: EXIT
+Insertion in the middle
+Step 1: [INITIALIZATION] SET I = N - 1 (index of last array element)
+Step 2: REPEAT while I &gt;= POS (shift right part of the array to the right)
+Step 3:        SET A[I+1] = A[I]
+Step 4:        SET I = I-1
+        [END OF LOOP]
+Step 5: SET N = N+1 (Increment array size)
+Step 6: SET A[POS] = VAL (Insert array element)
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Search</h3>
+</div>
+
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Deletion</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+Deletion at the end of the array
+Step 1: SET upper<sub>bound</sub> = upper<sub>bound</sub> -1
+Step 2: EXIT
+</p>
+
+<p>
+Deletion from middle of the array
+Step 1: SET I = POS
+Step 2:REPEAT while I &lt; N - 1
+Step 3:       SET A[I] = A[I+1]
+Step 4:       SET I = I + 1
+       [END OF LOOP]
+Step 5: SET N = N - 1
+Step 6: EXIT
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Merge</h3>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Sort</h3>
+</div>
+</section>
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">Passing arrays to functions</h2>
+<div class="outline-text-2" id="text-org0043671">
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">passing values</h3>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">passing addresses</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<p>
+Both are done as like normal variables
+</p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">passing  entire arrays:</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+func(arr);
+on the receiving end:
+func(int arr[5])
+or func(int arr[])
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Pointers and Arrays</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
+<p>
+concept of array necessiates pointers. why?
+for because memories must be accessed in contiguous order
+*ptr = arr; means that the pointer is pointing at arr[0]
+remember that increment operators take precedence before dereference operators
+</p>
+</div>
+</section>
+<section id="outline-container-orga55bdd4" class="outline-2">
+<h2 id="orga55bdd4">Arrays of pointers</h2>
+<div class="outline-text-2" id="text-orga55bdd4">
+<p>
+int *ptr[10];
+</p>
+</div>
+</section>
+<section id="outline-container-org1520f12" class="outline-2">
+<h2 id="org1520f12">Two-dimensional arrays</h2>
+<div class="outline-text-2" id="text-org1520f12">
+<p>
+arr[i][j]  i: row, j: column
+</p>
+
+<p>
+data<sub>type</sub> array<sub>name</sub>[row<sub>size</sub>][column<sub>size</sub>]
+</p>
+
+<p>
+m by n array:
+m * n data elements, i &lt; m, j &lt; n
+</p>
+</div>
+</section>
+<section id="outline-container-orgf718da5" class="outline-2">
+<h2 id="orgf718da5">Memory representation</h2>
+<div class="outline-text-2" id="text-orgf718da5">
+</div>
+<div id="outline-container-orgff52af2" class="outline-3">
+<h3 id="orgff52af2">Row major order</h3>
+<div class="outline-text-3" id="text-orgff52af2">
+<p>
+(0,0), (0,1), (0,2), &#x2026;
+Address(A[i][j] = BA + w*N*i + w*j
+</p>
+</div>
+</div>
+<div id="outline-container-org79c4fb7" class="outline-3">
+<h3 id="org79c4fb7">Column major order</h3>
+<div class="outline-text-3" id="text-org79c4fb7">
+<p>
+(0,0), (1,0), (2,0) &#x2026;
+Address(A[i][j] = BA + w*M*j + w*i
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgf42ba8d" class="outline-2">
+<h2 id="orgf42ba8d">Passing 2d arrays</h2>
+<div class="outline-text-2" id="text-orgf42ba8d">
+</div>
+<div id="outline-container-org0b22235" class="outline-3">
+<h3 id="org0b22235">Pass individual element</h3>
+</div>
+<div id="outline-container-org0c2fec5" class="outline-3">
+<h3 id="org0c2fec5">Pass single row</h3>
+<div class="outline-text-3" id="text-org0c2fec5">
+<p>
+arr[1]
+</p>
+</div>
+</div>
+<div id="outline-container-org8a1512e" class="outline-3">
+<h3 id="org8a1512e">Pass entire array</h3>
+<div class="outline-text-3" id="text-org8a1512e">
+<p>
+arr[][] is incomplete type. You must specify the final dimension, or pass a pointer to pointer
+to type.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org72a3840" class="outline-2">
+<h2 id="org72a3840">Pointers and 2d arrays</h2>
+<div class="outline-text-2" id="text-org72a3840">
+<p>
+int arr[] = {1,2,3,4,5};
+int *parr;
+parr = arr;
+</p>
+
+<p>
+int arr[2][2] = {{1,2},{3,4}};
+int (*parr)[2];
+parr = arr;
+</p>
+
+<p>
+int *arr[10];
+int **ptr=arr;
+</p>
+</div>
+</section>
+<section id="outline-container-org5c0e423" class="outline-2">
+<h2 id="org5c0e423">Multi dim arrays</h2>
+<div class="outline-text-2" id="text-org5c0e423">
+<p>
+just remember that they are row major order (increases from the right)
+</p>
+</div>
+</section>
+<section id="outline-container-orgaf542ca" class="outline-2">
+<h2 id="orgaf542ca">Sparse matrices</h2>
+<div class="outline-text-2" id="text-orgaf542ca">
+<p>
+lower triangular matrix ..
+tri diagonal matrix
+(abs(i-j)) &gt; 1 Aij is 0
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

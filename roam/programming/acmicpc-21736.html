@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-21736</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-21736</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+2020년에 입학한 헌내기 도연이가 있다. 도연이는 비대면 수업 때문에 학교에 가지 못해 학교에 아는 친구가 없었다. 드디어 대면 수업을 하게 된 도연이는 어서 캠퍼스 내의 사람들과 친해지고 싶다. 
+</p>
+
+<p>
+도연이가 다니는 대학의 캠퍼스는
+\(N \times M\) 크기이며 캠퍼스에서 이동하는 방법은 벽이 아닌 상하좌우로 이동하는 것이다. 예를 들어, 도연이가 (\(x\), \(y\))에 있다면 이동할 수 있는 곳은 (\(x+1\), \(y\)), (\(x\), \(y+1\)), (\(x-1\), \(y\)), (\(x\),
+</p>
+
+<p>
+\(y-1\))이다. 단, 캠퍼스의 밖으로 이동할 수는 없다.
+</p>
+
+<p>
+불쌍한 도연이를 위하여 캠퍼스에서 도연이가 만날 수 있는 사람의 수를 출력하는 프로그램을 작성해보자.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에는 캠퍼스의 크기를 나타내는 두 정수
+\(N\) ($ 1 &le; N &le; 600$), \(M\) (
+</p>
+
+<p>
+$ 1 &le; M &le; 600$)이 주어진다.
+</p>
+
+<p>
+둘째 줄부터
+</p>
+
+<p>
+$N$개의 줄에는 캠퍼스의 정보들이 주어진다. O는 빈 공간, X는 벽, I는 도연이, P는 사람이다. I가 한 번만 주어짐이 보장된다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 도연이가 만날 수 있는 사람의 수를 출력한다. 단, 아무도 만나지 못한 경우 TT를 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+3 5
+OOOPO
+OIOOX
+OOOXP
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+3 3
+IOX
+OXP
+XPP
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+TT
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">URL</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/21736">https://www.acmicpc.net/problem/21736</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Remark</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Stack based implementation on a (slightly) more complex application of DFS</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+I revised my understanding of dfs and bfs. On a stack(or queue) based approach, while my previous implementation was sound, it was not as efficient as it could have been. Always check if The next node is viable and mark it as visited before pushing. This makes it so that redundant nodes are not pushed. Will be meaningful on dense graphs.
+</p>
+
+<p>
+revised code:
+	stack&lt;pair&lt;int, int&gt;&gt; s;
+	vector&lt;vector&lt;int&gt;&gt; vis(n, vector&lt;int&gt;(m));
+	int cnt = 0;
+</p>
+
+<p>
+s.push({sr, sc});
+while (!s.empty())
+{
+	auto [ur, uc] = s.top(); s.pop();
+	if (campus[ur][uc] <code>= 'P') cnt++;
+		for (int i = 0; i &lt; 4; i++)
+		{
+			int nr = ur + dr[i], nc = uc + dc[i];
+			if (nr &lt; 0 || nr &gt;</code> n || nc &lt; 0 || nc &gt;= m) continue;
+		if (vis[nr][nc] <code>= 1 || campus[nr][nc] =</code> 'X') continue;
+		vis[nr][nc] = 1;
+		s.push({nr, nc});
+	}
+}
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Backlink</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+<a href="../main/depth_first_search.html#ID-7ac7ab31-e55b-4c47-8f89-45a78ee0c00b">Depth First Search</a>
+<a href="../main/breadth_first_search.html#ID-8acb2539-670e-4986-b6e8-38102dff761f">Breadth First Search</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

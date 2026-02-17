@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Digital System</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Digital System</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Analog &amp; digital</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+First we have Natural Signal, that is Continuous-time and Continuous-range
+This signal Then processed Using 1. Discretization(Sampling) and then 2. Quantization.
+Then the signal becomes Discrete-time and Discrete-range. The former is commonly called analog, whereas the latter is called digital.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Number representation</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Cn-1Rn-1 + Cn-2Rn-2 &#x2026; C0R0 + C-1R-1 &#x2026; C-mR-m
+Most significant bit(MSB) : Cn-1
+Least significant bit(LSB) : C-m
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Conversion</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Integer: Repeated division
+Decimal: Repeated multiplication
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Complement</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Decimal: 99999 - n : 9's complement
+              100000 - n : 10's complement
+Binary: reverse digit
+2's : reverse digit plus one
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Subtraction</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+M + (r<sup>n</sup> - N) = M -N + r<sup>n</sup>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">BCD</h2>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Gray code</h2>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">ASCII</h2>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Register</h2>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Binary logic</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+And, OR, NOT
+</p>
+
+<p>
+A digital system is a system which is represented by discrete values.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Analog-Digital conversion</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+To convert analog values to digital, you have to perform <a href="20240307091723-sampling.html#ID-d0e6965b-338c-4832-8ebb-ff50a6297935">Sampling</a> and <a href="20240307091830-quantization.html#ID-d9c7b966-4c7b-4d78-8a64-80dbc9161cc7">Quantization</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

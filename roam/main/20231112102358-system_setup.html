@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>System setup</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">System setup</h1>
+</header><p>
+Although the plan is to subsume all Linux machines under Guix, it remains somewhat unrealstic to do so, given that guix is gnu-based, and machine learning is heavily oriented towards Ubuntu
+Common procedures should be shared, separate procedures should be documented.
+</p>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Fonts</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+</div>
+<div id="outline-container-org7f16d57" class="outline-3">
+<h3 id="org7f16d57">Guix</h3>
+<div class="outline-text-3" id="text-org7f16d57">
+<p>
+The command is:
+guix package -s font
+</p>
+
+<p>
+Local font files should go to:
+~/.local/share/fonts/  (For single users)
+</p>
+
+<p>
+<i>usr/local/share/fonts</i>
+</p>
+
+<p>
+Do not touch /usr/share/fonts
+</p>
+
+<p>
+Best way to install fonts, on both arch and guix, appears to be by using packages. Should look into it later.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Week 1</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+I/O Structure
+Computer-System Architecture
+Operating-System Structure
+</p>
+</div>
+<div id="outline-container-org99c01cb" class="outline-3">
+<h3 id="org99c01cb">Multiprogramming</h3>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Timesharing</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<p>
+Job scheduling vs CPU scheduling
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Week 2</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Computing environments
+System Calls
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Week 3</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Process
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Week 4</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+<a href="../../../../../roam/main/20240325103649-multicore_programming.html#ID-848191e6-cea2-4c35-a608-763f1c48226d">Multicore Programming</a>
+</p>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605"><span class="todo TODO">TODO</span> Write simple kernel module</h3>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Turnaround time report 형식 (paper)</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+Waiting time(Queue wait time) vs Turnaround time(Queue + io )
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Week 5</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+First-Come-First-Serve(FCFS) Scheduling-Convoy effect
+Shortest-Job-First(SJF) Scheduling-Two schemes, Optimal, but with caveat: Don't know next cpu burst length
+How to determine length of next cpu burst? exponential average
+Round Robin(RR) Scheduling
+</p>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Priority Scheduling</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Internally defined priorities(By theOS)
+External priorities- Importance of the process, etc
+Problem : Starvation - Solution: Aging
+Priority + RR
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Multilevel Queue Scheduling</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+Priority-divided
+or processtype-divided
+Starvation - Solution: time slice
+Priority: Real time - System - Interactive- Batch
+</p>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Multilevel Feedback Queue Scheduling</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+Move processes between queues - prevent starvation.
+too much CPU time -&gt; low priority queue
+wait too long -&gt; high priority queue
+Numbr of queues
+Scheduling algorithm for each queue
+Upgrade/Demotion process
+Queue assignment
+2-phase locking protocol
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Memory Stall</h3>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Multithreading</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<p>
+vCPU
+physical Core / logical Core, virtual Core
+</p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Load balancing</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+Push migration
+Pull migration
+Cache must be invalidated on first processor
+Cache must be repopulated for second processor
+</p>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">Processor affinity</h3>
+<div class="outline-text-3" id="text-org0043671">
+<p>
+Soft affinity-policy of just trying to keep process on same processor
+Hard affinity-Set process to run on select processor only
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgff52af2" class="outline-2">
+<h2 id="orgff52af2">Week 6</h2>
+<div class="outline-text-2" id="text-orgff52af2">
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-3">
+<h3 id="org0c8fbd7">Rate Monotonic Scheduling</h3>
+</div>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">Earliest deadline first</h3>
+</div>
+<div id="outline-container-org1520f12" class="outline-3">
+<h3 id="org1520f12">Completely fair scheduler(CFS)</h3>
+<div class="outline-text-3" id="text-org1520f12">
+<p>
+Used in linux
+Standard Linux kernels
+Think of when race condition occurs.     
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org79c4fb7" class="outline-2">
+<h2 id="org79c4fb7">Week 7</h2>
+<div class="outline-text-2" id="text-org79c4fb7">
+<p>
+Syscall tutorial
+</p>
+</div>
+</section>
+<section id="outline-container-orgf718da5" class="outline-2">
+<h2 id="orgf718da5">Week 8</h2>
+<div class="outline-text-2" id="text-orgf718da5">
+<p>
+CPU Scheduling
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

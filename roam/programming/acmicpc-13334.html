@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-13334</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-13334</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+There are n persons such that each person commutes from his/her home to his/her office, where his/her home and office are located at different points on a horizontal line. For any two persons A and B, home or office of A can be located at the same point as home or office of B. For the convenience of the persons who commute, we are going to build a railway as a line segment between two points on the horizontal line and operate a rail transport with the stations at points of all homes or offices on the railway. Due to the limited budget, the length of the railway is fixed as d. We want to locate a line segment (railway) L of length d so that the number of persons whose both home and office locations are contained in L is maximized.
+</p>
+
+<p>
+Given a positive integer d and n pairs of integers, (hi, oi), 1 ≤ i ≤ n, where hi and oi are the home location and the office location of person i, respectively, you write a program which prints the maximum number of persons whose both home and office locations are contained in L over all line segments L of length d.
+</p>
+
+<p>
+Figure 1. Eight pairs of home and office locations.
+</p>
+
+<p>
+Consider an example shown in Figure l where n = 8, (h1, o1) = (5, 40), (h2, o2) = (35, 25), (h3, o3) = (10, 20), (h4, o4) = (10, 25), (h5, o5) = (30, 50), (h6, o6) = (50, 60), (h7, o7) = (30, 25), (h8, o8) = (80, 100), and d = 30. In this example, the line segment L with red color between 10 and 40 is one of the railway segments which can be located so that the number of persons whose both home and office locations are contained is maximum, thus the answer is 4.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Your program is to read from standard input. The first line contains an integer n (1 ≤ n ≤ 100,000) where n is the number of persons. In each of the following n lines, a pair of integers, (hi, oi) are given where hi and oi are distinct integers between −100,000,000 and 100,000,000, inclusively. The last line has an integer d (1 ≤ d ≤ 200,000,000) that represents the length of the railway segment.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Your program is to write to standard output. Print exactly one line for the input. The line should contain an integer representing the maximum number of persons whose both home and office locations are contained in L over all line segments L of length d.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+8
+5 40
+35 25
+10 20
+10 25
+30 50
+50 60
+30 25
+80 100
+30
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+4
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+4
+20 80
+70 30
+35 65
+40 60
+10
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+0
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+5
+-5 5
+30 40
+-5 5
+50 40
+5 -5
+10
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+3
+</p>
+
+<p>
+출처
+</p>
+
+<p>
+ICPC &gt; Regionals &gt; Asia Pacific &gt; Korea &gt; Nationwide Internet Competition &gt; Daejeon Nationalwide Internet Competition 2016 J번
+</p>
+
+<p>
+잘못된 데이터를 찾은 사람: topology
+</p>
+
+<p>
+알고리즘 분류
+</p>
+
+<p>
+Data Structures
+Sorting
+Sweeping
+Priority Queue
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">URL</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/13334">https://www.acmicpc.net/problem/13334</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Remark</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Ugh.</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

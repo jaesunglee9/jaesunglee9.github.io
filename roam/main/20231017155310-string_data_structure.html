@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>String(Data structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">String(Data structure)</h1>
+</header><p>
+A string is a null-terminated character array.
+</p>
+
+<p>
+null terminated implies that after last character, a null character('\0') is stored to signify the end of the
+character array.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Declaration</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+declaration form is char str[size];
+char str[] = "HELLO"
+null character is stored at the end of the string
+meaning that strings of size n requires n+1 locations
+I'm not sure how to do this
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Reading strings</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+scanf           scanf("%s", str);        
+gets            gets(str);     starting address of the strin, automatic null character
+getchar(repeat)                 manual null char
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Writing strings</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+printf()     printf("%s", str);
+puts()       puts(str);
+putchar()
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Length of string</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+i = 0
+while str[i] != \0
+    i+=1
+return i
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">ASCII characters</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+lower = 65 - 90
+upper = 97 - 122
+</p>
+
+<p>
+lower-upper = 32
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">string into upper</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+if  a &lt;=  str[i] &lt;= z
+set upperstr[i] = str[i] - 32
+else
+set  upper str[i] = str[i]
+</p>
+
+<p>
+string operations:
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">append</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+set index to null character
+begin copying source
+i += 1
+j += 1
+set null at the end
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">compare</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+s1 == s2
+identical
+s1 &gt; s2
+s1 will come after s2
+</p>
+
+<p>
+s1 &lt; s2
+s1 preceds s2
+</p>
+
+<p>
+first compare length, if different, done
+else compare chars one by one, if same till end, equal
+else, compare different char to determine string order
+</p>
+
+<p>
+Note. The compare operation is not defined for strings of different lengths, which is to me unintuitive.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">reverse</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+set i = 0, j = string last size = strlen(str) - 1
+</p>
+
+<p>
+while i &lt; j
+swap str i, j using temo
+i ++, j&#x2013;
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">extract</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+This is a bit of a misnomer imo because you are not extracting in the sense that you remove
+the substring from the main string; It leaves the main string intact.
+</p>
+
+<p>
+Requires: main string, position of first character in the string
+length of substring
+</p>
+
+<p>
+Step 1: INITIALIZE Set I=M, J=0 (set index to the first letter position substring, and j)
+Step 2: while str[I] != NULL and N &gt; 0 (while not end of the string and chars left to copy)
+Step 3: set substr[J] = str[I]
+Step 4: set I = I + 1 (main string index +1)
+Step 5: set J = J + 1 (sub string index + 1)
+Step 6: set N = N - 1 (chars to extract -1)
+Step 7: set substr[J] = NULL
+Step 8: exit
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">insert</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+This one is also a misnomer because you are not inserting a string into a string, you are
+creating a new string, that combines the two strings at the right position
+</p>
+
+<p>
+Three auxiliary variables i, j, k. i points to the main text, j points to the new text,
+and k points to the to-be inserted text.
+while i is not at the position to insert text, copy from main text to new text
+if i is at the position to insert text, copy from insert text to new text.
+if i is not at the position, keep on copying from main text to new text.
+set null (tidy it up)
+</p>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">pattern matching</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+set i = 0, and max = length(text) - length(str) + 1 why? because after that, the pattern
+cannot exist.
+</p>
+
+<p>
+this has two loops inner and outer loop, for each index, it checks if the characters are
+equal. if pattern matches, return index
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Deletion</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+Again, misnomer, since you are not deleting it, you are returning a new text that does
+not have the said string. 
+Given a position, you pass over the main text while decrementing n. if not in pos, you just copy from main text
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">replace</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+just delete string and insert new string
+</p>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">Arrays of strings</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<p>
+char names[20][30];
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

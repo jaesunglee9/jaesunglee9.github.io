@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<p>
+You're right that Kubernetes is a container orchestration platform and generally follows a control plane (formerly called "master") and worker node architecture. Here's how it actually works — focusing on what software runs on each node and how they communicate:
+🧠 Control Plane (Master Node)
+</p>
+
+<p>
+This is where the cluster’s brain lives. It runs several critical components:
+</p>
+
+<p>
+kube-apiserver
+</p>
+
+<p>
+The front-end (REST API) for the whole cluster.
+</p>
+
+<p>
+All communication, from users or nodes, goes through it.
+</p>
+
+<p>
+etcd
+</p>
+
+<p>
+A distributed key-value store that holds cluster state (e.g., what pods exist, their statuses, configs).
+</p>
+
+<p>
+Only accessed by the apiserver.
+</p>
+
+<p>
+kube-scheduler
+</p>
+
+<p>
+Decides which node a new pod should run on, based on resource availability, constraints, etc.
+</p>
+
+<p>
+kube-controller-manager
+</p>
+
+<p>
+Runs various controllers (e.g., Deployment, Node, ReplicaSet controllers) that watch the cluster state and reconcile the desired vs. actual state.
+</p>
+
+<p>
+cloud-controller-manager (optional)
+</p>
+
+<p>
+Integrates with cloud providers (e.g., for managing load balancers, volumes, etc.).
+</p>
+
+<p>
+🛠️ Worker Node
+</p>
+
+<p>
+Each worker node is where containers (pods) run. It has:
+</p>
+
+<p>
+kubelet
+</p>
+
+<p>
+Talks to the kube-apiserver.
+</p>
+
+<p>
+Ensures that the containers on this node match the desired pod specs.
+</p>
+
+<p>
+Reports node and pod health/status.
+</p>
+
+<p>
+kube-proxy
+</p>
+
+<p>
+Handles networking and service discovery.
+</p>
+
+<p>
+Manages rules for routing traffic to appropriate pods on the node.
+</p>
+
+<p>
+Container runtime (e.g., containerd, CRI-O, or Docker)
+</p>
+
+<p>
+Actually runs containers. Kubernetes uses CRI (Container Runtime Interface) to interact with it.
+</p>
+
+<p>
+🔁 What Do They Communicate?
+From	To	What
+kubelet	kube-apiserver	Node status, pod status updates
+kube-apiserver	kubelet	Pod specifications (what to run, volumes, configs, etc.)
+scheduler	kube-apiserver	Reads unassigned pods; writes back assignments
+controller	kube-apiserver	Watches for state changes, initiates corrections
+</p>
+
+<p>
+All communication flows through the kube-apiserver, including interactions with etcd. The worker nodes never talk to each other directly — only to the API server.
+</p>
+
+<p>
+Summary Table
+Component	Runs On	Role
+kube-apiserver	Control Plane	Cluster API interface
+etcd	Control Plane	Cluster state storage
+kube-scheduler	Control Plane	Pod-to-node assignment
+kube-controller-manager	Control Plane	Reconciliation (state management)
+kubelet	Worker Node	Ensures containers run as expected
+kube-proxy	Worker Node	Handles network routing
+container runtime	Worker Node	Runs containers
+Let me know if you want a diagram or to walk through a real-life example like deploying a Pod.
+</p>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

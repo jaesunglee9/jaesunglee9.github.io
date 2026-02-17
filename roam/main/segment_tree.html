@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Segment Tree</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Segment Tree</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">What are segment trees?</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+They are used to perform ranged queries in O(Nroot(N)) time or something like that. Very quickly. They are very useful if multiple queries are required on a relatively static sequences. There are multiple implementations, each with their own improvements. A variant of Segment tree, Fenwick tree is also useful.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Implementation</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+</div>
+<div id="outline-container-org99c01cb" class="outline-3">
+<h3 id="org99c01cb">Note that this implementation cannot handle sums larger than int. It was used for min/max queries.</h3>
+<div class="outline-text-3" id="text-org99c01cb">
+<p>
+template&lt;typename T, typename F&gt;
+struct SegmentTree {
+	int n;
+	int leaf;
+	vector&lt;T&gt; tree;
+        F op;
+	T id;
+</p>
+
+<p>
+SegmentTree(vector&lt;T&gt;&amp; a, F func, T identity) : op(func), id(identity) {
+	_init(a);
+}
+</p>
+
+
+<p>
+void
+_init(vector&lt;T&gt;&amp; a) {
+	n = a.size();
+	leaf = 1;
+</p>
+
+<p>
+while (leaf &lt; n) leaf &lt;&lt;= 1;
+</p>
+
+<p>
+tree.assign(leaf * 2, id);
+</p>
+
+<p>
+for (int i = 0; i &lt; n; i++)
+{
+	tree[leaf + i] = a[i];
+}
+</p>
+
+<p>
+	for (int i = leaf - 1; i &gt; 0; i&#x2013;)
+	{
+		tree[i] = op(tree[2 * i], tree[2 * i + 1]);
+	}
+}
+</p>
+
+<p>
+void
+update(int idx, T val) {
+	idx += leaf;
+	tree[idx] = val;
+</p>
+
+<p>
+	for (idx /= 2; idx &gt; 0; idx /= 2)
+	{
+		tree[idx] = op(tree[2 * idx], tree[2 * idx + 1]);
+	}
+}
+</p>
+
+<p>
+T
+query(int l, int r) {
+	l += leaf;
+	r += leaf;
+</p>
+
+<p>
+T res = id;
+</p>
+
+<p>
+while (l &lt;= r)
+{
+	if (l % 2 <code>= 1)
+			{
+				res = op(res, tree[l]);
+				l++;
+			}
+			if (r % 2 =</code> 0)
+	{
+		res = op(res, tree[r]);
+		r&#x2013;;
+	}
+</p>
+
+<p>
+	l /= 2;
+	r /= 2;			
+}
+</p>
+
+<p>
+		return res;
+	}				
+};
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Notable approaches</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Sparse Table</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

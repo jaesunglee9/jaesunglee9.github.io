@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-30804</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-30804</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Eunha made a Tanghulu (a Chinese snack made from sugar-coated fruits) with
+\(N\) fruits on a long stick. Each fruit is of a type numbered from \(1\) to \(9\), and starting from the front, fruits of types
+</p>
+
+<p>
+\(S_1,S_2,\cdots ,S_N\) are pierced in order. Upon rechecking the order after making the fruit Tanghulu, she realized that she forgot the request to use only a maximum of two types of fruits.
+</p>
+
+<p>
+Eunha, with no time to make another Tanghulu, decided to remove a number of fruits from the ends of the stick, leaving only a maximum of two types. After removing
+\(a\) fruits from the front and \(b\) fruits from the back, there are now \(N-(a+b)\) fruits of types \(S_{a+1},S_{a+2},\cdots ,S_{N-b-1},S_{N-b}\) on the tanghulu. \((0\le a,b;\)
+</p>
+
+<p>
+\(a+b<N)\) 
+</p>
+
+<p>
+Find the maximum number of fruits on the Tanghulu with a maximum of two types of fruits made using this method.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+The first line of input contains a single integer
+\(N\), denoting the number of fruits.
+</p>
+
+<p>
+\((1\le N\le 200\, 000)\) 
+</p>
+
+<p>
+The second line of input contains
+\(N\) space-separated integers \(S_1,\cdots ,S_N\).
+</p>
+
+<p>
+\((1\le S_i\le 9)\) 
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The first line of output should contain the maximum number of fruits on a Tanghulu with a maximum of two types of fruits as described in the problem.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+5
+5 1 1 2 1
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+4
+</p>
+
+<p>
+If we remove
+\(1\) fruit from the front and \(0\) from the back, we have a Tanghulu of the form \(1, 1, 2, 1\). The number of fruits is
+</p>
+
+<p>
+\(4\).
+예제 입력 2
+</p>
+
+<p>
+3
+1 1 1
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+3
+</p>
+
+<p>
+There is already only one type of fruit in the Tanghulu.
+예제 입력 3
+</p>
+
+<p>
+9
+1 2 3 4 5 6 7 8 9
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+2
+</p>
+
+<p>
+If we remove
+\(3\) fruits from the front and \(4\) fruits from the back, we have a Tanghulu of the form \(4, 5\). The number of fruits is \(2\).
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">URL</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/30804">https://www.acmicpc.net/problem/30804</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+At any possible state of tanghulu(subsequence), it can be represented with two indices pointing to the start and end of the subsequence. This observation leads naturally to the two-pointer approach.
+two-pointer approach iterates over the sequence once, hence is O(N). It is probably one of the optimal solutions.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Remark.</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">I initially tried greedy approach. It does not cover all possible states, and so is not correct.</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

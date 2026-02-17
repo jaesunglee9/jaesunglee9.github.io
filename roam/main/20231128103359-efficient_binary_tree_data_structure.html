@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Efficient Binary Tree(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Efficient Binary Tree(Data Structure)</h1>
+</header><p>
+A binary search tree, also known as ordered binary tree, is a variant of binary trees in which the nodes are aranged in an order. Specifically, It is arranged so that all nodes in left sub tree hvae value less than the root.
+Also right nodes have value greater than the root. Search takes O(log2 n) time. It also speeds up insertion and deletion operations, so has a speed advantage when data in the structure changes rapidly.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Search</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Check if tree is empty.
+If not empty,
+    check if tree is the one
+    if not, check which subtree to search(i.e. if the key is greater or lesser than the current node)
+        call search on the said tree
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Creation</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+for each value,
+if smaller than curr, go left
+else go right
+</p>
+
+<p>
+continue and place on leaf
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Insert</h2>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Delete</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Delete a node that has no children</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+leaf node. No constraint
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Delete node with one chil</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+replace the current node with its child
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Delete a node with two children</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+Swap with in order predecessor ad delete
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Operation</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+Determinting number of nodes
+return total nodes of left + total nodes right + 1
+</p>
+
+<p>
+Mirror image
+call mirror image on left subtree
+call mirror image on right subtree
+set temp = left subtree
+swap tree
+</p>
+
+<p>
+Delete tree
+delete left subtree
+delete right subtree
+free tree
+</p>
+
+<p>
+find smallest node
+if tree null
+or left subtree = null
+return tree
+ else
+ find smalles t node on left subtree
+</p>
+
+<p>
+find largest node
+if tree null or right subtree = null
+return tree
+else return findlargest on large subtree
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Threaded Binary Trees</h2>
+</section>
+
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">AVL Tree(Adelson-Velsky and Landis)</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Also known as height-balanced tree.
+Search, Insert, and delete takes O(logn)
+Balance Factor
+</p>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Operations</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+</div>
+<div id="outline-container-org2dc1f56" class="outline-4">
+<h4 id="org2dc1f56">Insertion</h4>
+<div class="outline-text-4" id="text-org2dc1f56">
+<p>
+is always followed by rotation
+</p>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-4">
+<h4 id="orgde0f8b8">Rotation</h4>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

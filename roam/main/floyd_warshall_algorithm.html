@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Floyd-Warshall Algorithm</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Floyd-Warshall Algorithm</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Function</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<ul class="org-ul">
+<li>Finds shortest paths between all edges.</li>
+<li>Can handle negative edge weights.</li>
+<li>Does not work with graphs with negative cycles.</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Proof of Correctness</h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Time Complexity</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+O(V<sup>3</sup>)
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Space Complexity</h2>
+</section>
+
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">When to be preferred?</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+When the graph is dense.
+When it is sparse, <a href="../programming/Johnson's Algorithm.html#ID-d2e783f4-c08a-404c-b3d1-3f2fe11f83f7">Johnson's Algorithm</a> is to be preferred.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Examples</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+<a href="../programming/acmicpc-11403.html#ID-b10e2155-6a6a-494e-9d2a-f7ffb60a0daf">acmicpc-11403</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

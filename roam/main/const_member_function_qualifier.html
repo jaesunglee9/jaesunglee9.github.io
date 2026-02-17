@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Const Member Function Qualifier</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Const Member Function Qualifier</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">1. The "Read-Only" Guarantee</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+By adding const there, you are promising the compiler that this function will not modify any member variables of the object.
+</p>
+
+<p>
+Inside the function:
+</p>
+
+<p>
+You cannot change the value of x or y.
+</p>
+
+<p>
+You cannot call other member functions that are not marked as const.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">2. Compatibility with const Objects</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+This is the most practical reason for using it. If you have a const instance of your struct, you can only call member functions that are marked with that second const.
+C++
+</p>
+
+<p>
+void check(const P&amp; a, const P&amp; b) {
+    if (a <code>= b) { // This works ONLY if operator=</code> is a const member function
+        // &#x2026;
+    }
+}
+</p>
+
+<p>
+If you omitted the second const, the compiler would throw an error in the snippet above. Even though operator== doesn't actually change anything, the compiler assumes a non-const function might change the object, so it forbids calling it on a const object like a.
+</p>
+<ol class="org-ol">
+<li>The this Pointer Transformation</li>
+</ol>
+
+<p>
+Under the hood, every member function has a hidden parameter called this.
+</p>
+
+<p>
+In a normal member function of P, the type of this is P* const (a constant pointer to a mutable object).
+</p>
+
+<p>
+In a const member function of P, the type of this is const P* const (a constant pointer to a constant object).
+</p>
+
+<p>
+Summary Table
+Feature	bool operator==(const P&amp; t)	bool operator==(const P&amp; t) const
+Can modify this-&gt;x?	Yes	No
+Can be called on const P?	No	Yes
+Purpose	Standard operation	Read-only / Safe operation
+</p>
+
+<p>
+In competitive programming or system design, it is best practice to mark all "getter" or comparison operators as const. This prevents accidental bugs where you might unintentionally modify a value during a simple check.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

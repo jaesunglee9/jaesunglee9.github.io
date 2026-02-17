@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">01212</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Essentially, this problem, although I haven't solved it other way, would probably result in tle if done in a naive manner line iterative division or some such. actually, I am curious how such conversion is actuallydone. nevertheless, in this case, by noticing that 8 is an exponent of 2, and thus all 3digit binary number have a corresponding alphabet in octal system, and vice versa, after that, it was a simple pattern matching.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">04358</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+getline(cin, str) -&gt; for whitespace strings,
+it-&gt;first can access um iterator key
+thats about it
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">06416</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+So, some Ideas I think I must remind myself.
+</p>
+<ol class="org-ol">
+<li>for unordered node ids, just convert them using one int node<sub>id</sub>. and after checking for in degrees, I did dfs from root(if it exists) to check if it is a tree.</li>
+<li>Of course, there are simpler ways, just count the number of edges , assert that they are equal to v - 1, and the in<sub>degrees</sub> of nodes to be 1 across all none root nodes.</li>
+<li>DFS. so been a long time since. I can use functions, or stacks.</li>
+</ol>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">10275</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+So, The question asks, given number n, and operation halve(exact), how much operation until we can get quantity a, b s.t. a + b == 2 ^ n?
+remark 1: std::swap. Although here it was just used to swap values of variables, it can also be used to swap vector elements or whatever.
+R2: I just verified that a and b are equivalent to 1 &lt;&lt; n-1, the resulting stick of the next halve operation. the algorithm is guaranteed to terminate, but still, in a serious applicaiton, I should be more careful.
+R3: How to hardcode long longs? LLs of course. should have been more careful about the reasoning. ((ll)1) works too.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">13118</h2>
+</section>
+
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">15115</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+how to set round to :
+fixed setprecision(n) this automatically rounds.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">31429</h2>
+</section>
+
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">31669</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+essentially it asks, can you find a line within a 2d array?
+Of course, I can't.  So, given ith row, jth column indexing, finding a horizontal line is trivial, but what about vertical lines? here, in order to not be confused, consider i = r, j = c, then it is easier.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

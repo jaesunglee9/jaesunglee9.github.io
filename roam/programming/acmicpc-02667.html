@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-02667</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-02667</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+&lt;그림 1&gt;과 같이 정사각형 모양의 지도가 있다. 1은 집이 있는 곳을, 0은 집이 없는 곳을 나타낸다. 철수는 이 지도를 가지고 연결된 집의 모임인 단지를 정의하고, 단지에 번호를 붙이려 한다. 여기서 연결되었다는 것은 어떤 집이 좌우, 혹은 아래위로 다른 집이 있는 경우를 말한다. 대각선상에 집이 있는 경우는 연결된 것이 아니다. &lt;그림 2&gt;는 &lt;그림 1&gt;을 단지별로 번호를 붙인 것이다. 지도를 입력하여 단지수를 출력하고, 각 단지에 속하는 집의 수를 오름차순으로 정렬하여 출력하는 프로그램을 작성하시오.
+</p>
+
+<p>
+입력
+</p>
+
+<p>
+첫 번째 줄에는 지도의 크기 N(정사각형이므로 가로와 세로의 크기는 같으며 5≤N≤25)이 입력되고, 그 다음 N줄에는 각각 N개의 자료(0혹은 1)가 입력된다.
+출력
+</p>
+
+<p>
+첫 번째 줄에는 총 단지수를 출력하시오. 그리고 각 단지내 집의 수를 오름차순으로 정렬하여 한 줄에 하나씩 출력하시오.
+예제 입력 1
+</p>
+
+<p>
+7
+0110100
+0110101
+1110101
+0000111
+0100000
+0111110
+0111000
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+3
+7
+8
+9
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2667">https://www.acmicpc.net/problem/2667</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Approach</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+For each node in map, if is apartment, and unexplored, make new cluster and explore. push result to vector. print when done. is O(n<sup>2</sup>).
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Remark</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Choice of Braces</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+This choice of setting braces on another line significantly reduces visual clutter, at the cost of making code a bit longer. An acceptable tradeoff, in my opinion.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Solidifying my knowledge of BFS and DFS helped immensely</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Choosing implementation that pushed to queue/stack only once has made it so that implementing certain logic(here, counting number of house clusters) quite simple. Do note that there may be cases where I may need to explore all discovered nodes more than once.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

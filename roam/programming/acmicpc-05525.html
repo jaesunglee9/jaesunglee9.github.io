@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-05525</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-05525</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+N+1개의 I와 N개의 O로 이루어져 있으면, I와 O이 교대로 나오는 문자열을 PN이라고 한다.
+</p>
+
+<p>
+P1 IOI
+P2 IOIOI
+P3 IOIOIOI
+PN IOIOI&#x2026;OI (O가 N개)
+</p>
+
+<p>
+I와 O로만 이루어진 문자열 S와 정수 N이 주어졌을 때, S안에 PN이 몇 군데 포함되어 있는지 구하는 프로그램을 작성하시오.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 N이 주어진다. 둘째 줄에는 S의 길이 M이 주어지며, 셋째 줄에 S가 주어진다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+S에 PN이 몇 군데 포함되어 있는지 출력한다.
+제한
+</p>
+
+<p>
+1 ≤ N ≤ 1,000,000
+2N+1 ≤ M ≤ 1,000,000
+S는 I와 O로만 이루어져 있다.
+</p>
+
+<p>
+서브태스크
+번호	배점	제한
+1	50	
+</p>
+
+<p>
+N ≤ 100, M ≤ 10 000.
+2	50	
+</p>
+
+<p>
+추가적인 제약 조건이 없다.
+예제 입력 1
+</p>
+
+<p>
+1
+13
+OOIOIOIOIIOII
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+4
+</p>
+
+<p>
+OOIOIOIOIIOII
+OOIOIOIOIIOII
+OOIOIOIOIIOII
+OOIOIOIOIIOII
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+2
+13
+OOIOIOIOIIOII
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+2
+</p>
+
+<p>
+OOIOIOIOIIOII
+OOIOIOIOIIOII
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Source</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+<a href="https://www.acmicpc.net/problem/5525">https://www.acmicpc.net/problem/5525</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Approach</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">sol0</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Since I can count how many substring is in a given IOI, just find how long the said string is, and return the value.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">sol1</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+KMP algorithm
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remark</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">I still barely understand what KMP algorithm is.</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+No table, No backtracking. quite efficient. as evidenced by nearly 20 % speedup compared to kmp solution. but not
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Backlinks</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+<a href="../main/knuth_morris_pratt_algorithm.html#ID-ede2bdaf-0726-4ed6-b2f5-74f8a61f1c2a">Knuth-Morris-Pratt Algorithm</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

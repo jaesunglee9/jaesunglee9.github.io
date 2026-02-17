@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-02239</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-02239</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Problem</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Sudoku is a very simple task. A square table with 9 rows and 9 columns is divided to 9 smaller squares 3x3 as shown on the Figure. In some of the cells are written decimal digits from 1 to 9. The other cells are empty. The goal is to fill the empty cells with decimal digits from 1 to 9, one digit per cell, in such way that in each row, in each column and in each marked 3x3 subsquare, all the digits from 1 to 9 to appear. Write a program to solve a given Sudoku-task. 
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Input</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+The input data will start with the number of the test cases. For each test case, 9 lines follow, corresponding to the rows of the table. On each line a string of exactly 9 decimal digits is given, corresponding to the cells in this line. If a cell is empty it is represented by 0. 
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Output</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+For each test case your program should print the solution in the same format as the input data. The empty cells have to be filled according to the rules. If solutions is not unique, then the program should output the lexicographically smallest solution.. 
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Test Case</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">001</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+In: 
+</p>
+
+<p>
+103000509
+002109400
+000704000
+300502006
+060000050
+700803004
+000401000
+009205800
+804000107
+</p>
+
+<p>
+Out:
+</p>
+
+<p>
+143628579
+572139468
+986754231
+391542786
+468917352
+725863914
+237481695
+619275843
+854396127
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">002</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+In:
+</p>
+
+<p>
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+</p>
+
+<p>
+Out:
+</p>
+
+<p>
+123456789
+456789123
+789123456
+214365897
+365897214
+897214365
+531642978
+642978531
+978531642
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Remark</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">One of the more difficult problem to solve at the time of writing.</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+I tried to follow peter norvig's solution, but that lead to a more convoluted way of doing things. Nevertheless, the techniques I learned from this was:
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Bitmasks</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+using &amp;, ~, ^, |, you can do bitmask for efficient representation.
+only compare equality on the resulting mask(for clarity).
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">How to find the quadrant index:</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+int br = (r / 3) * 3;
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">memcpy</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+memcpy(t, b, sizeof(t));
+</p>
+
+<p>
+note that here the sizeof should take as argument local variable, since any received argument decays into pointer. Not really sure what it means though.
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Overall Not a very satisfactory first try.</h3>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb"></h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+<a href="../main/sudoku.html#ID-5927dc0c-fa19-41a7-8020-3b716af4355a">Sudoku</a>
+<a href="../main/bitmask.html#ID-f882b496-4165-4a00-9170-c9162f4f20e1">Bitmask</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

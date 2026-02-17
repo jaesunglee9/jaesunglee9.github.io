@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reinforcement Learning</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Reinforcement Learning</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Idea</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Learn how to maximize expected rewards based on obaserved samples of transitions
+</p>
+
+<p>
+In MDPs it is offline, and fully observable. In contrast, RL is online, and partially observable
+</p>
+
+<p>
+Model-based: Learn the model, solve it, execute solution
+</p>
+
+<p>
+Model-free
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Passive RL</h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Active RL</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Directly explores environment
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Model-based learning</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Idea is to learn an approximate model based on experience
+Solve for values as if the learned model were correct
+</p>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Step 1. Learn empirical MDP model</h3>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Model-free learning</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Direct Evaluation</h3>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Temporal Difference Learning</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<ul class="org-ul">
+<li>Attempt at approximating bellman upadate</li>
+<li>Recall that given a fixed policy, the value of a state is an expectation over next<sub>state</sub> values
+Vpi(s) = -&#x2014;</li>
+</ul>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Idea 1</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+Use actual samples to estimate the expectation
+sample1 = R(s, pi(s), s1') + gamma* Vpi(s1')
+sample2 = R(s, pi(s), s2') + gamma*Vpi(s2')
+sampleN = R(s, pi(s), sN') + gamma*Vpi(sN')
+</p>
+
+<p>
+Vpi(s) &lt;- 1/N * sum(samples)
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Idea 2</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Update value of s after each transition s, a, s', r:
+</p>
+
+<p>
+Update Vpi on the go
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Idea 3</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+Update values by maintaining a running average
+</p>
+
+<p>
+mean() = n-1/(n) prev<sub>mean</sub> + 1/(n) new sample
+</p>
+
+<p>
+if we fix  weight as alpha instead of 1/n
+</p>
+
+<p>
+mean = (1-alpha) prev<sub>mean</sub> + alpha * new<sub>sample</sub>
+</p>
+
+<p>
+exponential forgetting
+convex combination
+E(mean) is convex combination of E(xi) values, unbiased
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Exploration vs Exploitation</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">epsilon-greedy</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+with p = epsilon, act randomly
+with p = 1 - epsilon, act on policy
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Feature based representations</h2>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

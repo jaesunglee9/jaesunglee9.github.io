@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Heap(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Heap(Data Structure)</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Binary Heaps</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+A binary heap is a complete binary tree in which every node satisfies the heap property which states that:
+If B is a child of A, then key(A) &gt;= key(B)
+The root has highest key value. Such heaps are called max-heap, as opposed to min-heaps.
+</p>
+</div>
+<div id="outline-container-org99c01cb" class="outline-3">
+<h3 id="org99c01cb">Array indexing</h3>
+<div class="outline-text-3" id="text-org99c01cb">
+<p>
+If element is stored at position i in the array, then left child is stored at 2i, right child at 2i + 1.
+Conversely, element at position i has parent at floor(i / 2).
+NOTE that the position literally means position, and starts at 1 and not zero. The actual formula to calculate the index is floor((n-1)/2).
+</p>
+</div>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Usage</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<p>
+Priority queues
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Insertion in Binary Heap</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+position starts from 1
+</p>
+<ol class="org-ol">
+<li>Add node to the heap and set its position(index)
+N = N + 1, POS = N, SET HEAP[N] = VAL</li>
+<li>Swap child with parent until satisfies max heap property
+par = pos / 2
+if HEAP[POS] &lt;= HEAP[PAR]   // Satisfies max heap property 
+	goto step 6
+else
+	swap HEAP[POS], HEAP[PAR]
+	POS = PAR</li>
+</ol>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Deletion in Binary Heap</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Deletion in binary heap always happens at the root.
+Replace the root node with the  last node, and and delete last node, and bubble it down until
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Binomial Heap</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+A binomial heap H is a set of binomial trees that satisfy the binomial heap properties:
+    Every binomial tree in H satisfies the minimum heap property
+        root of a heap ordered tree contains the smallest key in the tree.
+    There can be one or zero binomial trees for each order including zero order.
+        Implies that binomial heap H having N nodes contains at most log(N+1) trees
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Linked Representation of Binomial Heaps</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+each node has a val field, of course, in addtion, each node has pointers that points to:
+P[N] Its own parent,
+Child[N] To its leftmost child,
+Sibling[N] To its immediate right sibling.
+If these nodes do not exist i.e. root node , or no child, or is righmost child, then these are NULL.
+</p>
+
+<p>
+In addition, each node has a degree, which stores the number of children of N
+</p>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Applications</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+Heap sort
+Selection Algorithms : Find min or max val in linear or sub-linear time.
+Graph Algorithms : Heaps can be used as internal traversal data structures. Runtime reduction
+Prims minimal spanning tree or dijkstra's shortest path problem
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Binomial Tree</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+A binomial tree is an ordered tree that can be recursively defined as follows:
+    A binomial tree of order 0 has single node.
+    A binomial tree of order i has a root node whose children are the root nodes of binomial trees of order i-1, &#x2026; 0.
+    A binomial tree Bi has 2<sup>i</sup> nodes, the height of binomial tree Bi is i.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

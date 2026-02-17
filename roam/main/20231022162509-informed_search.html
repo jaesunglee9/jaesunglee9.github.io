@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Informed Search</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Informed Search</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Heuristics</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+A function that estimates how close a state is to a goal
+example would be straight line distance in finding fastest root, and
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Greedy search</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+f(n) = h(n)
+Strategy exapnd the lowest heuristic node i.e. the node that is most likely to be closest to a goal, according
+to heuristics.
+</p>
+
+<p>
+Worst case, it behaves like a badly guided DFS. It is complete, but not optimal
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">A* search</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+A* can be understood as combination of uniform-cost search and greedy search, as is evidenced by its
+evaluation function f(n) = h(n) + g(n). h(n) is heuristic forward cost, while g(n) is backward cost g(n)
+</p>
+
+<p>
+It terminates when we dequeue a goal
+</p>
+
+<p>
+heuristic must be admissible(the heuristic must never overestimate the cost)
+Why? intuitively, it is because if it is pessimistic, you might never expand a node.
+Proof is done by assuming A* is suboptimal i.e. it returns a suboptimal path.
+This means there was an unexpanded node on the optimal path
+</p>
+
+<p>
+f(n) &gt; C*
+f(n) = g(n) + h(n)
+     = g*(n) + h(n) because n is on optimal path
+     &lt;= g*(n) + h*(n) admissibility h(n) &lt; h*(n) :cost of optimal path from n to goal
+</p>
+
+<p>
+f(n) &lt;= C*
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Admissible heuristics</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Often, admissible heuristics are solutions to relaxed problems, where new actions are available
+(e.g.) in bucharest problem, assume you don't have to path through cities
+       in pacman, assume you don't have walls.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Consistent heuristics</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Stronger assumption than admissibility.
+h(n) &lt;= c(n, a, n') + h(n')
+The estimated heuristic from n has to be smaller than arc cost + heuristic from the transited node n'.
+</p>
+
+<p>
+All consistent heuristics are admissible, but not vice versa.
+Note that A* on graph search must use consistent heuristics, but tree search doesn't have to. This has to do with
+the fact that in graph search, the search checks if the node has been visited before, so f(n) must be increasing
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Creating heuristics</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+The most general way is, given a search problem, to remove the constraints on action(transition).
+This can create relaxed problem that is amenable to solutions that give exact costs to the goal.
+Since relaxed problem is a supergraph of the original problem, the heuristic is bound to be lower than the
+heuristics for the original, since added edges may provide shortcuts to the goal, but will not remove the optimal
+path.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Combining heuristics</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Just use max function! Best of all worlds.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Graph search as opposed to tree search in above.</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+The difference between the two is simple:
+Graph search checks if the visited node is redundant, and Tree search doesn't
+How? Using sets. Sets does not allow duplicate nodes, but Lists do. This may seem trivial, but may lead to
+exponential memory use
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

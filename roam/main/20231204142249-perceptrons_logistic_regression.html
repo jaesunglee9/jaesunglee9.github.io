@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perceptrons&amp;Logistic Regression</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Perceptrons&amp;Logistic Regression</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Perceptron</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+modelled after biological neurons, inputs are feature values, which are multiplied by a weight, which is part of the neuron, and the sum is the activation
+essentially, a dot product of two vectors
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Binary Decision Rule</h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Linear Classifiers</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Perceptrons are linear classifiers, meaning that they separate some data into the plane
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Vectors</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Review on vectors, with emphasis on inner(dot) product.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Learning with Binary Perceptron</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Start with weights = 0
+For each training instance
+y = 1 if dot(w, f(x)) &gt;= 0
+y = -1 if dot(w, f(x)) &lt; 0
+w = w + dot(y*, f)
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Multiclass decision rule</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+y = argmax(y, wy, f(x))
+predict with current weights
+If wrong, lower score of wrong answer, raise score of right answer
+w<sub>y</sub> = w<sub>y</sub> - f(x)
+w<sub>y</sub>* = w<sub>y</sub>* + f(x)
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Problemm with Perceptron</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Noise: If data is not separable, weight's might thrash
+Mediocre generalization: finds a barely separating solution
+Overtraining: test/held
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Use probabilistic decision making</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+sigmoid function  = 1 / (1 + e<sup>-z</sup>)
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Learning with sigmoid perceptrons</h2>
+</section>
+
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Multiclass Logistic Regression</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+value of multiple things can be negative
+</p>
+<ul class="org-ul">
+<li>normalize it by exponentiating them and use those values for normalization</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">binary perceptron is special case of multi class perceptron</h2>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

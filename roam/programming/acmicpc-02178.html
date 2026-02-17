@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-02178</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-02178</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+N×M크기의 배열로 표현되는 미로가 있다.
+1 	0 	1 	1 	1 	1
+1 	0 	1 	0 	1 	0
+1 	0 	1 	0 	1 	1
+1 	1 	1 	0 	1 	1
+</p>
+
+<p>
+미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다. 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오. 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.
+</p>
+
+<p>
+위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 두 정수 N, M(2 ≤ N, M ≤ 100)이 주어진다. 다음 N개의 줄에는 M개의 정수로 미로가 주어진다. 각각의 수들은 붙어서 입력으로 주어진다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 지나야 하는 최소의 칸 수를 출력한다. 항상 도착위치로 이동할 수 있는 경우만 입력으로 주어진다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+4 6
+101111
+101010
+101011
+111011
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+15
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+4 6
+110110
+110110
+111111
+111101
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+9
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+2 25
+1011101110111011101110111
+1110111011101110111011101
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+38
+</p>
+
+<p>
+예제 입력 4
+</p>
+
+<p>
+7 7
+1011111
+1110001
+1000001
+1000001
+1000001
+1000001
+1111111
+</p>
+
+<p>
+예제 출력 4
+</p>
+
+<p>
+13
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Source</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/2178">https://www.acmicpc.net/problem/2178</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+The problem asks us, what is the cost of going from a to b in a unweighted, 2d grid graph? This restriction enables further simplification from a simple dijkstra. In BFS, paths of same depths are searched before searching for deeper depths, hence the first path to find destination is the fastest path to the destination.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remark</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Is there really no way to conveniently fill 2d array?</h3>
+</div>
+
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Here I employ using vector&lt;string&gt; itself to store the maze. somewhat shorter, but the fact that I had to compare with chars here and int there made it more annoying. Will not use this approach in the future.</h3>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Backlink</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+<a href="../main/breadth_first_search.html#ID-8acb2539-670e-4986-b6e8-38102dff761f">Breadth First Search</a>
+<a href="../main/dijkstra_s_algorithm.html#ID-0a2eebe6-d80d-42db-9bc9-c79ddb3a36a9">Dijkstra's Algorithm</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-11286</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-11286</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+절댓값 힙은 다음과 같은 연산을 지원하는 자료구조이다.
+</p>
+
+<p>
+배열에 정수 x (x ≠ 0)를 넣는다.
+배열에서 절댓값이 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다. 절댓값이 가장 작은 값이 여러개일 때는, 가장 작은 수를 출력하고, 그 값을 배열에서 제거한다.
+</p>
+
+<p>
+프로그램은 처음에 비어있는 배열에서 시작하게 된다.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 연산의 개수 N(1≤N≤100,000)이 주어진다. 다음 N개의 줄에는 연산에 대한 정보를 나타내는 정수 x가 주어진다. 만약 x가 0이 아니라면 배열에 x라는 값을 넣는(추가하는) 연산이고, x가 0이라면 배열에서 절댓값이 가장 작은 값을 출력하고 그 값을 배열에서 제거하는 경우이다. 입력되는 정수는 -231보다 크고, 231보다 작다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+입력에서 0이 주어진 회수만큼 답을 출력한다. 만약 배열이 비어 있는 경우인데 절댓값이 가장 작은 값을 출력하라고 한 경우에는 0을 출력하면 된다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+18
+1
+-1
+0
+0
+0
+1
+1
+-1
+-1
+2
+-2
+0
+0
+0
+0
+0
+0
+0
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Source</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/11286">https://www.acmicpc.net/problem/11286</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Push and pop the smallest element in the queue, the "smallest" being some custom definition. This calls for priority queue. But how to implement it?
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remark</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">priority<sub>queues</sub> take elements, vector of elements, and functors(function objects)</h3>
+</div>
+
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">For custom comparison, use operator  wrapped in struct</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+See <a href="../main/how_to_use_custom_comparison_in_priority_queue_c.html#ID-48c24547-5201-4a05-9b65-f9c35ec3965b">How to use custom comparison in priority queue(C++)</a>
+Do note syntax:
+```c++
+struct AbsCmp {
+	bool operator()(int a, int b) const {
+		int aa = abs(a), ab = abs(b);
+		if (aa != ab) return aa &gt; ab;
+		return a &gt; b;
+	}
+};
+```
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

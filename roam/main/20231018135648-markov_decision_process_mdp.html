@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Markov Decision Process(MDP)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Markov Decision Process(MDP)</h1>
+</header><p>
+Markov decision processes are just decision making over markov processes
+Well, what is a markov process?
+essentially, bunch of states with transition probabilities relying only on the current state. (implying non-deterministic)
+But since our actions are dependent on the state we are in, transition function is governed by
+current state and action.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Definition</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+So what constitutes an mdp is
+Set of states S
+Set of actions A
+Transition function T(s, a, s') : probability that a from s leads to s' (P(s'|s, a)). Model or Dynamics
+reward function R(s, a, s')
+start state
+terminal state
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Solutions of MDP</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+The solution to a MDP is a policy, which is a function which maps from S to A
+This is in contrast to deterministic single-agent search problems where solution was an optimal plan
+(sequence of actions from start to a goal)
+This is because transition between states is non-deterministic. Therefore, one must have a plan for
+all reachable states.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Optimal policies</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Calculated with equation :?
+Note that policy may change with different reward functions
+</p>
+
+<p>
+*Grid World
+Let us examine a grid world, in order to understand MDP. In such world, an agent's actions may not always
+change the environment as intended.
+agent receives rewards each time step. small rewards for each step, big rewards come at the end.
+</p>
+
+<p>
+Goal is to maximize the sum of rewards.
+</p>
+
+<p>
+MDP is non-deterministic search problems
+  Note that one way to solve them with expectimax problems
+</p>
+
+<p>
+Markov processes implies that future and past are independent of current state.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Discounting</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Why discount?</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+-Sooner rewards are better, more concrete, and economical, and tractable
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">How to discount?</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Discounting is a way of counting rewards at present state
+it is reasonable to maximize rewards,
+</p>
+
+<p>
+What if the game lasts forever?
+Solutions: Finite horizon or Discounting
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Values of States</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+you are in a state s. You can perform actions given as a1, a2, &#x2026;.
+When you choose an action, you need to consider two things:
+Which state has highest value, and what action will take you there with highest probability.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Bellman equations</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+V*(s) = max(a, Q*(s, a))
+value of s is the maximum Q*(s,a) for possible actions.
+Q*(s, a) = sum(s', T(s, a, s') * (R(s, a, s') + gamma * V*(s')))
+value of Q*(s, a) = expectation of values of possible states s'
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Time-Limited Values</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+V<sub>k</sub>(s): optimal value of s if the game ends in k more time steps
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Value Iteration</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+So set the values of each to 0 for all states
+</p>
+
+<p>
+than, for each state,  do expectimax search(the likeli hood of that state times the value of that state) sum
+How ? given each action, expected reward for each action calc, and choose action that has highest expectation, and said reward should be the next vlaue
+</p>
+
+
+<p>
+iterate for as long as desired
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Policy extraction</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Now with values, how do we compute policies?
+mini-expectimax(one step)
+pi*(s) = argmaxQ*(s, a)
+</p>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Problems with value iteration</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<ul class="org-ul">
+<li>slow</li>
+<li>max rarely changes, implying policy converges long before the values</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Vpi(s) =</h3>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Policy Iteration</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+Step 1: Policy evaluation: calculate utilities for some fixed policy(not necessarily optimal) until convergence
+Step 2: Policy improvement: update policy using one-step look-ahead with resulting utilities from step 1 as future values
+</p>
+
+<p>
+Repeat until convergence
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

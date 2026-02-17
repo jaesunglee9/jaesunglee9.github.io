@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Propositional Logic</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Propositional Logic</h1>
+</header><p>
+Here, we discuss agents that acquire knowledge about their environments via learning.
+</p>
+
+<p>
+Hois the knowledge represented and how to infer states and actions from the said knowledge?
+</p>
+
+<p>
+Knowledge base = Set of sentences in formal language.
+Declarative approach
+Tell it what it needs to know, and it can ask itself what to do.
+With domain specific facts apply generic code(inference algorithm)
+</p>
+
+<p>
+This inference lends itself to logic
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Logic</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Syntax: What sentences are allowed? (Grammar)
+Semantics: What are possible worlds and which sentences are true in which worlds? (Meaning)
+</p>
+
+<p>
+Propositional logic vs First-order logic
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Propositional logic semantics:</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Truth table
+alpha and beta is true iff alpha is true and beta is true
+</p>
+
+<p>
+*First order logic semantics
+</p>
+
+<p>
+phi(sigma) is true if sigma = oj and phi holds for oj
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Entailment</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+alpha entails beta = beta follows from a
+</p>
+
+<p>
+alpha is  a subset of beta
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Proof</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+demonstration of entailment between alpha and beta
+Method 1 : model- checking
+for all worlds, if alpha is true, than beta is true
+</p>
+
+<p>
+method 2 : theorem proving
+apply inference rules leading from alpha to beta
+</p>
+
+<p>
+sentences :
+negation
+conjunction
+dysjunction           
+implies              : not p or q (think of its negation p and not q)
+if and only if       : if p implies q and q implies p
+</p>
+
+<p>
+Noe
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">How to use propositional logic for</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+So, To build a knowledge base, we need to define componenets of the world.
+Wall location Wall<sub>0,0</sub> &#x2026;  (N symbols for N locations)
+Percepts Blocked<sub>W</sub><sub>0</sub> (Blocked to the west of agent at timestep 0)  (4T symbols for T time steps)
+Actions W<sub>0</sub> (Move west at time step 0) (4T symbols )
+Location At<sub>0,0</sub><sub>0</sub> (is at 0,0 at time step 0) (NT symbols)
+</p>
+
+<p>
+O(NT) variables, and each can have binary values, so O(2<sup>NT</sup>) possible worlds
+</p>
+
+<p>
+Now how to build knowledge base?
+Wall0,0 and Wall0,1 and Wall0,2 and &#x2026;..
+notWall1,1 and notWall1,2, and &#x2026;.
+</p>
+
+<p>
+The agent knows the above, but doesn't know it's location
+so its location is
+At1,1<sub>0</sub> or At1,2<sub>0</sub> or &#x2026;.
+</p>
+
+<p>
+How would the agent localize its location?
+With percepts
+</p>
+
+<p>
+percept variable at t iff some condition on world at t
+</p>
+
+<p>
+the percept limits possible worlds
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Satisfiability</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+A sentence is satisfiable if it is true in at least one world
+</p>
+
+<p>
+How to test entailment?
+alpha entails beta
+iff alpha implies beta in all worlds
+and not (alpha implies beta) is false
+so alpha and not beta is false in all worlds
+so assume negative of assumption,
+if it is satisfiable, than it is not entailed
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">State estimation</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+simply
+check KB and actions and percepts entails some state
+</p>
+
+<p>
+if you want to be eager,
+for each time step t, if
+KB and action<sub>t</sub>-1 and percept<sub>t</sub> entails X<sub>t</sub>, add X<sub>t</sub>
+if it entails not X<sub>t</sub>, add not X<sub>t</sub>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

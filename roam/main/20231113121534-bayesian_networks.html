@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bayesian Networks</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Bayesian Networks</h1>
+</header><p>
+It usually becomes infeasible to apply product rules to get marginal probability distributions,
+</p>
+
+<p>
+A technique for describing complex joint distributions(models) using simple conditional distributions
+We use graphical model notation to describe bayesian networks.
+</p>
+<ul class="org-ul">
+<li>Nodes: variables(with domains)
+<ul class="org-ul">
+<li>Can be assigned(obserbed) or unassigned(unobserved)</li>
+</ul></li>
+<li><p>
+Arcs: interactions
+</p>
+<ul class="org-ul">
+<li></li>
+</ul>
+
+<p>
+Nodes in bayesian networks show factorization of parameters, wihich reduce the value significantly.
+</p></li>
+</ul>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Syntax</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<ul class="org-ul">
+<li>A set of nodes, one pervariable Xi</li>
+<li>A directed, acyclic graph</li>
+<li>A conditional distribution for each node given its parent variables in the graph
+<ul class="org-ul">
+<li>CPT (conditional probability table); each row is a distribution for child given values of its parents</li>
+</ul></li>
+
+<li>Bayes net = Topology(graph) + Local Conditional Probabilities</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Inference</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+</div>
+<div id="outline-container-org99c01cb" class="outline-3">
+<h3 id="org99c01cb">By Enumeration</h3>
+<div class="outline-text-3" id="text-org99c01cb">
+<p>
+P(Q|e) = a * sum(P(Q, h, e))
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Factor Zoo I</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Joint distribution: P(X, Y)</h3>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Projected joint: P(x, Y)</h3>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Single conditional: P(Y | x)</h3>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Family of conditionals P(X | Y)</h3>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Operation</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Pointwise Product</h3>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Partial summation(Summing out, elimination)</h3>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Complexity</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+harder than SAT problem which is <a href="20231115132802-p_hard.html#ID-a65ae263-099c-4fc9-b3a5-39b2cc666403">#P-hard</a>, 
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Approximate Inference</h2>
+</section>
+
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Sampling</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+Basic Idea: Draw N samples from a samling distribution S
+show that it converges to the true probability P
+</p>
+
+<p>
+Why Sample?
+Often very fast to get a decent approximate answer
+simple, easy, low memory, can apply to large models
+</p>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Prior sampling</h3>
+</div>
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">Rejection sampling.</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

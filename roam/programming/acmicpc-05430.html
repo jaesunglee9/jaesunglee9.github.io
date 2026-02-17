@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-05430</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-05430</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+The programming language Better And Portable Code (BAPC) is a language for working with lists of integers. The language has two built-in functions: ‘R’ (reverse) and ‘D’ (drop).
+</p>
+
+<p>
+The function ‘R’ reverses its input list, and ’D’ drops the first element of its input and returns the rest, or gives an error in case its input is an empty list. To get more advanced behavior, functions can be composed: “AB” is the function that first applies ‘A’ to its input and then ‘B’ to the resulting list. For example, “RDD” is a function that reverses a list and then drops the first two elements.
+</p>
+
+<p>
+Unfortunately, our BAPC interpreter has bit rotted, so we ask you to write a new one.
+</p>
+
+<p>
+Given a BAPC program and its input, return its output or “error” in case ‘D’ is applied to an empty list. Lists are represented as the character ‘[’ followed by a comma-separated list of integers followed by the character ‘]’. Notice that the input and output lists can be quite long.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+On the first line one positive number: the number of test cases, at most 100. After that per test case:
+</p>
+
+<p>
+one line with a string p (1 ≤ length(p) ≤ 100 000): a BAPC program, consisting of the
+characters ‘R’ and ‘D’.
+one line with an integer n (0 ≤ n ≤ 100 000): the number of elements in the input.
+one line with a list of n integers in the form [x1, &#x2026;, xn] (1 ≤ xi ≤ 100): the input list
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Per test case:
+</p>
+
+<p>
+one line with the resulting integer list or “error” in case of an error.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+4
+RDD
+4
+[1,2,3,4]
+DD
+1
+[42]
+RRD
+6
+[1,1,2,3,5,8]
+D
+0
+[]
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+[2,1]
+error
+[1,2,3,5,8]
+error
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Source</h2>
+</section>
+
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Both sol0 and sol1 takes advantage of the fact that you don't actually need to reverse the list to access the elements. sol0 uses custom structs, while sol1 uses <a href="../main/deque.html#ID-bb9a3a5c-c2de-4214-afd8-c78bebc32708">Deque</a> .
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Remark</h2>
+<div class="outline-text-2" id="text-org9beed48">
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">sol0</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+Not bad, but for I should have noticed that empty lists have reversed pointers.
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Printing commas</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+No particular magic in mine, but how people typically print commas first and number later.
+Following code will reveal why.
+<a href="../main/printing_commas_cleanly.html#ID-c58ab565-fbdd-4f9f-ac2b-b9397871f53e">Printing Commas Cleanly</a>
+```
+for (int i = 0; i &lt; (int)dq.size(); i++)
+			{
+				if (i) cout &lt;&lt; ',';
+				cout &lt;&lt; dq[i];
+			}
+  ```
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">stringstream is said to be slow</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-01541</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-01541</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">문제</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+세준이는 양수와 +, -, 그리고 괄호를 가지고 식을 만들었다. 그리고 나서 세준이는 괄호를 모두 지웠다.
+</p>
+
+<p>
+그리고 나서 세준이는 괄호를 적절히 쳐서 이 식의 값을 최소로 만들려고 한다.
+</p>
+
+<p>
+괄호를 적절히 쳐서 이 식의 값을 최소로 만드는 프로그램을 작성하시오.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">입력</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 식이 주어진다. 식은 ‘0’~‘9’, ‘+’, 그리고 ‘-’만으로 이루어져 있고, 가장 처음과 마지막 문자는 숫자이다. 그리고 연속해서 두 개 이상의 연산자가 나타나지 않고, 5자리보다 많이 연속되는 숫자는 없다. 수는 0으로 시작할 수 있다. 입력으로 주어지는 식의 길이는 50보다 작거나 같다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">출력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 정답을 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Test Case</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+55-50+40
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+-35
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+10+20+30+40
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+100
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+00009-00009
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+0
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Remark</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Parsing in C++</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+If we need to parse the string, than we can either go over char by char, or, we can use sstream library to make string behave as stream. It would serve well to remember the
+stringstream ss(str);
+syntax.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Should have read the problem more carefully.</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+The problem asks us to find the smallest possible result with arbitrary parentheses, not closest to 0. In such case, It can be seen that finding the minimum result is local, and greedy task.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">URL</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+<a href="https://www.acmicpc.net/problem/1541">https://www.acmicpc.net/problem/1541</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Backlink</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+<a href="../main/greedy.html#ID-cf7cd4d6-1ff0-477b-b7b2-4475a76f2a53">Greedy</a>
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

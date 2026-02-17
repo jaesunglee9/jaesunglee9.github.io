@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">1</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">S3 Objects</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org7925b9e" class="outline-4">
+<h4 id="org7925b9e">Q</h4>
+<div class="outline-text-4" id="text-org7925b9e">
+</div>
+<div id="outline-container-org7f16d57" class="outline-5">
+<h5 id="org7f16d57">Why Flat hierarchy?</h5>
+</div>
+<div id="outline-container-org99c01cb" class="outline-5">
+<h5 id="org99c01cb">Why separate etags and checksums?</h5>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-5">
+<h5 id="orgd98eb26">diff between etags and tags?</h5>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">S</h4>
+<div class="outline-text-4" id="text-org0ce0959">
+</div>
+<div id="outline-container-orgee35afe" class="outline-5">
+<h5 id="orgee35afe">Terraform Resources and Data sources difference?</h5>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">M</h4>
+</div>
+</div>
+</section>
+<section id="outline-container-orgaf542ca" class="outline-2">
+<h2 id="orgaf542ca">2</h2>
+<div class="outline-text-2" id="text-orgaf542ca">
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Etags</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+use on terraform
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Checksums</h3>
+</div>
+
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Object lock</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+Only when during object creation (put-object) with cli or sdk
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">S3</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<p>
+11 9 durability
+</p>
+
+<p>
+RRA is not used. Like, ever
+</p>
+</div>
+<div id="outline-container-org7161a33" class="outline-4">
+<h4 id="org7161a33">Standard</h4>
+</div>
+<div id="outline-container-org194cf40" class="outline-4">
+<h4 id="org194cf40">Standard-IA</h4>
+<div class="outline-text-4" id="text-org194cf40">
+<p>
+20 % less than standard
+only once a month
+</p>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-4">
+<h4 id="org0043671">Express One Zone</h4>
+<div class="outline-text-4" id="text-org0043671">
+<p>
+1 AZ
+</p>
+</div>
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-4">
+<h4 id="org0c8fbd7">One zone IA</h4>
+<div class="outline-text-4" id="text-org0c8fbd7">
+<p>
+Dur 11 9
+Availibility 99.5
+20 % less than standard IA
+</p>
+
+<p>
+Use Case:
+Secondary backup of on-prem data
+Storing data in case of az failure
+Storing infrequent non critical data
+</p>
+</div>
+</div>
+<div id="outline-container-org0c2fec5" class="outline-4">
+<h4 id="org0c2fec5">Glacier Storage classes</h4>
+<div class="outline-text-4" id="text-org0c2fec5">
+</div>
+<div id="outline-container-orga55bdd4" class="outline-5">
+<h5 id="orga55bdd4">Instant Retrieval</h5>
+<div class="outline-text-5" id="text-orga55bdd4">
+<p>
+11 9 Dur, 3 9 Ava
+68 % lower than Standard IA
+once per quarter
+low latency (milliseconds level)
+</p>
+
+<p>
+Use Case: Image Hosting, online file sharing, medical imaging, health records, news media assets, satellite and aerial imaging.
+</p>
+
+<p>
+minimum storage duration of 90 days
+</p>
+
+<p>
+New, Not part of glacier vault
+</p>
+</div>
+</div>
+<div id="outline-container-org1520f12" class="outline-5">
+<h5 id="org1520f12">Glacier Flexible retrieval</h5>
+<div class="outline-text-5" id="text-org1520f12">
+<p>
+Three tiers
+Pay per GB and No. of requests. Archived objects will have additional 40kbs of : 32kb archive index + archive metadata + 8 kb name
+Solution? -&gt; use one zip file.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orgff52af2"></a>Expediated Tier<br></li>
+<li><a id="org79c4fb7"></a>Standard Tier<br></li>
+<li><a id="orgf718da5"></a>Bulk Tier<br></li>
+</ul>
+</div>
+<div id="outline-container-org0b22235" class="outline-5">
+<h5 id="org0b22235">Glacier Deep archive</h5>
+<div class="outline-text-5" id="text-org0b22235">
+<p>
+above two uses original vault
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org8a1512e" class="outline-4">
+<h4 id="org8a1512e">Glacier Vault</h4>
+<div class="outline-text-4" id="text-org8a1512e">
+<p>
+Doesn't use buckets
+has vault control policies
+done by cli
+</p>
+</div>
+<div id="outline-container-orgf42ba8d" class="outline-5">
+<h5 id="orgf42ba8d">Glacier Deep archive</h5>
+<div class="outline-text-5" id="text-orgf42ba8d">
+<p>
+is part of Glacier vault
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org72a3840" class="outline-4">
+<h4 id="org72a3840">ACLs</h4>
+<div class="outline-text-4" id="text-org72a3840">
+<p>
+R/W to other accounts, but not to other users in my accounts.
+cannot grant conditional permissions
+cannot deny permissions
+Legacy feature
+</p>
+
+<p>
+use bucket policies + access points.
+</p>
+</div>
+</div>
+<div id="outline-container-org5c0e423" class="outline-4">
+<h4 id="org5c0e423"></h4>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

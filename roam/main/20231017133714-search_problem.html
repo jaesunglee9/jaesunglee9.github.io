@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Search Problem</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Search Problem</h1>
+</header><p>
+*Problem solving agents
+There are two type of agents: Problem solving agents, and Planning agents.
+Problem solving agents use atomic representations, while planning agents use
+factored representations.
+</p>
+
+<p>
+Problem solving agents solve the search problem.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Constituents</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+A search problem consists of:
+    state space
+    successor function
+    start state
+    goal state(s)
+</p>
+
+<p>
+The above is the most general formulation, and the successor function may include
+action/result function, and also the cost function.
+</p>
+
+<p>
+A search problem is solved using a search algorithm.
+</p>
+
+<p>
+Searching with search tree
+expand potential plans(fringe)
+with node to explore?
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Depth-First Search</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Fringe is LIFO queue. Why? because We have to expand last visited node.
+Since it always searches to the edge node, time complexity is O(b<sup>m</sup>).
+space of the fringe is only the edge node, which is O(bm)
+not complete if infinite, since even if finite solution exists, it may not be able to find it if the tree is infinite for some node
+</p>
+
+<p>
+Not optimal(not the shortest path)
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Breadth-First Search</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Fringe is FIFO stack. Why? because we have to expand the shallowest unexpanded node
+Since we search for the shallowest node, the fringe is no bigger than the size of the b<sup>s</sup> at the solution depth s
+complete
+optimal if costs are  all 1
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">BFS vs DFS</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+BFS obviously optimal, and fast
+DFS memory is lower(space advantage)
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Iterative Deepening</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+DFS with depth limit 1, 2, and so on
+</p>
+
+<p>
+search space is larger than memory and depth of solution is unknown
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Cost-sensitive search</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Uniform-Cost Search</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+simple : when choosing which node to expand, use path cost heuristic
+</p>
+
+<p>
+time complexity is O(b<sup>(1 +floor(C*/e))</sup>)
+complete(minimum arc cost is positive)
+optimal
+</p>
+
+<p>
+Con: Explores options in every direction
+No information about goal direction
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

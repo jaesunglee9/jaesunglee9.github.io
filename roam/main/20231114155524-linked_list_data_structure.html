@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linked List(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Linked List(Data Structure)</h1>
+</header><p>
+A linked list is a linear collection of data elements. These data elements, also called nodes, are not exclusive to linked lists, but are called so in trees, or any other structure where we wish to store any other value or pointer with said data. Linked list is a data structure which can in turn be used to implement other data structures, such as <a href="20231216112038-queue_data_structure.html#ID-b7173c14-2415-4785-ad64-c17e14fa0c35">Queue(Data Structure)</a>, or <a href="20231216112038-queue_data_structure.html#ID-b7173c14-2415-4785-ad64-c17e14fa0c35">Queue(Data Structure)</a>, and so on.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Linked Lists versus Arrays</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Both are linear, but LLs are not stored in consecutive memory locations. Insertions and deletions can be done at any point in the list in constant time. Size of LL is variable during runtime, So LLs are good when many insertion and deletion needs to be done, and memory is not an issue.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Singly linked list</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Every node contains two data-a value, and a pointer to the next node.
+If Node is last node, than the pointer stores a null value.
+Allows only one-way traversal
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Circular linked list.</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+No null pointer at the end
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Insert at beginning</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+make new node
+ptr to last node
+new node next to start
+ptr-&gt;next = new<sub>node</sub>
+start = new<sub>node</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Insert at end</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+make new<sub>node</sub>
+new<sub>node</sub> -&gt; next = start
+last -&gt;next = new<sub>node</sub>
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Doubly linked list</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Insert after given node</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+make node
+go to given node
+connect new node
+set ptr -&gt; next -&gt; prev = new node
+set ptr -&gt; next = enw nodew
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

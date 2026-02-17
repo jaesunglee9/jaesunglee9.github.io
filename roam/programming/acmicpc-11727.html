@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-11727</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-11727</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Problem</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+2×n 직사각형을 1×2, 2×1과 2×2 타일로 채우는 방법의 수를 구하는 프로그램을 작성하시오.
+</p>
+
+<p>
+아래 그림은 2×17 직사각형을 채운 한가지 예이다.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Input</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+첫째 줄에 n이 주어진다. (1 ≤ n ≤ 1,000)
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Output</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 2×n 크기의 직사각형을 채우는 방법의 수를 10,007로 나눈 나머지를 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Test Case</h2>
+<div class="outline-text-2" id="text-org9639605">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">1</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+예제 입력 1
+</p>
+
+<p>
+2
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+3
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">2</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+예제 입력 2
+</p>
+
+<p>
+8
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+171
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">3</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 3
+</p>
+
+<p>
+12
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+2731
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">URL</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+<a href="https://www.acmicpc.net/problem/11727">https://www.acmicpc.net/problem/11727</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remark</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+A relatively simple DP problem, yet I failed it on the first try. The reason for this was because I did not partition the cases correctly. note that the case of two vertical bars case is included in memo[i-1] . therefore, it should be excluded from memo[i-2]
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-09375</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-09375</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Problem</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Spies use attributes to disguise themselves to make sure that they are not recognized. For example, when putting on sunglasses, a spy suddenly looks completely different and cannot be recognized anymore. Every combination of attributes gives a different appearance, but not all combinations are possible. For example, a hat and a turban are both headgear and cannot be used at the same time. Given the list of available attributes, compute how many distinct disguises can be made.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Input</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+On the ﬁrst line one positive number: the number of test cases, at most 100. After that per test case:
+</p>
+
+<p>
+one line with an integer n (0 ≤ n ≤ 30): the number of available attributes.
+n lines with two space-separated strings: the name and the category of the attribute.
+</p>
+
+<p>
+All strings consist of at least 1 and at most 20 lowercase letters. Within a test case all names are distinct.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Output</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Per test case:
+</p>
+
+<p>
+one line with an integer: the number of possible distinct disguises that can be made with the given attributes, such that at most one attribute from each category is used.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Test Case</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">case 1</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+2
+3
+hat headgear
+sunglasses eyewear
+turban headgear
+3
+mask face
+sunglasses face
+makeup face
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Remark</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Not much
+</p>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Iterating over an unordered<sub>map</sub>:</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+for (auto const&amp; [k, v]: um)
+of
+for (auto const&amp; pair: um) {
+pair.first =&#x2026;..
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b"></h2>
+</section>
+
+
+
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Reference</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+<a href="https://www.acmicpc.net/problem/9375">https://www.acmicpc.net/problem/9375</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Backlinks</h2>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

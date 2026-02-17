@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stack(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Stack(Data Structure)</h1>
+</header><p>
+Think of a napkin dispenser with spring in the bottom. When we fill it, we push each napkin down, and the last napkin to go in comes out first. The last-in first-out (LIFO) data structure
+Needed for function calls
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Push</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Adds element to the top of the stack.
+</p>
+</div>
+<div id="outline-container-org99c01cb" class="outline-3">
+<h3 id="org99c01cb">Overflow</h3>
+<div class="outline-text-3" id="text-org99c01cb">
+<p>
+If TOP = MAX - 1, stack is full, and no element can be inserted
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Pop</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Removes element at the top of the stack.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Underflow</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+If TOP = NULL, the stack is empty, and no element can be deleted.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Peek</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Returns value of the topmost element
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Linked Representation of Stacks(Linked Stack)</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+If stack is small, or maximum size is known in advance, array implementation gives efficient implementation. However, if array size is indeterminiate i.e. if data size is variable or number of data is unknown, linked representation is used.
+</p>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Operations</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+All insertions and deletions are done at the node pointed by TOP
+If TOP = NULL, then the stack is empty.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

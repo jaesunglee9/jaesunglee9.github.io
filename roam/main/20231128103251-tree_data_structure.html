@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-02-17 Tue 14:28 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tree(Data Structure)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Tree(Data Structure)</h1>
+</header><p>
+Tree is a hierarchical data structure, meaning that data are separated into different levels. Contrast this with arrays, where every data is in the same level.
+A tree is acyclic directed graph? This is the etymology i believe.
+Trees are recursive, meaning that a tree is composed of trees(subtrees).
+A tree has a root, a node can have only one parent.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Root node</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+topmost node. If R = NULL, the tree is empty.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Subtree</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+a node and its descendents constitute a tree. If the said node is not a root node, then the tree is a subtree.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Leaf node</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+a node that has no chidren. Also called a terminal node.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Ancestor node(s)</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Set of all predecessor nodes on a given node
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Descendant node(s)</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Set of all successor nodes on any given node.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Path</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+A sequence of consecutive edges
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Level</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Every node is assigned a level number. The root node is level 0, while its children are incremented by 1.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Degree</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+The number of children a node has.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Complete binary tree</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+is a binary tree that satisfies two properties: every level is completely filled, all nodes are as far left as possible.
+</p>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">left child formula</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Given index k of node, 2k is ndex of left child.
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">right child formula</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+2k + 1
+</p>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">parent formula</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+k/2
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">height</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<p>
+tree having n nodes is given as ceiling(log2(n+1))
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Building binary tree from general tree</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+binary tree left child is general tree left child
+binary tree right child is general tree right sibling
+</p>
+</div>
+</section>
+<section id="outline-container-org1520f12" class="outline-2">
+<h2 id="org1520f12">Traversing binary tree</h2>
+<div class="outline-text-2" id="text-org1520f12">
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Pre order</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+visit root node
+traverse left subtree
+traverse right subtree
+</p>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">inorder</h3>
+<div class="outline-text-3" id="text-org0043671">
+<p>
+traverse left subtree
+visit root
+traverse right subtree
+</p>
+</div>
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-3">
+<h3 id="org0c8fbd7">Post order</h3>
+<div class="outline-text-3" id="text-org0c8fbd7">
+<p>
+traverse left subtree
+traverse right subtree
+visit root
+</p>
+</div>
+</div>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">Level order traversal</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
+<p>
+breadth first traversal
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgff52af2" class="outline-2">
+<h2 id="orgff52af2">Huffman Tree</h2>
+<div class="outline-text-2" id="text-orgff52af2">
+<p>
+binary tree of nodes
+Using priority queue,
+merge two lowest priority node and put them on priority queue with sum of priority.
+Continue until complete, use it to construct data coding
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-02-17 Tue 14:28</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>
