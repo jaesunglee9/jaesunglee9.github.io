@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-08-17 Mon 22:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>leetcode-jump-game</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">leetcode-jump-game</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb"></h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<ol class="org-ol">
+<li>Jump Game</li>
+</ol>
+<p>
+Solved
+Medium
+Topics
+premium lock iconCompanies
+</p>
+
+<p>
+You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+</p>
+
+<p>
+Return true if you can reach the last index, or false otherwise.
+</p>
+
+
+
+<p>
+Example 1:
+</p>
+
+<p>
+Input: nums = [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+</p>
+
+<p>
+Example 2:
+</p>
+
+<p>
+Input: nums = [3,2,1,0,4]
+Output: false
+Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+</p>
+
+
+
+<p>
+Constraints:
+</p>
+
+<p>
+1 &lt;= nums.length &lt;= 104
+0 &lt;= nums[i] &lt;= 105
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Remark</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Inittial solution : dfs. but the nodes all share a search space, with an interesting property: that a node, or a position, if it can be reached, means that all previous positions can be reached. also, all nodes before pos + nums[pos] can be reached as well. so we have a linear and shared search space. We can use this to create a much more efficient algorithm.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Code</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+class Solution {
+public:
+    bool canJump(vector&lt;int&gt;&amp; nums) {
+        int reach = 0;
+        for (int i = 0; i &lt; nums.size(); i++)
+        {
+            if (i &gt; reach) return false;
+            reach = max(reach, i + nums[i]);
+        }
+        return true;
+    }
+};
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Source Code</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">Solution</span> {
+<span style="font-weight: bold;">public</span>:
+    <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">canJump</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">nums</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">reach</span> = 0;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; nums.size(); i++)
+        {
+            <span style="font-weight: bold;">if</span> (i &gt; reach) <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">false</span>;
+            reach = max(reach, i + nums[i]);
+        }
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">true</span>;
+    }
+};
+</code></pre>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-08-17 Mon 22:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

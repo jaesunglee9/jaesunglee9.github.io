@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-08-17 Mon 22:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Best Time to Buy and Sell Stock</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">Best Time to Buy and Sell Stock</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Problem</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+</p>
+
+<p>
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+</p>
+
+<p>
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+</p>
+
+
+
+<p>
+Example 1:
+</p>
+
+<p>
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+</p>
+
+<p>
+Example 2:
+</p>
+
+<p>
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transactions are done and the max profit = 0.
+</p>
+
+
+
+<p>
+Constraints:
+</p>
+
+<p>
+1 &lt;= prices.length &lt;= 105
+0 &lt;= prices[i] &lt;= 104
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">URL <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/?envType=study-plan-v2&amp;envId=top-interview-150">https://leetcode.com/problems/best-time-to-buy-and-sell-stock/?envType=study-plan-v2&amp;envId=top-interview-150</a></h2>
+</section>
+
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Remarks</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+consider traversing the array in order. at every step, we have knowledge of the lowest price point until now, at which it is the best time to buy. On the other hand, we always keep a mx value which is updated every step, to see if it is the best time to sell. Another classic case of keeping a global variables to solve problems. 
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Source Code</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+class Solution {
+public:
+    int maxProfit(vector&lt;int&gt;&amp; prices) {
+        int mx = 0;
+        int mn = 999999;
+</p>
+
+<p>
+for (int i = 0; i &lt; prices.size(); i++)
+{
+    mn = (prices[i] &lt; mn ? prices[i] : mn);
+    mx = (prices[i] - mn &gt; mx ? prices[i] - mn : mx);
+}
+</p>
+
+<p>
+        return mx;
+    }
+};
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-08-17 Mon 22:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-08-17 Mon 22:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-01504</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-01504</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">문제</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+방향성이 없는 그래프가 주어진다. 세준이는 1번 정점에서 N번 정점으로 최단 거리로 이동하려고 한다. 또한 세준이는 두 가지 조건을 만족하면서 이동하는 특정한 최단 경로를 구하고 싶은데, 그것은 바로 임의로 주어진 두 정점은 반드시 통과해야 한다는 것이다.
+</p>
+
+<p>
+세준이는 한번 이동했던 정점은 물론, 한번 이동했던 간선도 다시 이동할 수 있다. 하지만 반드시 최단 경로로 이동해야 한다는 사실에 주의하라. 1번 정점에서 N번 정점으로 이동할 때, 주어진 두 정점을 반드시 거치면서 최단 경로로 이동하는 프로그램을 작성하시오.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">입력</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 정점의 개수 N과 간선의 개수 E가 주어진다. (2 ≤ N ≤ 800, 0 ≤ E ≤ 200,000) 둘째 줄부터 E개의 줄에 걸쳐서 세 개의 정수 a, b, c가 주어지는데, a번 정점에서 b번 정점까지 양방향 길이 존재하며, 그 거리가 c라는 뜻이다. (1 ≤ c ≤ 1,000) 다음 줄에는 반드시 거쳐야 하는 두 개의 서로 다른 정점 번호 v1과 v2가 주어진다. (v1 ≠ v2, v1 ≠ N, v2 ≠ 1) 임의의 두 정점 u와 v사이에는 간선이 최대 1개 존재한다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">출력</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+첫째 줄에 두 개의 정점을 지나는 최단 경로의 길이를 출력한다. 그러한 경로가 없을 때에는 -1을 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">URL</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/1504">https://www.acmicpc.net/problem/1504</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remark</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">sol0</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+This problem asks for the shortest path in an undirected graph from a source to a destination while passing through two specified nodes. Since there are only two mandatory nodes, we can manually compute the two possible sequence permutations:
+</p>
+<ol class="org-ol">
+<li>\(1 \to v_1 \to v_2 \to N\)</li>
+<li>\(1 \to v_2 \to v_1 \to N\)</li>
+</ol>
+
+<p>
+By running Dijkstra's algorithm three times (starting from \(1\), \(v_1\), and \(v_2\)), we can find the shortest distances between all necessary segments and simply take the minimum of the two total paths.
+</p>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">Question: What if it mandates traversal of 3 or more nodes?</h4>
+<div class="outline-text-4" id="text-org9639605">
+<p>
+Then, the problem transforms into a <a href="../later/traveling_salesman_problem.html#ID-2e6ae26e-3914-4536-bff2-93db61b654ee">Traveling Salesman Problem</a>. In which case there are no efficient algorithms known(yet!).
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-4">
+<h4 id="org7f6f53b">A note on optimization on dijkstra</h4>
+<div class="outline-text-4" id="text-org7f6f53b">
+<p>
+dijkstra produces DISTANCE vector from a src node. With it, we can reduce computation.
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Source Code</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">INF</span> = 1e9 + 7;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">N</span>, <span style="font-weight: bold; font-style: italic;">E</span>;
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&gt; <span style="font-weight: bold; font-style: italic;">AL</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">dijk0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">src</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dst</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">d</span>(N + 1, INF);
+        d[src] = 0;
+
+        <span style="font-weight: bold; text-decoration: underline;">priority_queue</span>&lt;
+                <span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;,
+                <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;,
+                <span style="font-weight: bold; text-decoration: underline;">greater</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;
+                &gt; <span style="font-weight: bold; font-style: italic;">pq</span>;
+
+        pq.push({0, src});
+
+        <span style="font-weight: bold;">while</span> (!pq.empty())
+        {
+                <span style="font-weight: bold;">auto</span> [du, u] = pq.top(); pq.pop();
+                <span style="font-weight: bold;">if</span> (d[u] &lt; du) <span style="font-weight: bold;">continue</span>;
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> [v, w]: AL[u])
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tmp</span> = du + w;
+                        <span style="font-weight: bold;">if</span> (tmp &lt; d[v])
+                        {
+                                d[v] = tmp;
+                                pq.push({tmp, v});
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">return</span> d[dst];
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        cin &gt;&gt; N &gt;&gt; E;
+        AL.resize(N + 1);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; E; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; font-style: italic;">b</span>, <span style="font-weight: bold; font-style: italic;">c</span>;
+                cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+                AL[a].push_back({b, c});
+                AL[b].push_back({a, c});
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n1</span>, <span style="font-weight: bold; font-style: italic;">n2</span>;
+        cin &gt;&gt; n1 &gt;&gt; n2;
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s2n1</span> = dijk0(1, n1);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s2n2</span> = dijk0(1, n2);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n1n2</span> = dijk0(n1, n2);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n12d</span> = dijk0(n1, N);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n22d</span> = dijk0(n2, N);
+
+        <span style="font-weight: bold;">if</span> (n1n2 == INF)
+        {
+                cout &lt;&lt; -1;
+        }
+        <span style="font-weight: bold;">else</span>
+        {
+                <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">s12d</span> = (s2n1 == INF || n22d == INF);
+                <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">s21d</span> = (s2n2 == INF || n12d == INF);
+
+                <span style="font-weight: bold;">if</span> (<span style="font-weight: bold; text-decoration: underline;">s12d</span> &amp;&amp; <span style="font-weight: bold; font-style: italic;">s21d</span>)
+                {
+                        cout &lt;&lt; -1;
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (s12d)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d21</span> = s2n2 + n1n2 + n12d;
+                        cout &lt;&lt; d21 ;
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (s21d)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d12</span> = s2n1 + n1n2 + n22d;
+                        cout &lt;&lt; d12;
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d21</span> = s2n2 + n1n2 + n12d;
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d12</span> = s2n1 + n1n2 + n22d;
+
+                        cout &lt;&lt; min(d12, d21);
+                }
+        }
+        cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;
+<span style="font-weight: bold;">dijk1</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">src</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">d</span>(N + 1, INF);
+        d[src] = 0;
+
+        <span style="font-weight: bold; text-decoration: underline;">priority_queue</span>&lt;
+                <span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;,
+                <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;,
+                <span style="font-weight: bold; text-decoration: underline;">greater</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;
+                &gt; <span style="font-weight: bold; font-style: italic;">pq</span>;
+
+        pq.push({0, src});
+
+        <span style="font-weight: bold;">while</span> (!pq.empty())
+        {
+                <span style="font-weight: bold;">auto</span> [du, u] = pq.top(); pq.pop();
+                <span style="font-weight: bold;">if</span> (d[u] &lt; du) <span style="font-weight: bold;">continue</span>;
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> [v, w]: AL[u])
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tmp</span> = du + w;
+                        <span style="font-weight: bold;">if</span> (tmp &lt; d[v])
+                        {
+                                d[v] = tmp;
+                                pq.push({tmp, v});
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">return</span> d;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        cin &gt;&gt; N &gt;&gt; E;
+        AL.resize(N + 1);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; E; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; font-style: italic;">b</span>, <span style="font-weight: bold; font-style: italic;">c</span>;
+                cin &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+                AL[a].push_back({b, c});
+                AL[b].push_back({a, c});
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n1</span>, <span style="font-weight: bold; font-style: italic;">n2</span>;
+        cin &gt;&gt; n1 &gt;&gt; n2;
+
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">d1</span> = dijk1(1);
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">dn1</span> = dijk1(n1);
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">dn2</span> = dijk1(n2);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s2n1</span> = d1[n1];
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s2n2</span> = d1[n2];
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n1n2</span> = dn1[n2];
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n12d</span> = dn1[N];
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n22d</span> = dn2[N];
+
+        <span style="font-weight: bold;">if</span> (n1n2 == INF)
+        {
+                cout &lt;&lt; -1;
+        }
+        <span style="font-weight: bold;">else</span>
+        {
+                <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">s12d</span> = (s2n1 == INF || n22d == INF);
+                <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">s21d</span> = (s2n2 == INF || n12d == INF);
+
+                <span style="font-weight: bold;">if</span> (<span style="font-weight: bold; text-decoration: underline;">s12d</span> &amp;&amp; <span style="font-weight: bold; font-style: italic;">s21d</span>)
+                {
+                        cout &lt;&lt; -1;
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (s12d)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d21</span> = s2n2 + n1n2 + n12d;
+                        cout &lt;&lt; d21 ;
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (s21d)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d12</span> = s2n1 + n1n2 + n22d;
+                        cout &lt;&lt; d12;
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d21</span> = s2n2 + n1n2 + n12d;
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">d12</span> = s2n1 + n1n2 + n22d;
+
+                        cout &lt;&lt; min(d12, d21);
+                }
+        }
+        cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        sol1();
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-08-17 Mon 22:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>

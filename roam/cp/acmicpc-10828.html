@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-08-17 Mon 22:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>acmicpc-10828</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+</head>
+<body>
+<article id="content" class="content">
+<header>
+<h1 class="title">acmicpc-10828</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+정수를 저장하는 스택을 구현한 다음, 입력으로 주어지는 명령을 처리하는 프로그램을 작성하시오.
+</p>
+
+<p>
+명령은 총 다섯 가지이다.
+</p>
+
+<p>
+push X: 정수 X를 스택에 넣는 연산이다.
+pop: 스택에서 가장 위에 있는 정수를 빼고, 그 수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.
+size: 스택에 들어있는 정수의 개수를 출력한다.
+empty: 스택이 비어있으면 1, 아니면 0을 출력한다.
+top: 스택의 가장 위에 있는 정수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Input</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+첫째 줄에 주어지는 명령의 수 N (1 ≤ N ≤ 10,000)이 주어진다. 둘째 줄부터 N개의 줄에는 명령이 하나씩 주어진다. 주어지는 정수는 1보다 크거나 같고, 100,000보다 작거나 같다. 문제에 나와있지 않은 명령이 주어지는 경우는 없다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Output</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+출력해야하는 명령이 주어질 때마다, 한 줄에 하나씩 출력한다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">URL</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+<a href="https://www.acmicpc.net/problem/10828">https://www.acmicpc.net/problem/10828</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remark</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">sol0</h3>
+<div class="outline-text-3" id="text-org9beed48">
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">Done in relatively same manner as <a href="acmicpc-03425.html#ID-b0688970-2c91-4545-b205-fea85154983b">acmicpc-03425</a>.</h4>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">Using enums and vector as stacks are more familiar now.</h4>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-4">
+<h4 id="org7f6f53b">Was done in an offline manner, since I like the format, but can be done online as well. Perhaps I should embrace taking in inputs at solution level.</h4>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">mixing couts and ternary operators resulted in concise code.</h4>
+</div>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Source Code</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cstdlib&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;stack&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">INF</span> = 1e9 + 7;
+
+<span style="font-weight: bold;">enum</span> <span style="font-weight: bold; text-decoration: underline;">OpCode</span> { <span style="font-weight: bold; font-style: italic;">OP_PUSH</span>, <span style="font-weight: bold; font-style: italic;">OP_POP</span>, <span style="font-weight: bold; font-style: italic;">OP_SIZE</span>, <span style="font-weight: bold; font-style: italic;">OP_EMPTY</span>, <span style="font-weight: bold; font-style: italic;">OP_TOP</span> };
+
+<span style="font-weight: bold; text-decoration: underline;">OpCode</span>
+<span style="font-weight: bold;">getOpCode</span>(<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">string</span>&amp; <span style="font-weight: bold; font-style: italic;">str</span>)
+{
+        <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"push"</span>) <span style="font-weight: bold;">return</span>  OP_PUSH;
+        <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"pop"</span>) <span style="font-weight: bold;">return</span> OP_POP;
+        <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"size"</span>) <span style="font-weight: bold;">return</span> OP_SIZE;
+        <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"empty"</span>) <span style="font-weight: bold;">return</span> OP_EMPTY;
+        <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"top"</span>) <span style="font-weight: bold;">return</span> OP_TOP;
+        <span style="font-weight: bold;">return</span> OP_TOP;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">OpCode</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">pgm</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> [op, val]: pgm)
+        {
+                <span style="font-weight: bold;">if</span>(op == OP_PUSH) s.push_back(val);
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (op == OP_POP) {
+                        cout &lt;&lt; (s.empty() ? -1 : s.back()) &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                        <span style="font-weight: bold;">if</span> (!s.empty()) { s.pop_back(); }
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (op == OP_SIZE) { cout &lt;&lt; s.size() &lt;&lt; <span style="font-style: italic;">'\n'</span>; }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (op == OP_EMPTY) { cout &lt;&lt; (s.empty() ? 1 : 0) &lt;&lt; <span style="font-style: italic;">'\n'</span>; }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (op == OP_TOP) { cout &lt;&lt; (s.empty() ? -1 : s.back()) &lt;&lt; <span style="font-style: italic;">'\n'</span>; }
+        }
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">main</span>()
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios_base</span>::sync_with_stdio(<span style="font-weight: bold; text-decoration: underline;">false</span>);
+        cin.tie(<span style="font-weight: bold; text-decoration: underline;">NULL</span>);
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">OpCode</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">pgm</span>;
+
+        cin &gt;&gt; n;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++) {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span>; cin &gt;&gt; str;  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">command
+</span>                <span style="font-weight: bold;">if</span> (str == <span style="font-style: italic;">"push"</span>) {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">e</span>; cin &gt;&gt; e;
+                        pgm.push_back({OP_PUSH, e});
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        pgm.push_back({getOpCode(str), 0});
+                }
+        }
+
+        sol0(pgm, n);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<p class="author">Author: user0</p>
+<p class="date">Created: 2026-08-17 Mon 22:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</footer>
+</body>
+</html>
