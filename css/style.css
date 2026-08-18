@@ -30,6 +30,20 @@ body {
     background-color: #faf9f6; /* "Off-white" paper color looks classic */
 }
 
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #bbb;
+    font-size: 0.9em;
+}
+
+.site-nav a {
+    border-bottom: 0;
+}
+
 /* 3. Headlines */
 h1, h2, h3, h4 {
     font-weight: normal;    /* EtBembo is elegant; don't force bold */
