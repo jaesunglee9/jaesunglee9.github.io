@@ -44,6 +44,19 @@ body {
     border-bottom: 0;
 }
 
+.post-date {
+    margin-top: -0.35rem;
+    margin-bottom: 2rem;
+    color: #666;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+.archive-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+}
+
 /* 3. Headlines */
 h1, h2, h3, h4 {
     font-weight: normal;    /* EtBembo is elegant; don't force bold */
