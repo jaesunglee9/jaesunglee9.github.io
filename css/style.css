@@ -98,9 +98,23 @@ h1.title {
     white-space: nowrap;
 }
 
-.archive-link {
+.all-posts-link {
     display: inline-block;
     margin-top: 1.5rem;
+}
+
+.topic-list {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.topic-list li,
+.topic-list li:not(:first-child) {
+    margin: 0;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #ddd;
 }
 
 /* Give technical material the wider measure that the Tufte layout reserves
