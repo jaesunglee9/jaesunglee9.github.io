@@ -1,55 +1,101 @@
-/* 1. Define the Font */
+/* Site-specific refinements layered on top of tufte.css and ox-tufte.css. */
+
 @font-face {
-    font-family: 'EtBembo';
-    src: url('../fonts/et-bembo/et-bembo-roman-old.woff') format('woff');
+    font-family: "EtBembo";
+    src: url("../fonts/et-bembo/et-bembo-roman-old.woff") format("woff");
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
+
 @font-face {
-    font-family: 'EtBembo';
-    src: url('../fonts/et-bembo-italic-old.woff') format('woff');
+    font-family: "EtBembo";
+    src: url("../fonts/et-bembo/et-bembo-italic-old.woff") format("woff");
     font-weight: normal;
     font-style: italic;
+    font-display: swap;
 }
+
 @font-face {
-    font-family: 'EtBembo';
-    src: url('../fonts/et-bembo-bold.woff') format('woff');
+    font-family: "EtBembo";
+    src: url("../fonts/et-bembo/et-bembo-bold.woff") format("woff");
     font-weight: bold;
     font-style: normal;
+    font-display: swap;
 }
 
-/* 2. Global Typography */
+/* Tufte's light palette is intentional here; the upstream partial dark-mode
+   rule does not cover links, code, borders, or figures consistently. */
+html {
+    color-scheme: light;
+    background: #fffff8;
+}
+
 body {
-    font-family: 'EtBembo', Georgia, 'Times New Roman', serif;
-    font-size: 22px;        /* EtBembo looks better slightly large */
-    line-height: 1.6;       /* Give it room to breathe */
-    color: #222;            /* Pure black (#000) is too harsh on screens */
-    max-width: 700px;       /* Optimal reading width */
-    margin: 40px auto;      /* Center the layout */
-    padding: 0 20px;
-    background-color: #faf9f6; /* "Off-white" paper color looks classic */
+    font-family: "EtBembo", et-book, Palatino, "Palatino Linotype",
+        "Book Antiqua", Georgia, serif;
+    background-color: #fffff8;
+    color: #111;
 }
 
+/* Keep navigation and titles aligned with Tufte's 55% prose column. */
 .site-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem;
-    margin-bottom: 3rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #bbb;
-    font-size: 0.9em;
+    gap: 0.45rem 1.5rem;
+    width: 55%;
+    padding: 2rem 0 0.75rem;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.1rem;
+    line-height: 1.4;
 }
 
 .site-nav a {
-    border-bottom: 0;
+    text-decoration: none;
 }
 
-.post-date {
-    margin-top: -0.35rem;
-    margin-bottom: 2rem;
+.site-nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
+a:focus-visible {
+    outline: 2px solid #8b0000;
+    outline-offset: 0.2rem;
+}
+
+article {
+    padding-top: 2.5rem;
+}
+
+h1.title {
+    width: 55%;
+    margin-top: 0;
+}
+
+/* The homepage feed is navigation, not a stack of document sections. */
+.post-list {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.post-list li,
+.post-list li:not(:first-child) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 1.25rem;
+    align-items: baseline;
+    margin: 0;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.post-list time {
     color: #666;
-    font-size: 0.85em;
-    font-style: italic;
+    font-size: 1rem;
+    white-space: nowrap;
 }
 
 .archive-link {
@@ -57,55 +103,78 @@ body {
     margin-top: 1.5rem;
 }
 
-/* 3. Headlines */
-h1, h2, h3, h4 {
-    font-weight: normal;    /* EtBembo is elegant; don't force bold */
-    margin-top: 2em;
-    margin-bottom: 0.5em;
-    color: #111;
-}
-
-h1 {
-    font-size: 2.5em;
-    text-align: center;
-    border-bottom: 2px solid #222; /* Classic "Book Title" look */
-    padding-bottom: 0.5em;
-}
-
-/* 4. Links */
-a {
-    color: #8b0000;         /* Dark Red (Classic academic look) */
-    text-decoration: none;
-    border-bottom: 1px solid #8b0000; /* Subtle underline */
-}
-a:hover {
-    background-color: #fff0f0;
-}
-
-/* 5. Code Blocks (Keep them simple) */
-pre {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 15px;
-    font-size: 0.85em;
+/* Give technical material the wider measure that the Tufte layout reserves
+   for figures and full-width elements. */
+body pre {
+    box-sizing: border-box;
+    padding: 0.9rem 1rem;
     overflow-x: auto;
-    font-family: 'Fira Code', 'Courier New', monospace; /* Contrast font */
+    border: 1px solid #ddd;
+    background: #f7f6f1;
 }
-
-.todo { color: #cc0000; font-weight: bold; }
-.done { color: #006600; font-weight: bold; }
-.tag { float: right; color: #777; font-size: 0.8em; }
 
 table {
     border-collapse: collapse;
-    margin: 20px 0;
-    width: 100%;
+    margin: 1.4rem 0;
 }
-th, td {
-    padding: 8px;
+
+th,
+td {
+    padding: 0.45rem 0.6rem;
     text-align: left;
-    border-bottom: 1px solid #ddd; /* Horizontal lines only */
+    border-bottom: 1px solid #ddd;
 }
+
 th {
-    border-bottom: 2px solid #222; /* Thicker line for header */
+    border-bottom-color: #777;
+}
+
+.todo {
+    color: #a00;
+    font-weight: bold;
+}
+
+.done {
+    color: #063;
+    font-weight: bold;
+}
+
+.tag {
+    float: right;
+    color: #666;
+    font-size: 0.8em;
+}
+
+@media (max-width: 760px) {
+    .site-nav,
+    h1.title {
+        width: 100%;
+    }
+
+    .site-nav {
+        padding-top: 1.25rem;
+    }
+
+    article {
+        padding-top: 2rem;
+    }
+
+    h1.title {
+        font-size: 2.6rem;
+        line-height: 1.05;
+    }
+
+    .post-list li,
+    .post-list li:not(:first-child) {
+        display: block;
+    }
+
+    .post-list time {
+        display: block;
+        margin-top: 0.15rem;
+    }
+
+    body pre {
+        padding: 0.75rem;
+    }
 }
