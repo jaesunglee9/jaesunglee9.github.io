@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 07:12 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Programmers 92343 — 양과 늑대</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Programmers 92343 — 양과 늑대</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/92343">https://school.programmers.co.kr/learn/courses/30/lessons/92343</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+문제 설명
+</p>
+
+<p>
+2진 트리 모양 초원의 각 노드에 늑대와 양이 한 마리씩 놓여 있습니다. 이 초원의 루트 노드에서 출발하여 각 노드를 돌아다니며 양을 모으려 합니다. 각 노드를 방문할 때 마다 해당 노드에 있던 양과 늑대가 당신을 따라오게 됩니다. 이때, 늑대는 양을 잡아먹을 기회를 노리고 있으며, 당신이 모은 양의 수보다 늑대의 수가 같거나 더 많아지면 바로 모든 양을 잡아먹어 버립니다. 당신은 중간에 양이 늑대에게 잡아먹히지 않도록 하면서 최대한 많은 수의 양을 모아서 다시 루트 노드로 돌아오려 합니다.
+</p>
+
+<p>
+03<sub>2022</sub><sub>공채문제</sub><sub>양과늑대</sub><sub>01.png</sub>
+</p>
+
+<p>
+예를 들어, 위 그림의 경우(루트 노드에는 항상 양이 있습니다) 0번 노드(루트 노드)에서 출발하면 양을 한마리 모을 수 있습니다. 다음으로 1번 노드로 이동하면 당신이 모은 양은 두 마리가 됩니다. 이때, 바로 4번 노드로 이동하면 늑대 한 마리가 당신을 따라오게 됩니다. 아직은 양 2마리, 늑대 1마리로 양이 잡아먹히지 않지만, 이후에 갈 수 있는 아직 방문하지 않은 모든 노드(2, 3, 6, 8번)에는 늑대가 있습니다. 이어서 늑대가 있는 노드로 이동한다면(예를 들어 바로 6번 노드로 이동한다면) 양 2마리, 늑대 2마리가 되어 양이 모두 잡아먹힙니다. 여기서는 0번, 1번 노드를 방문하여 양을 2마리 모은 후, 8번 노드로 이동한 후(양 2마리 늑대 1마리) 이어서 7번, 9번 노드를 방문하면 양 4마리 늑대 1마리가 됩니다. 이제 4번, 6번 노드로 이동하면 양 4마리, 늑대 3마리가 되며, 이제 5번 노드로 이동할 수 있게 됩니다. 따라서 양을 최대 5마리 모을 수 있습니다.
+</p>
+
+<p>
+각 노드에 있는 양 또는 늑대에 대한 정보가 담긴 배열 info, 2진 트리의 각 노드들의 연결 관계를 담은 2차원 배열 edges가 매개변수로 주어질 때, 문제에 제시된 조건에 따라 각 노드를 방문하면서 모을 수 있는 양은 최대 몇 마리인지 return 하도록 solution 함수를 완성해주세요.
+제한사항
+</p>
+
+<p>
+2 ≤ info의 길이 ≤ 17
+    info의 원소는 0 또는 1 입니다.
+    info[i]는 i번 노드에 있는 양 또는 늑대를 나타냅니다.
+    0은 양, 1은 늑대를 의미합니다.
+    info[0]의 값은 항상 0입니다. 즉, 0번 노드(루트 노드)에는 항상 양이 있습니다.
+edges의 세로(행) 길이 = info의 길이 - 1
+    edges의 가로(열) 길이 = 2
+    edges의 각 행은 [부모 노드 번호, 자식 노드 번호] 형태로, 서로 연결된 두 노드를 나타냅니다.
+    동일한 간선에 대한 정보가 중복해서 주어지지 않습니다.
+    항상 하나의 이진 트리 형태로 입력이 주어지며, 잘못된 데이터가 주어지는 경우는 없습니다.
+    0번 노드는 항상 루트 노드입니다.
+</p>
+
+<p>
+입출력 예
+info 	edges 	result
+[0,0,1,1,1,0,1,0,1,0,1,1] 	[[0,1],[1,2],[1,4],[0,8],[8,7],[9,10],[9,11],[4,3],[6,5],[4,6],[8,9]] 	5
+[0,1,0,1,1,0,1,0,0,1,0] 	[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[3,7],[4,8],[6,9],[9,10]] 	5	
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Solution</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<div class="org-src-container">
+<pre class="src src-cpp"><code>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">dfs</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sheep</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">wolf</span>,<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">fringe</span>,<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">info</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">edges</span>, 
+    <span style="font-weight: bold; text-decoration: underline;">int</span>&amp; <span style="font-weight: bold; font-style: italic;">mx</span>)
+{
+    mx = max(sheep, mx);
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; fringe.size(); i++) {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">node</span> = fringe[i];
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">next_sheep</span> = sheep + (info[node] == 0 ? 1 : 0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">next_wolf</span> = wolf + (info[node] == 1 ? 1 : 0);
+
+        <span style="font-weight: bold;">if</span> (next_sheep &lt;= next_wolf) <span style="font-weight: bold;">continue</span>;
+
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">next_fringe</span> = fringe;
+        next_fringe.erase(next_fringe.begin() + i);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">edge</span>: edges) {
+            <span style="font-weight: bold;">if</span> (edge[0] == node) {
+                next_fringe.push_back(edge[1]);
+            }
+        }
+        dfs(next_sheep, next_wolf, next_fringe, info, edges, mx);
+    }
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">info</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">edges</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">fringe</span>={};
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">e</span> : edges) {
+        <span style="font-weight: bold;">if</span> (e[0] == 0) {
+            fringe.push_back(e[1]);
+        }
+    }
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">mx</span>=0;
+    dfs(1, 0, fringe, info, edges, mx);
+    <span style="font-weight: bold;">return</span> mx;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Approach</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+The solution uses Depth First Search over collection states. Each state records the sheep count, wolf count, and frontier of nodes available to collect next. Choosing a node updates the counts, removes it from the frontier, and adds its children. The search considers choices across the whole frontier, not only the children of the most recently collected node.
+</p>
+
+<p>
+This is a Backtracking search with a copied frontier for each branch. A choice is pruned if it would leave wolves at least as numerous as sheep; the largest sheep count reached is tracked separately.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Remarks</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+When future choices depend on what earlier choices made available, but not on their exact order, the search state can retain a frontier instead of the full visit sequence.
+</p>
+
+<p>
+A frontier and a visited set answer different questions: the visited set records what has already been processed, while the frontier records what may be chosen next. Before carrying an entire path through a search, ask which consequences of that path actually determine the remaining choices.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
