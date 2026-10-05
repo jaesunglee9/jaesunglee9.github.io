@@ -1,5 +1,24 @@
 /* Site-specific refinements layered on top of tufte.css and ox-tufte.css. */
 
+/* Compact generated navigation; columns are independent lists. */
+.note-links {
+    width: 90%;
+    margin: 3rem 0 1.5rem;
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
+}
+.note-links summary { cursor: pointer; font-size: 1.4rem; }
+.note-links table { width: 100%; table-layout: fixed; margin: 1rem 0; }
+.note-links th, .note-links td {
+    width: 50%;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+    font-size: 1.1rem;
+}
+@media (max-width: 760px) {
+    .note-links { width: 100%; }
+}
+
 @font-face {
     font-family: "EtBembo";
     src: url("../fonts/et-bembo/et-bembo-roman-old.woff") format("woff");
