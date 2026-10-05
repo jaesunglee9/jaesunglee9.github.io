@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 9375 — 패션왕 신해빈</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 9375 — 패션왕 신해빈</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/9375">https://www.acmicpc.net/problem/9375</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Spies use attributes to disguise themselves to make sure that they are not recognized. For example, when putting on sunglasses, a spy suddenly looks completely different and cannot be recognized anymore. Every combination of attributes gives a different appearance, but not all combinations are possible. For example, a hat and a turban are both headgear and cannot be used at the same time. Given the list of available attributes, compute how many distinct disguises can be made.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Input</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+On the ﬁrst line one positive number: the number of test cases, at most 100. After that per test case:
+</p>
+
+<p>
+one line with an integer n (0 ≤ n ≤ 30): the number of available attributes.
+n lines with two space-separated strings: the name and the category of the attribute.
+</p>
+
+<p>
+All strings consist of at least 1 and at most 20 lowercase letters. Within a test case all names are distinct.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Output</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Per test case:
+</p>
+
+<p>
+one line with an integer: the number of possible distinct disguises that can be made with the given attributes, such that at most one attribute from each category is used.
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Test Case</h3>
+<div class="outline-text-3" id="text-org9639605">
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">case 1</h4>
+<div class="outline-text-4" id="text-org0ce0959">
+<p>
+2
+3
+hat headgear
+sunglasses eyewear
+turban headgear
+3
+mask face
+sunglasses face
+makeup face
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Problem</h3>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Reference</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+<a href="https://www.acmicpc.net/problem/9375">https://www.acmicpc.net/problem/9375</a>
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;unordered_map&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>, <span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">unordered_map</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">um</span>;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++) {
+                um[a[i].second] += 1;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">res</span> = 1;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold;">const</span>&amp; [<span style="font-weight: bold; text-decoration: underline;">k</span>, <span style="font-weight: bold; text-decoration: underline;">v</span>]: um) {
+                res *= (v + 1);
+        }
+
+        cout &lt;&lt; res - 1 &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">t</span>; cin &gt;&gt; t;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; t; i++) {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>; cin &gt;&gt; n;
+                <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>, <span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">a</span>;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++) {
+                        <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">name</span>, <span style="font-weight: bold; font-style: italic;">category</span>; cin &gt;&gt; name &gt;&gt; category;
+                        a.push_back({name, category});
+                }
+
+                sol0(n, a);
+        }
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Remarks</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+Not much
+</p>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Iterating over an unordered<sub>map</sub>:</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<p>
+for (auto const&amp; [k, v]: um)
+of
+for (auto const&amp; pair: um) {
+pair.first =&hellip;..
+</p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Backlinks</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

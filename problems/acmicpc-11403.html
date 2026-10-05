@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 11403 — 경로 찾기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 11403 — 경로 찾기</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/11403">https://www.acmicpc.net/problem/11403</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+가중치 없는 방향 그래프 G가 주어졌을 때, 모든 정점 (i, j)에 대해서, i에서 j로 가는 길이가 양수인 경로가 있는지 없는지 구하는 프로그램을 작성하시오.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 정점의 개수 N (1 ≤ N ≤ 100)이 주어진다. 둘째 줄부터 N개 줄에는 그래프의 인접 행렬이 주어진다. i번째 줄의 j번째 숫자가 1인 경우에는 i에서 j로 가는 간선이 존재한다는 뜻이고, 0인 경우는 없다는 뜻이다. i번째 줄의 i번째 숫자는 항상 0이다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+총 N개의 줄에 걸쳐서 문제의 정답을 인접행렬 형식으로 출력한다. 정점 i에서 j로 가는 길이가 양수인 경로가 있으면 i번째 줄의 j번째 숫자를 1로, 없으면 0으로 출력해야 한다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+3
+0 1 0
+0 0 1
+1 0 0
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1 1 1
+1 1 1
+1 1 1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+7
+0 0 0 1 0 0 0
+0 0 0 0 0 0 1
+0 0 0 0 0 0 0
+0 0 0 0 1 1 0
+1 0 0 0 0 0 0
+0 0 0 0 0 0 1
+0 0 1 0 0 0 0
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+1 0 1 1 1 1 1
+0 0 1 0 0 0 1
+0 0 0 0 0 0 0
+1 0 1 1 1 1 1
+1 0 1 1 1 1 1
+0 0 1 0 0 0 1
+0 0 1 0 0 0 0
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">am</span>,
+     <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 0; k &lt; n; k++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+                {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                        {
+                                am[i][j] = am[i][j] || (am[i][k] &amp; am[k][j]);
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                {
+                        cout &lt;&lt; am[i][j] &lt;&lt;<span style="font-style: italic;">' '</span>;
+                }
+                cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        }
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">am</span>;
+
+        cin &gt;&gt; n;
+        am.resize(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(n));
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                {
+                        cin &gt;&gt; am[i][j];
+                }
+        }
+
+        sol0(am, n);
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+This question asks us for each node pair i, j if their exists a path. for all possible pairs. Floyd-Warshall Algorithm is a natural fit. However, since not the distance does not have to be computed, the logic may be simplified a bit. It may even be possible to use bitmasking.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

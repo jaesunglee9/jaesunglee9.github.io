@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 2667 — 단지번호붙이기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 2667 — 단지번호붙이기</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2667">https://www.acmicpc.net/problem/2667</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+&lt;그림 1&gt;과 같이 정사각형 모양의 지도가 있다. 1은 집이 있는 곳을, 0은 집이 없는 곳을 나타낸다. 철수는 이 지도를 가지고 연결된 집의 모임인 단지를 정의하고, 단지에 번호를 붙이려 한다. 여기서 연결되었다는 것은 어떤 집이 좌우, 혹은 아래위로 다른 집이 있는 경우를 말한다. 대각선상에 집이 있는 경우는 연결된 것이 아니다. &lt;그림 2&gt;는 &lt;그림 1&gt;을 단지별로 번호를 붙인 것이다. 지도를 입력하여 단지수를 출력하고, 각 단지에 속하는 집의 수를 오름차순으로 정렬하여 출력하는 프로그램을 작성하시오.
+</p>
+
+<p>
+입력
+</p>
+
+<p>
+첫 번째 줄에는 지도의 크기 N(정사각형이므로 가로와 세로의 크기는 같으며 5≤N≤25)이 입력되고, 그 다음 N줄에는 각각 N개의 자료(0혹은 1)가 입력된다.
+출력
+</p>
+
+<p>
+첫 번째 줄에는 총 단지수를 출력하시오. 그리고 각 단지내 집의 수를 오름차순으로 정렬하여 한 줄에 하나씩 출력하시오.
+예제 입력 1
+</p>
+
+<p>
+7
+0110100
+0110101
+1110101
+0000111
+0100000
+0111110
+0111000
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+3
+7
+8
+9
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Solution</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;stack&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dr</span>[4] = {1, 0, -1, 0};
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dc</span>[4] = {0, 1, 0, -1};
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">search</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">map</span>,
+       <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">cmap</span>,
+       <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cnt</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">stack</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+
+        s.push({i, j});
+        cmap[i][j] = cnt;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">hcnt</span> = 1;
+
+        <span style="font-weight: bold;">while</span> (!s.empty())
+        {
+                <span style="font-weight: bold;">auto</span> [r, c] = s.top(); s.pop();
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 4; i++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span> = r + dr[i];
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nc</span> = c + dc[i];
+
+                        <span style="font-weight: bold;">if</span> (0 &lt;= nr &amp;&amp; nr &lt; n &amp;&amp; 0 &lt;= nc &amp;&amp; nc &lt;= n
+                            &amp;&amp; map[nr][nc] == <span style="font-style: italic;">'1'</span> &amp;&amp; cmap[nr][nc] == 0)
+                        {
+                                cmap[nr][nc] = cnt;
+                                s.push({nr, nc});
+                                hcnt++;
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">return</span> hcnt;
+}       
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">map</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">cmap</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(n, 0));  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">serves also as visited array.
+</span>        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">hn</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cnt</span> = 0;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                {
+                        <span style="font-weight: bold;">if</span> (<span style="font-weight: bold; text-decoration: underline;">map</span>[i][j] == <span style="font-style: italic;">'1'</span> &amp;&amp; cmap[i][j] == 0)
+                        {
+                                cnt++;
+                                hn.push_back(search(map, cmap, n, i, j, cnt));
+                        }
+                }
+        }
+
+        sort(hn.begin(), hn.end());
+
+        cout &lt;&lt; cnt &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; cnt; i++)
+        {
+                cout &lt;&lt; hn[i] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        }
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt; <span style="font-weight: bold; font-style: italic;">map</span>;
+
+        cin &gt;&gt; n;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span>; cin &gt;&gt; str;
+                map.push_back(str);
+        }
+
+        sol0(n, map);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Approach</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+For each node in map, if is apartment, and unexplored, make new cluster and explore. push result to vector. print when done. is O(n<sup>2</sup>).
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Choice of Braces</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+This choice of setting braces on another line significantly reduces visual clutter, at the cost of making code a bit longer. An acceptable tradeoff, in my opinion.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Solidifying my knowledge of BFS and DFS helped immensely</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+Choosing implementation that pushed to queue/stack only once has made it so that implementing certain logic(here, counting number of house clusters) quite simple. Do note that there may be cases where I may need to explore all discovered nodes more than once.
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<ul class="org-ul">
+<li>Breadth First Search — The reflection connects the grid-component problem to BFS.</li>
+<li>Depth First Search — The same reflection also identifies DFS as relevant traversal practice.</li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

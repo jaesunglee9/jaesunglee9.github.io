@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 2239 — 스도쿠</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 2239 — 스도쿠</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2239">https://www.acmicpc.net/problem/2239</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Sudoku is a very simple task. A square table with 9 rows and 9 columns is divided to 9 smaller squares 3x3 as shown on the Figure. In some of the cells are written decimal digits from 1 to 9. The other cells are empty. The goal is to fill the empty cells with decimal digits from 1 to 9, one digit per cell, in such way that in each row, in each column and in each marked 3x3 subsquare, all the digits from 1 to 9 to appear. Write a program to solve a given Sudoku-task. 
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Input</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+The input data will start with the number of the test cases. For each test case, 9 lines follow, corresponding to the rows of the table. On each line a string of exactly 9 decimal digits is given, corresponding to the cells in this line. If a cell is empty it is represented by 0. 
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Output</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+For each test case your program should print the solution in the same format as the input data. The empty cells have to be filled according to the rules. If solutions is not unique, then the program should output the lexicographically smallest solution.. 
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Test Case</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">001</h4>
+<div class="outline-text-4" id="text-org0ce0959">
+<p>
+In: 
+</p>
+
+<p>
+103000509
+002109400
+000704000
+300502006
+060000050
+700803004
+000401000
+009205800
+804000107
+</p>
+
+<p>
+Out:
+</p>
+
+<p>
+143628579
+572139468
+986754231
+391542786
+468917352
+725863914
+237481695
+619275843
+854396127
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">002</h4>
+<div class="outline-text-4" id="text-org9639605">
+<p>
+In:
+</p>
+
+<p>
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+000000000
+</p>
+
+<p>
+Out:
+</p>
+
+<p>
+123456789
+456789123
+789123456
+214365897
+365897214
+897214365
+531642978
+642978531
+978531642
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Problem</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+Sudoku
+Bitmask
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">template for competitive programming
+</span><span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">also don't forget cout &lt;&lt; '\n'
+</span><span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">don't use c style input 
+</span><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cstring&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">dfs</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> (&amp;<span style="font-weight: bold; font-style: italic;">b</span>)[9][9]);
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">p</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">r</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">c</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">v</span>,<span style="font-weight: bold; text-decoration: underline;">int</span> (&amp;<span style="font-weight: bold; font-style: italic;">b</span>)[9][9])
+{
+        b[r][c] = 1 | (1 &lt;&lt; v);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++)
+        {
+                <span style="font-weight: bold;">if</span> (i == c) <span style="font-weight: bold;">continue</span>;
+
+                <span style="font-weight: bold;">if</span> ((b[r][i] &amp; 1) &gt; 0 &amp;&amp; (b[r][i] &amp; (1 &lt;&lt; v)) != 0)
+                {
+                        <span style="font-weight: bold;">return</span> 0;
+                }
+
+                b[r][i] &amp;= ~(1 &lt;&lt; v);
+
+                <span style="font-weight: bold;">if</span> ((b[r][i] &amp; 1) == 0 &amp;&amp; (b[r][i] &gt;&gt; 1) == 0) <span style="font-weight: bold;">return</span> 0;
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++)
+        {
+                <span style="font-weight: bold;">if</span> (i == r) <span style="font-weight: bold;">continue</span>;
+
+                <span style="font-weight: bold;">if</span> ((b[i][c] &amp; 1) &gt; 0 &amp;&amp; (b[i][c] &amp; (1 &lt;&lt; v)) != 0)
+                {
+                        <span style="font-weight: bold;">return</span> 0;
+                }
+
+                b[i][c] &amp;= ~(1 &lt;&lt; v);
+
+                <span style="font-weight: bold;">if</span> ((b[i][c] &amp; 1) == 0 &amp;&amp; (b[i][c] &gt;&gt; 1) == 0) <span style="font-weight: bold;">return</span> 0;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">br</span> = (r / 3) * 3;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">bc</span> = (c / 3) * 3;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 3; i++) {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 3; j++) {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span> = br + i;
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nc</span> = bc + j;
+
+                        <span style="font-weight: bold;">if</span> (nr == r &amp;&amp; nc == c) <span style="font-weight: bold;">continue</span>;
+
+                        <span style="font-weight: bold;">if</span> ((b[nr][nc] &amp; 1) &gt; 0 &amp;&amp; (b[nr][nc] &amp; (1 &lt;&lt; v)) != 0)
+                        {
+                                <span style="font-weight: bold;">return</span> 0;
+                        }
+
+                        b[nr][nc] &amp;= ~(1 &lt;&lt; v);
+                }
+        }
+        <span style="font-weight: bold;">return</span> 1;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">search</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">r</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">c</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> (&amp;<span style="font-weight: bold; font-style: italic;">b</span>)[9][9])
+{
+        <span style="font-weight: bold;">if</span> ((b[r][c] &amp; 1) &gt; 0) <span style="font-weight: bold;">return</span> 0;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; 10; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">t</span>[9][9];
+                memcpy(t, b, <span style="font-weight: bold;">sizeof</span>(t));
+                <span style="font-weight: bold;">if</span> ((t[r][c] &amp; (1 &lt;&lt; i)) &gt; 0
+                    &amp;&amp; p(r, c, i, t) == 1)
+                {
+                        <span style="font-weight: bold;">if</span> (dfs(t) == 1)
+                        {
+                                memcpy(b, t, <span style="font-weight: bold;">sizeof</span>(b));
+                                <span style="font-weight: bold;">return</span> 1;
+                        }
+                }
+        }
+        <span style="font-weight: bold;">return</span> 0;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">dfs</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> (&amp;<span style="font-weight: bold; font-style: italic;">b</span>)[9][9])
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">is_done</span> = 1;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 9; j++)
+                {
+                        <span style="font-weight: bold;">if</span> ((b[i][j] &amp; 1) == 0)
+                        {
+                                is_done = 0;
+                                <span style="font-weight: bold;">break</span>;
+                        }
+                }
+        }
+        <span style="font-weight: bold;">if</span> (is_done == 1) <span style="font-weight: bold;">return</span> 1;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 9; j++)
+                {
+                        <span style="font-weight: bold;">if</span> ((b[i][j] &amp; 1) == 0) <span style="font-weight: bold;">return</span> search(i, j, b);
+                }
+        }
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span>[9][9] = {};
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span> = a[i];
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 9; j++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">ch</span> = str[j];
+                        <span style="font-weight: bold;">if</span> (ch - <span style="font-style: italic;">'0'</span> == 0)
+                        {  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">aij is not fixed
+</span>                                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 1; k &lt; 10; k++)
+                                {
+                                        b[i][j] |= (1&lt;&lt;k);
+                                }
+                        }
+                        <span style="font-weight: bold;">else</span> {
+                                b[i][j] = 1;
+                                b[i][j] |= (1 &lt;&lt; ch - <span style="font-style: italic;">'0'</span>);
+                        }
+                }
+        }
+
+        dfs(b);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++) {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 9; j++) {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 1; k &lt; 10; k++) {
+                                <span style="font-weight: bold;">if</span> ((b[i][j] &amp; (1 &lt;&lt; k)) &gt; 0) { cout &lt;&lt; k; }
+                        }
+                }
+                cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        }
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>)
+{
+        <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">see inho0233's code
+</span>        <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">https://www.acmicpc.net/source/100871434
+</span>}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios_base</span>::sync_with_stdio(<span style="font-weight: bold; text-decoration: underline;">false</span>);
+        cin.tie(<span style="font-weight: bold; text-decoration: underline;">NULL</span>);
+
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt; <span style="font-weight: bold; font-style: italic;">a</span>;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 9; i++) {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span>; cin &gt;&gt; str;
+                a.push_back(str);
+        }
+
+        sol0(a);
+
+        <span style="font-weight: bold;">return</span> 0;       
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orga55bdd4" class="outline-2">
+<h2 id="orga55bdd4">Remarks</h2>
+<div class="outline-text-2" id="text-orga55bdd4">
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">One of the more difficult problem to solve at the time of writing.</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<p>
+I tried to follow peter norvig's solution, but that lead to a more convoluted way of doing things. Nevertheless, the techniques I learned from this was:
+</p>
+</div>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Bitmasks</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<p>
+using &amp;, ~, ^, |, you can do bitmask for efficient representation.
+only compare equality on the resulting mask(for clarity).
+</p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">How to find the quadrant index:</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+int br = (r / 3) * 3;
+</p>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">memcpy</h3>
+<div class="outline-text-3" id="text-org0043671">
+<p>
+memcpy(t, b, sizeof(t));
+</p>
+
+<p>
+note that here the sizeof should take as argument local variable, since any received argument decays into pointer. Not really sure what it means though.
+</p>
+</div>
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-3">
+<h3 id="org0c8fbd7">Overall Not a very satisfactory first try.</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

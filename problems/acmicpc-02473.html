@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 2473 — 세 용액</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 2473 — 세 용액</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2473">https://www.acmicpc.net/problem/2473</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+KOI 부설 과학연구소에서는 많은 종류의 산성 용액과 알칼리성 용액을 보유하고 있다. 각 용액에는 그 용액의 특성을 나타내는 하나의 정수가 주어져있다.  산성 용액의 특성값은 1부터 1,000,000,000까지의 양의 정수로 나타내고, 알칼리성 용액의 특성값은 -1부터 -1,000,000,000까지의 음의 정수로 나타낸다.
+</p>
+
+<p>
+같은 양의 세 가지 용액을 혼합한 용액의 특성값은 혼합에 사용된 각 용액의 특성값의 합으로 정의한다. 이 연구소에서는 같은 양의 세 가지 용액을 혼합하여 특성값이 0에 가장 가까운 용액을 만들려고 한다. 
+</p>
+
+<p>
+예를 들어, 주어진 용액들의 특성값이 [-2, 6, -97, -6, 98]인 경우에는 특성값이 -97와 -2인 용액과 특성값이 98인 용액을 혼합하면 특성값이 -1인 용액을 만들 수 있고, 이 용액이 특성값이 0에 가장 가까운 용액이다. 참고로, 세 종류의 알칼리성 용액만으로나 혹은 세 종류의 산성 용액만으로 특성값이 0에 가장 가까운 혼합 용액을 만드는 경우도 존재할 수 있다.
+</p>
+
+<p>
+산성 용액과 알칼리성 용액이 주어졌을 때, 이 중 같은 양의 세 개의 서로 다른 용액을 혼합하여 특성값이 0에 가장 가까운 용액을 만들어내는 세 용액을 찾는 프로그램을 작성하시오.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에는 전체 용액의 수 N이 입력된다. N은 3 이상 5,000 이하의 정수이다. 둘째 줄에는 용액의 특성값을 나타내는 N개의 정수가 빈칸을 사이에 두고 주어진다. 이 수들은 모두 -1,000,000,000 이상 1,000,000,000 이하이다. N개의 용액들의 특성값은 모두 다르고, 산성 용액만으로나 알칼리성 용액만으로 입력이 주어지는 경우도 있을 수 있다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+첫째 줄에 특성값이 0에 가장 가까운 용액을 만들어내는 세 용액의 특성값을 출력한다. 출력해야하는 세 용액은 특성값의 오름차순으로 출력한다. 특성값이 0에 가장 가까운 용액을 만들어내는 경우가 두 개 이상일 경우에는 그 중 아무것이나 하나를 출력한다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+5
+-2 6 -97 -6 98
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">예제 출력 1</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+-97 -2 98
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">예제 입력 2</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+7
+-2 -3 -24 -6 98 100 61
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">예제 출력 2</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+-6 -3 -2
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<div class="org-src-container">
+<pre class="src src-cpp"><code>v#<span style="font-weight: bold; text-decoration: underline;">include</span> &lt;iostream&gt;
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cmath&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold;">typedef</span> <span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; text-decoration: underline;">ll</span>;
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">INF</span> = 3e9 + 7;
+
+<span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">Mix</span> {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">v</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s1</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s2</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s3</span>;
+
+        <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">operator</span><span style="font-weight: bold;">&lt;</span>(<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">Mix</span>&amp; <span style="font-weight: bold; font-style: italic;">other</span>) <span style="font-weight: bold;">const</span> {
+                <span style="font-weight: bold;">return</span> v &lt; other.v;
+        }
+};
+
+
+<span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">TLE and Memory overflow solution.
+</span><span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">Mix</span>&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++) {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++) {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 0; k &lt; n; k++) {
+                                <span style="font-weight: bold;">if</span> (i == j || j == k || i == k) <span style="font-weight: bold;">continue</span>;
+                                s.push_back(Mix{a[i] + a[j] + a[k], i, j, k});
+                        }
+                }
+        }
+
+        sort (s.begin(), s.end());
+
+        <span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">it</span> = lower_bound(s.begin(), s.end(), Mix{0, 0, 0, 0});
+        <span style="font-weight: bold;">if</span> (it == s.end()) it--;
+
+        <span style="font-weight: bold; text-decoration: underline;">Mix</span> <span style="font-weight: bold; font-style: italic;">r</span> = *it;
+        <span style="font-weight: bold; text-decoration: underline;">Mix</span> <span style="font-weight: bold; font-style: italic;">l</span> = *(it - 1);
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">rd</span> = abs(r.v);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">ld</span> = abs(l.v);
+
+        <span style="font-weight: bold; text-decoration: underline;">Mix</span> <span style="font-weight: bold; font-style: italic;">ans</span>;
+        <span style="font-weight: bold;">if</span> (ld &lt; rd)
+        {
+                ans = l;
+        }
+        <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (ld &gt; rd)
+        {
+                ans = r;
+        }
+        <span style="font-weight: bold;">else</span>
+        {
+                ans = l;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">res</span>;
+        res.push_back(a[ans.s1]);
+        res.push_back(a[ans.s2]);
+        res.push_back(a[ans.s3]);
+        sort(res.begin(), res.end());
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 3; i++) {
+                cout &lt;&lt; res[i] &lt;&lt; <span style="font-style: italic;">' '</span>;
+        }
+        cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>)
+{
+        sort(a.begin(), a.end());
+
+        <span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">mn</span> = INF;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s</span>[3] = {0, 0, 0};
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++) {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">l</span> = i;
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span> = i + 1;
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">r</span> = n - 1;
+                <span style="font-weight: bold;">while</span> (m &lt; r) {
+                        <span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">sum</span> = (<span style="font-weight: bold; text-decoration: underline;">ll</span>)a[l] + a[m] + a[r];
+
+                        <span style="font-weight: bold;">if</span> (llabs(sum) &lt; mn) {
+                                mn = llabs(sum);
+                                s[0] = a[l];
+                                s[1] = a[m];
+                                s[2] = a[r];
+                        }
+
+                        <span style="font-weight: bold;">if</span> (sum &lt; 0) m++;
+                        <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (sum &gt; 0) r--;
+                        <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">break</span>;
+                }
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 3; i++) {
+                cout &lt;&lt; s[i] &lt;&lt; <span style="font-style: italic;">' '</span>;
+        }
+        cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>; cin &gt;&gt; n;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">a</span>(n);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++) {
+                cin &gt;&gt; a[i];
+        }
+
+        sol1(n, a);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Remarks</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+Initially, I thought the problem lied in using binary search(lower<sub>bound</sub>), but that would not make it a gold 3 problem. The reason the thinking was that I did not think looping through 5000<sup>3</sup> would not be too problematic. obviously not. It is, on reflection, on order of 1e11, given that cpu processing speed lies in 1e9 range, this is not desirable.
+</p>
+
+<p>
+After that, though, once I was given hint about using two-pointers, the rest was relatively easy.
+</p>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Two pointers</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<p>
+why two pointers?because an array is 2d.
+anyways, the specific way the two pointers method is applied is to
+fix leftmost index, and iterate on all other possible middle and right index combinations.
+</p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Note that I ran into some problems:</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+      ll sum = a[l] + a[m] + a[r];
+here, since the right value is placed after being processed, it can overflow, hence it requires conversion beforehand:
+			ll sum = (ll)a[l] + a[m] + a[r];
+</p>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org0043671">
+<ul class="org-ul">
+<li>Two Pointers — The reflection identifies two pointers as the useful alternative after considering a more expensive search.</li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 21736 — 헌내기는 친구가 필요해</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 21736 — 헌내기는 친구가 필요해</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/21736">https://www.acmicpc.net/problem/21736</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+2020년에 입학한 헌내기 도연이가 있다. 도연이는 비대면 수업 때문에 학교에 가지 못해 학교에 아는 친구가 없었다. 드디어 대면 수업을 하게 된 도연이는 어서 캠퍼스 내의 사람들과 친해지고 싶다. 
+</p>
+
+<p>
+도연이가 다니는 대학의 캠퍼스는
+\(N \times M\) 크기이며 캠퍼스에서 이동하는 방법은 벽이 아닌 상하좌우로 이동하는 것이다. 예를 들어, 도연이가 (\(x\), \(y\))에 있다면 이동할 수 있는 곳은 (\(x+1\), \(y\)), (\(x\), \(y+1\)), (\(x-1\), \(y\)), (\(x\),
+</p>
+
+<p>
+\(y-1\))이다. 단, 캠퍼스의 밖으로 이동할 수는 없다.
+</p>
+
+<p>
+불쌍한 도연이를 위하여 캠퍼스에서 도연이가 만날 수 있는 사람의 수를 출력하는 프로그램을 작성해보자.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에는 캠퍼스의 크기를 나타내는 두 정수
+\(N\) ($ 1 &le; N &le; 600$), \(M\) (
+</p>
+
+<p>
+$ 1 &le; M &le; 600$)이 주어진다.
+</p>
+
+<p>
+둘째 줄부터
+</p>
+
+<p>
+$N$개의 줄에는 캠퍼스의 정보들이 주어진다. O는 빈 공간, X는 벽, I는 도연이, P는 사람이다. I가 한 번만 주어짐이 보장된다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+첫째 줄에 도연이가 만날 수 있는 사람의 수를 출력한다. 단, 아무도 만나지 못한 경우 TT를 출력한다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test Case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+3 5
+OOOPO
+OIOOX
+OOOXP
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+3 3
+IOX
+OXP
+XPP
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+TT
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Backlink</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+Depth First Search
+Breadth First Search
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Solution</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;stack&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;utility&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sr</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sc</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">campus</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dr</span>[4] = {1, 0, 0, -1};
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dc</span>[4] = {0, 1, -1, 0};
+
+        <span style="font-weight: bold; text-decoration: underline;">stack</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">vis</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(m));
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cnt</span> = 0;
+
+        s.push({sr, sc});
+        <span style="font-weight: bold;">while</span> (!s.empty())
+        {
+                <span style="font-weight: bold;">auto</span> [ur, uc] = s.top(); s.pop();
+                <span style="font-weight: bold;">if</span> (campus[ur][uc] == <span style="font-style: italic;">'P'</span>) cnt++;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 4; i++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span> = ur + dr[i], <span style="font-weight: bold; font-style: italic;">nc</span> = uc + dc[i];
+                        <span style="font-weight: bold;">if</span> (nr &lt; 0 || nr &gt;= n || nc &lt; 0 || nc &gt;= m) <span style="font-weight: bold;">continue</span>;
+                        <span style="font-weight: bold;">if</span> (vis[nr][nc] == 1 || campus[nr][nc] == <span style="font-style: italic;">'X'</span>) <span style="font-weight: bold;">continue</span>;
+                        vis[nr][nc] = 1;
+                        s.push({nr, nc});
+                }
+        }
+
+        <span style="font-weight: bold;">if</span> (cnt == 0) cout &lt;&lt; <span style="font-style: italic;">"TT\n"</span>;
+        <span style="font-weight: bold;">else</span> cout &lt;&lt; cnt &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; font-style: italic;">m</span>; cin &gt;&gt; n &gt;&gt; m;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">campus</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;(m));
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sr</span>, <span style="font-weight: bold; font-style: italic;">sc</span>;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span>; cin &gt;&gt; str;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; m; j++)
+                {
+                        campus[i][j] = str[j];
+                        <span style="font-weight: bold;">if</span> (str[j] == <span style="font-style: italic;">'I'</span>) sr = i, sc = j;
+                }
+        }
+
+        sol0(n, m, sr, sc, campus);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Remarks</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Stack based implementation on a (slightly) more complex application of DFS</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+I revised my understanding of dfs and bfs. On a stack(or queue) based approach, while my previous implementation was sound, it was not as efficient as it could have been. Always check if The next node is viable and mark it as visited before pushing. This makes it so that redundant nodes are not pushed. Will be meaningful on dense graphs.
+</p>
+
+<p>
+revised code:
+	stack&lt;pair&lt;int, int&gt;&gt; s;
+	vector&lt;vector&lt;int&gt;&gt; vis(n, vector&lt;int&gt;(m));
+	int cnt = 0;
+</p>
+
+<p>
+s.push({sr, sc});
+while (!s.empty())
+{
+	auto [ur, uc] = s.top(); s.pop();
+	if (campus[ur][uc] <code>= 'P') cnt++;
+		for (int i = 0; i &lt; 4; i++)
+		{
+			int nr = ur + dr[i], nc = uc + dc[i];
+			if (nr &lt; 0 || nr &gt;</code> n || nc &lt; 0 || nc &gt;= m) continue;
+		if (vis[nr][nc] <code>= 1 || campus[nr][nc] =</code> 'X') continue;
+		vis[nr][nc] = 1;
+		s.push({nr, nc});
+	}
+}
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

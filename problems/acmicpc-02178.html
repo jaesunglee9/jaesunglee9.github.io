@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 2178 — 미로 탐색</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 2178 — 미로 탐색</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2178">https://www.acmicpc.net/problem/2178</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+N×M크기의 배열로 표현되는 미로가 있다.
+1 	0 	1 	1 	1 	1
+1 	0 	1 	0 	1 	0
+1 	0 	1 	0 	1 	1
+1 	1 	1 	0 	1 	1
+</p>
+
+<p>
+미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다. 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오. 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.
+</p>
+
+<p>
+위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 두 정수 N, M(2 ≤ N, M ≤ 100)이 주어진다. 다음 N개의 줄에는 M개의 정수로 미로가 주어진다. 각각의 수들은 붙어서 입력으로 주어진다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+첫째 줄에 지나야 하는 최소의 칸 수를 출력한다. 항상 도착위치로 이동할 수 있는 경우만 입력으로 주어진다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test Case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+4 6
+101111
+101010
+101011
+111011
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+15
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+4 6
+110110
+110110
+111111
+111101
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+9
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+2 25
+1011101110111011101110111
+1110111011101110111011101
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+38
+</p>
+
+<p>
+예제 입력 4
+</p>
+
+<p>
+7 7
+1011111
+1110001
+1000001
+1000001
+1000001
+1000001
+1111111
+</p>
+
+<p>
+예제 출력 4
+</p>
+
+<p>
+13
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Backlink</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+Breadth First Search
+Dijkstra's Algorithm
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Solution</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">INF</span> = (<span style="font-weight: bold; text-decoration: underline;">int</span>) 1e9 + 7;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">maze</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dr</span>[4] = {1, 0, -1, 0};
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dc</span>[4] = {0, 1, 0, -1};
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">d</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(m));
+        <span style="font-weight: bold; text-decoration: underline;">queue</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">q</span>;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                fill(d[i].begin(), d[i].end(), INF);
+        }
+        d[0][0] = 1;
+        q.push({0, 0});
+        <span style="font-weight: bold;">while</span>(!q.empty())
+        {
+                <span style="font-weight: bold;">auto</span> [r, c] = q.front(); q.pop();
+                <span style="font-weight: bold;">if</span> (r == n - 1 &amp;&amp; c == m - 1) <span style="font-weight: bold;">break</span>;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 4; i++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span> = r + dr[i];
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nc</span> = c + dc[i];
+
+                        <span style="font-weight: bold;">if</span> (nr &lt; 0 || nr &gt;= n || nc &lt; 0 || nc &gt;= m
+                                || maze[nr][nc] == <span style="font-style: italic;">'0'</span>) <span style="font-weight: bold;">continue</span>;
+                        <span style="font-weight: bold;">if</span> (maze[nr][nc] == <span style="font-style: italic;">'1'</span> &amp;&amp; d[nr][nc] &lt; INF) <span style="font-weight: bold;">continue</span>;
+                        d[nr][nc] = d[r][c] + 1;
+                        q.push({nr, nc});
+                }
+        }
+
+        cout &lt;&lt; d[n-1][m-1] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; font-style: italic;">m</span>; 
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt; <span style="font-weight: bold; font-style: italic;">maze</span>;
+
+        cin &gt;&gt; n &gt;&gt; m;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">str</span>;
+
+                cin &gt;&gt; str;
+                maze.push_back(str);
+        }
+
+        sol0(n, m, maze);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Approach</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+The problem asks us, what is the cost of going from a to b in a unweighted, 2d grid graph? This restriction enables further simplification from a simple dijkstra. In BFS, paths of same depths are searched before searching for deeper depths, hence the first path to find destination is the fastest path to the destination.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Is there really no way to conveniently fill 2d array?</h3>
+</div>
+
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Here I employ using vector&lt;string&gt; itself to store the maze. somewhat shorter, but the fact that I had to compare with chars here and int there made it more annoying. Will not use this approach in the future.</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

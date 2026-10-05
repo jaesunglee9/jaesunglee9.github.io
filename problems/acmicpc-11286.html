@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 11286 — 절댓값 힙</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 11286 — 절댓값 힙</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/11286">https://www.acmicpc.net/problem/11286</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+절댓값 힙은 다음과 같은 연산을 지원하는 자료구조이다.
+</p>
+
+<p>
+배열에 정수 x (x ≠ 0)를 넣는다.
+배열에서 절댓값이 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다. 절댓값이 가장 작은 값이 여러개일 때는, 가장 작은 수를 출력하고, 그 값을 배열에서 제거한다.
+</p>
+
+<p>
+프로그램은 처음에 비어있는 배열에서 시작하게 된다.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 연산의 개수 N(1≤N≤100,000)이 주어진다. 다음 N개의 줄에는 연산에 대한 정보를 나타내는 정수 x가 주어진다. 만약 x가 0이 아니라면 배열에 x라는 값을 넣는(추가하는) 연산이고, x가 0이라면 배열에서 절댓값이 가장 작은 값을 출력하고 그 값을 배열에서 제거하는 경우이다. 입력되는 정수는 -231보다 크고, 231보다 작다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+입력에서 0이 주어진 회수만큼 답을 출력한다. 만약 배열이 비어 있는 경우인데 절댓값이 가장 작은 값을 출력하라고 한 경우에는 0을 출력하면 된다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test Case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+18
+1
+-1
+0
+0
+0
+1
+1
+-1
+-1
+2
+-2
+0
+0
+0
+0
+0
+0
+0
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cmath&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">AbsCmp</span> {
+        <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">operator</span><span style="font-weight: bold;">()</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span>) <span style="font-weight: bold;">const</span> {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">aa</span> = abs(a), <span style="font-weight: bold; font-style: italic;">ab</span> = abs(b);
+                <span style="font-weight: bold;">if</span> (aa != ab) <span style="font-weight: bold;">return</span> aa &gt; ab;
+                <span style="font-weight: bold;">return</span> a &gt; b;
+        }
+};
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>,
+     <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">priority_queue</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;, <span style="font-weight: bold; text-decoration: underline;">AbsCmp</span>&gt; <span style="font-weight: bold; font-style: italic;">pq</span>;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">if</span> (a[i] == 0)
+                {
+                        <span style="font-weight: bold;">if</span> (pq.empty())
+                        {
+                                cout &lt;&lt; 0 &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                        }
+                        <span style="font-weight: bold;">else</span> {
+
+                                cout &lt;&lt; pq.top() &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                                pq.pop();
+                        }
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        pq.push(a[i]);
+                }
+        }
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">a</span>;
+
+        cin &gt;&gt; n;
+        a.assign(n);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                cin &gt;&gt; a[i];
+        }
+
+        sol0(a, n);
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Push and pop the smallest element in the queue, the "smallest" being some custom definition. This calls for priority queue. But how to implement it?
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Remarks</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">priority<sub>queues</sub> take elements, vector of elements, and functors(function objects)</h3>
+</div>
+
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">For custom comparison, use operator  wrapped in struct</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+See How to use custom comparison in priority queue(C++)
+Do note syntax:
+```c++
+struct AbsCmp {
+	bool operator()(int a, int b) const {
+		int aa = abs(a), ab = abs(b);
+		if (aa != ab) return aa &gt; ab;
+		return a &gt; b;
+	}
+};
+```
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

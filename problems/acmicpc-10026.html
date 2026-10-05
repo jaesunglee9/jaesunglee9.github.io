@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 10026 — 적록색약</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 10026 — 적록색약</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/10026">https://www.acmicpc.net/problem/10026</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+문제
+</p>
+
+<p>
+A little known fact about cows is the fact that they are red-green colorblind, meaning that red and green look identical to them.  This makes it especially difficult to design artwork that is appealing to cows as well as humans.
+</p>
+
+<p>
+Consider a square painting that is described by an N x N grid of characters (1 &lt;= N &lt;= 100), each one either R (red), G (green), or B (blue).  A painting is interesting if it has many colored "regions" that can be distinguished from each-other.  Two characters belong to the same region if they are directly adjacent (east, west, north, or south), and if they are indistinguishable in color.  For example, the painting
+</p>
+
+<p>
+RRRBB
+GGBBB
+BBBRR
+BBRRR
+RRRRR
+</p>
+
+<p>
+has 4 regions (2 red, 1 blue, and 1 green) if viewed by a human, but only 3regions (2 red-green, 1 blue) if viewed by a cow.  
+</p>
+
+<p>
+Given a painting as input, please help compute the number of regions in the painting when viewed by a human and by a cow.
+입력
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Line 1: The integer N.</h3>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Lines 2..1+N: Each line contains a string with N characters, describing one row of a painting.</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+출력
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Line 1: Two space-separated integers, telling the number of regions in the painting when viewed by a human and by a cow.</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+5
+RRRBB
+GGBBB
+BBBRR
+BBRRR
+RRRRR
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+4 3
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">RC</span> {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">r</span>, <span style="font-weight: bold; font-style: italic;">c</span>;
+};
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">search</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">p</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">vis</span>, <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">arg</span>,
+       <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sr</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sc</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">queue</span>&lt;<span style="font-weight: bold; text-decoration: underline;">RC</span>&gt; <span style="font-weight: bold; font-style: italic;">q</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dr</span>[4] = {1, 0, -1, 0};
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">dc</span>[4] = {0, 1, 0, -1};
+
+        q.push({sr, sc});
+        vis[sr][sc] = 1;
+
+        <span style="font-weight: bold;">while</span> (!q.empty())
+        {
+                <span style="font-weight: bold; text-decoration: underline;">RC</span> <span style="font-weight: bold; font-style: italic;">e</span> = q.front(); q.pop();
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 4; i++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span>, <span style="font-weight: bold; font-style: italic;">nc</span>;
+                        nr = e.r + dr[i];
+                        nc = e.c + dc[i];
+
+                        <span style="font-weight: bold;">if</span> (nr &lt; 0 || nr &gt;= n || nc &lt; 0 || nc &gt;= n) <span style="font-weight: bold;">continue</span>;
+                        <span style="font-weight: bold;">if</span> (vis[nr][nc] == 1) <span style="font-weight: bold;">continue</span>;
+                        <span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">cc</span> = p[e.r][e.c], <span style="font-weight: bold; font-style: italic;">cn</span> = p[nr][nc];
+
+                        <span style="font-weight: bold;">if</span> (arg == <span style="font-style: italic;">"man"</span>)
+                        {
+                                <span style="font-weight: bold;">if</span> (cc != cn) <span style="font-weight: bold;">continue</span>;
+                        }
+                        <span style="font-weight: bold;">else</span>
+                        {
+                                <span style="font-weight: bold;">if</span> ((cc == <span style="font-style: italic;">'B'</span> &amp;&amp; cn != <span style="font-style: italic;">'B'</span>)
+                                    || (cc != <span style="font-style: italic;">'B'</span> &amp;&amp; cn == <span style="font-style: italic;">'B'</span>)) <span style="font-weight: bold;">continue</span>;
+                        }
+
+                        vis[nr][nc] = 1;
+                        q.push({nr, nc});
+                }
+        }
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">p</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">vis</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(n, 0));
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cow</span> = 0, <span style="font-weight: bold; font-style: italic;">man</span> = 0;
+
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                {
+                        <span style="font-weight: bold;">if</span> (vis[i][j] == 0)
+                        {
+                                search(p, vis, <span style="font-style: italic;">"man"</span>, n, i, j);
+                                man++;
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                fill(vis[i].begin(), vis[i].end(), 0);
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; n; j++)
+                {
+                        <span style="font-weight: bold;">if</span> (vis[i][j] == 0)
+                        {
+                                search(p, vis, <span style="font-style: italic;">"cow"</span>, n, i, j);
+                                cow++;
+                        }
+                }
+        }
+
+        cout &lt;&lt; man &lt;&lt; <span style="font-style: italic;">' '</span> &lt;&lt; cow &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">string</span>&gt; <span style="font-weight: bold; font-style: italic;">p</span>;
+
+        cin &gt;&gt; n;
+        p.resize(n);
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                cin &gt;&gt; p[i];
+        }
+
+        sol0(p, n);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Remarks</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+A standard Breadth First Search problem, but I believe that I became more adept at its application. In this problem I used string argument to differentiate logic.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

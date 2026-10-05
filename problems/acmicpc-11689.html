@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 11689 — GCD(n, k) = 1</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 11689 — GCD(n, k) = 1</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/11689">https://www.acmicpc.net/problem/11689</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+자연수 n이 주어졌을 때, GCD(n, k) = 1을 만족하는 자연수 1 ≤ k ≤ n 의 개수를 구하는 프로그램을 작성하시오.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 자연수 n (1 ≤ n ≤ 1012)이 주어진다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+GCD(n, k) = 1을 만족하는 자연수 1 ≤ k ≤ n 의 개수를 출력한다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+1
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+5
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+4
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+10
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+4
+</p>
+
+<p>
+예제 입력 4
+</p>
+
+<p>
+45
+</p>
+
+<p>
+예제 출력 4
+</p>
+
+<p>
+24
+</p>
+
+<p>
+예제 입력 5
+</p>
+
+<p>
+99
+</p>
+
+<p>
+예제 출력 5
+</p>
+
+<p>
+60
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;utility&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold; text-decoration: underline;">ll</span> = <span style="font-weight: bold; text-decoration: underline;">long</span> <span style="font-weight: bold; text-decoration: underline;">long</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">res</span> = n;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">p</span> = 2; p * p &lt;= n; p++)
+        {
+                <span style="font-weight: bold;">if</span> (n % p == 0)
+                {
+                        res -= res / p;
+
+                        <span style="font-weight: bold;">while</span> (n % p  == 0)
+                        {
+                                n /= p;
+                        }
+                }
+        }
+
+        <span style="font-weight: bold;">if</span> (n &gt; 1) {
+                res -= res / n;
+        }
+
+        cout &lt;&lt; res &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">ll</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+
+        cin &gt;&gt; n;
+        sol0(n);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Requires use of  Euler's totient function. In fact, that is the definition.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

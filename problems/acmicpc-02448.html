@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 2448 — 별 찍기 - 11</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 2448 — 별 찍기 - 11</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/2448">https://www.acmicpc.net/problem/2448</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+예제를 보고 규칙을 유추한 뒤에 별을 찍어 보세요.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 N이 주어진다. N은 항상 3×2k 수이다. (3, 6, 12, 24, 48, &hellip;) (0 ≤ k ≤ 10, k는 정수)
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+첫째 줄부터 N번째 줄까지 별을 출력한다.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+24
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">예제 출력 1</h3>
+<div class="outline-text-3" id="text-org9639605">
+<p>
+```
+</p>
+<ul class="org-ul">
+<li></li>
+</ul>
+<ul class="org-ul">
+<li>*</li>
+</ul>
+<p>
+<b><b>*</b></b>                      
+</p>
+<ul class="org-ul">
+<li>*</li>
+</ul>
+<ul class="org-ul">
+<li>*   * *</li>
+</ul>
+<p>
+<b><b>*</b></b> <b><b>*</b></b>                   
+</p>
+<ul class="org-ul">
+<li>*</li>
+</ul>
+<ul class="org-ul">
+<li>*         * *</li>
+</ul>
+<p>
+<b><b>*</b></b>       <b><b>*</b></b>                
+</p>
+<ul class="org-ul">
+<li>*     *     *</li>
+</ul>
+<ul class="org-ul">
+<li>*   * *   * *   * *</li>
+</ul>
+<p>
+<b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b>             
+</p>
+<ul class="org-ul">
+<li>*</li>
+</ul>
+<ul class="org-ul">
+<li>*                     * *</li>
+</ul>
+<p>
+<b><b>*</b></b>                   <b><b>*</b></b>          
+</p>
+<ul class="org-ul">
+<li>*                 *     *</li>
+</ul>
+<ul class="org-ul">
+<li>*   * *               * *   * *</li>
+</ul>
+<p>
+<b><b>*</b></b> <b><b>*</b></b>             <b><b>*</b></b> <b><b>*</b></b>       
+</p>
+<ul class="org-ul">
+<li>*           *           *</li>
+</ul>
+<ul class="org-ul">
+<li>*         * *         * *         * *</li>
+</ul>
+<p>
+<b><b>*</b></b>       <b><b>*</b></b>       <b><b>*</b></b>       <b><b>*</b></b>    
+</p>
+<ul class="org-ul">
+<li>*     *     *     *     *     *     *</li>
+</ul>
+<ul class="org-ul">
+<li>*   * *   * *   * *   * *   * *   * *   * *</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org7f6f53b"></a><b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b><br>
+<div class="outline-text-6" id="text-org7f6f53b">
+<p>
+```
+</p>
+</div>
+</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Solution</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sier0</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">row</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">col</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">len</span>)
+{
+        <span style="font-weight: bold;">if</span> (len == 1) <span style="font-weight: bold;">return</span>;
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s</span> = col - len / 2, <span style="font-weight: bold; font-style: italic;">e</span> = col + len / 2;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; len / 2; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = s + 1 + i; j &lt; e - i; j++)
+                {
+                        a[row + len / 2 + i][j] = <span style="font-style: italic;">' '</span>;
+                }
+        }
+
+        sier0(a, row, col, len / 2);
+        sier0(a, row + len / 2, s, len / 2);
+        sier0(a, row + len / 2, e, len / 2);
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">a</span>;
+
+        cin &gt;&gt; n;
+
+        a.resize(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;(2*n, <span style="font-style: italic;">' '</span>));
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s</span> = n - 1 - i, <span style="font-weight: bold; font-style: italic;">e</span> = n + i;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = s; j &lt; e; j++)
+                {
+                        a[i][j] = <span style="font-style: italic;">'*'</span>;
+                }
+        }
+
+        sier0(a, 0, n-1, n);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 2 * n - 1; j++)
+                {
+                        cout &lt;&lt; a[i][j];
+                }
+                cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        }
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">a</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">draw</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">row</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">col</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">size</span>)
+{
+        <span style="font-weight: bold;">if</span> (size == 3)
+        {
+                a[row][col] = <span style="font-style: italic;">'*'</span>;
+                a[row+1][col-1] = <span style="font-style: italic;">'*'</span>;
+                a[row+1][col+1] = <span style="font-style: italic;">'*'</span>;
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 5; i++)
+                {
+                        a[row+2][col-2+i] = <span style="font-style: italic;">'*'</span>;
+                }
+                <span style="font-weight: bold;">return</span>;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nsize</span> = size / 2;
+        draw(row, col, nsize);
+        draw(row + nsize, col - nsize, nsize);
+        draw(row + nsize, col + nsize, nsize);
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+
+        cin &gt;&gt; n;
+        a.resize(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">char</span>&gt;(2*n, <span style="font-style: italic;">' '</span>));
+
+        draw(0, n-1, n);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; n; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 0; j &lt; 2 * n - 1; j++)
+                {
+                        cout &lt;&lt; a[i][j];
+                }
+                cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+        }
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        sol1();
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Remarks</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">sol0, sol1</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+There are not much to say on this one except that it is done recursively. Either do it subtractively (sol0), or do it additively, dividing with each half length.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

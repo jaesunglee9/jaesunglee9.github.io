@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 11727 — 2×n 타일링 2</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 11727 — 2×n 타일링 2</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/11727">https://www.acmicpc.net/problem/11727</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+2×n 직사각형을 1×2, 2×1과 2×2 타일로 채우는 방법의 수를 구하는 프로그램을 작성하시오.
+</p>
+
+<p>
+아래 그림은 2×17 직사각형을 채운 한가지 예이다.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Input</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 n이 주어진다. (1 ≤ n ≤ 1,000)
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Output</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+첫째 줄에 2×n 크기의 직사각형을 채우는 방법의 수를 10,007로 나눈 나머지를 출력한다.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Test Case</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">1</h4>
+<div class="outline-text-4" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+2
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+3
+</p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">2</h4>
+<div class="outline-text-4" id="text-org9639605">
+<p>
+예제 입력 2
+</p>
+
+<p>
+8
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+171
+</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-4">
+<h4 id="org7f6f53b">3</h4>
+<div class="outline-text-4" id="text-org7f6f53b">
+<p>
+예제 입력 3
+</p>
+
+<p>
+12
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+2731
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">memo</span>(1001);
+
+        memo[1] = 1;
+        memo[2] = 3;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 3; i &lt;= 1000; i++) {
+                memo[i] = (memo[i-1] + memo[i-2] * 2) % 10007;
+        }
+
+        cout &lt;&lt; memo[n] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>; cin &gt;&gt; n;
+
+        sol0(n);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Remarks</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+A relatively simple DP problem, yet I failed it on the first try. The reason for this was because I did not partition the cases correctly. note that the case of two vertical bars case is included in memo[i-1] . therefore, it should be excluded from memo[i-2]
+</p>
+</div>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org7161a33">
+<ul class="org-ul">
+<li>Dynamic Programming — The reflection focuses on partitioning tiling cases without counting a case twice.</li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

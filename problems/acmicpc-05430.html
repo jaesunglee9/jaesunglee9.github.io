@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 5430 — AC</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 5430 — AC</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/5430">https://www.acmicpc.net/problem/5430</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The programming language Better And Portable Code (BAPC) is a language for working with lists of integers. The language has two built-in functions: ‘R’ (reverse) and ‘D’ (drop).
+</p>
+
+<p>
+The function ‘R’ reverses its input list, and ’D’ drops the first element of its input and returns the rest, or gives an error in case its input is an empty list. To get more advanced behavior, functions can be composed: “AB” is the function that first applies ‘A’ to its input and then ‘B’ to the resulting list. For example, “RDD” is a function that reverses a list and then drops the first two elements.
+</p>
+
+<p>
+Unfortunately, our BAPC interpreter has bit rotted, so we ask you to write a new one.
+</p>
+
+<p>
+Given a BAPC program and its input, return its output or “error” in case ‘D’ is applied to an empty list. Lists are represented as the character ‘[’ followed by a comma-separated list of integers followed by the character ‘]’. Notice that the input and output lists can be quite long.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+On the first line one positive number: the number of test cases, at most 100. After that per test case:
+</p>
+
+<p>
+one line with a string p (1 ≤ length(p) ≤ 100 000): a BAPC program, consisting of the
+characters ‘R’ and ‘D’.
+one line with an integer n (0 ≤ n ≤ 100 000): the number of elements in the input.
+one line with a list of n integers in the form [x1, &hellip;, xn] (1 ≤ xi ≤ 100): the input list
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Per test case:
+</p>
+
+<p>
+one line with the resulting integer list or “error” in case of an error.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test Case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+4
+RDD
+4
+[1,2,3,4]
+DD
+1
+[42]
+RRD
+6
+[1,1,2,3,5,8]
+D
+0
+[]
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+[2,1]
+error
+[1,2,3,5,8]
+error
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cstdlib&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;sstream&gt;</span>
+
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;deque&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">L</span> {
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">l</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">h</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">t</span>;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">s</span> = 0;  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">0 is initial state 
+</span>
+        <span style="font-weight: bold;">L</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>) : h(n - 1), t(0), l(n) {}
+
+        <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">R</span>() {
+                <span style="font-weight: bold;">if</span> (s == 1)
+                {
+                        s = 0;
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        s = 1;
+                }
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">D</span>() {
+                <span style="font-weight: bold;">if</span> (s == 0)
+                {
+                        <span style="font-weight: bold;">if</span> (h &gt;= t)
+                        {
+                                t++;
+                                <span style="font-weight: bold;">return</span> 1;
+                        }
+                        <span style="font-weight: bold;">else</span>
+                        {
+                                <span style="font-weight: bold;">return</span> 0;
+                        }
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold;">if</span> (h &gt;= t)
+                        {
+                                h--;
+                                <span style="font-weight: bold;">return</span> 1;
+                        }
+                        <span style="font-weight: bold;">else</span>
+                        {
+                                <span style="font-weight: bold;">return</span> 0;
+                        }
+                }
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">print</span>() {
+                cout &lt;&lt; <span style="font-style: italic;">'['</span>;
+
+                <span style="font-weight: bold;">if</span> (s == 0 &amp;&amp;  h &gt;= t)
+                {
+                        cout &lt;&lt; l[t];
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = t + 1; i &lt;= h; i++)
+                        {
+                                cout &lt;&lt; <span style="font-style: italic;">','</span> &lt;&lt; l[i];
+                        }
+                }
+                <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (s == 1 &amp;&amp; h &gt;= t)
+                {
+                        cout &lt;&lt; l[h];
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = h - 1; i &gt;= t; i--)
+                                cout &lt;&lt; <span style="font-style: italic;">','</span> &lt;&lt; l[i];
+                }
+                cout &lt;&lt; <span style="font-style: italic;">"]\n"</span>;
+        }
+};
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">string</span>&amp; <span style="font-weight: bold; font-style: italic;">p</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">string</span>&amp; <span style="font-weight: bold; font-style: italic;">raw</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">L</span> <span style="font-weight: bold; font-style: italic;">LIST</span>(n);
+
+        <span style="font-weight: bold; text-decoration: underline;">stringstream</span> <span style="font-weight: bold; font-style: italic;">ss</span>(raw);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">val</span>;
+        <span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">dummy</span>;
+
+        ss &gt;&gt; dummy;  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">[
+</span>        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">idx</span> = 0;
+        <span style="font-weight: bold;">while</span> (ss &gt;&gt; val)
+        {
+                LIST.l[idx] = val;
+                idx++;
+                ss &gt;&gt; dummy;
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">op</span>: p)
+        {
+                <span style="font-weight: bold;">if</span> (op == <span style="font-style: italic;">'R'</span>)
+                {
+                        LIST.R();
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold;">if</span> (LIST.D() == 0)
+                        {
+                                cout &lt;&lt; <span style="font-style: italic;">"error\n"</span>;
+                                <span style="font-weight: bold;">return</span>;
+                        }
+                }
+        }
+
+        LIST.print();
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">string</span>&amp; <span style="font-weight: bold; font-style: italic;">p</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">string</span>&amp; <span style="font-weight: bold; font-style: italic;">raw</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">deque</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">dq</span>;
+
+        <span style="font-weight: bold; text-decoration: underline;">stringstream</span> <span style="font-weight: bold; font-style: italic;">ss</span>(raw);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">val</span>;
+        <span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">dummy</span>;
+
+        ss &gt;&gt; dummy;  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">[
+</span>        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">idx</span> = 0;
+        <span style="font-weight: bold;">while</span> (ss &gt;&gt; val)
+        {
+                dq.push_back(val);
+                ss &gt;&gt; dummy;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">r</span> = 0;  
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">char</span> <span style="font-weight: bold; font-style: italic;">ch</span> : p)
+        {
+                <span style="font-weight: bold;">if</span> (ch == <span style="font-style: italic;">'R'</span>)
+                {
+                        r = !r;
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold;">if</span> (dq.empty()) {
+                                cout &lt;&lt; <span style="font-style: italic;">"error\n"</span>;
+                                <span style="font-weight: bold;">return</span>;
+                        }
+                        <span style="font-weight: bold;">if</span> (!r) dq.pop_front();
+                        <span style="font-weight: bold;">else</span> dq.pop_back();
+                }
+        }
+
+        <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">&#52636;&#47141;
+</span>        cout &lt;&lt; <span style="font-style: italic;">'['</span>;
+        <span style="font-weight: bold;">if</span> (!dq.empty())
+        {
+                <span style="font-weight: bold;">if</span> (!r)
+                {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; (<span style="font-weight: bold; text-decoration: underline;">int</span>)dq.size(); i++)
+                        {
+                                <span style="font-weight: bold;">if</span> (i) cout &lt;&lt; <span style="font-style: italic;">','</span>;
+                                cout &lt;&lt; dq[i];
+                        }
+                }
+                <span style="font-weight: bold;">else</span>
+                {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = (<span style="font-weight: bold; text-decoration: underline;">int</span>)dq.size() - 1; i &gt;= 0; i--)
+                        {
+                                <span style="font-weight: bold;">if</span> (i != (<span style="font-weight: bold; text-decoration: underline;">int</span>)dq.size() - 1) cout &lt;&lt; <span style="font-style: italic;">','</span>;
+                                cout &lt;&lt; dq[i];
+                        }
+                }
+        }
+        cout &lt;&lt; <span style="font-style: italic;">"]\n"</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">t</span>; cin &gt;&gt; t;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; t; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">p</span>, <span style="font-weight: bold; font-style: italic;">raw</span>;
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>; 
+
+                cin &gt;&gt; p;
+                cin &gt;&gt; n;
+                cin &gt;&gt; raw;
+                sol1(p, n, raw);
+        }
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Both sol0 and sol1 takes advantage of the fact that you don't actually need to reverse the list to access the elements. sol0 uses custom structs, while sol1 uses Deque .
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">sol0</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+Not bad, but for I should have noticed that empty lists have reversed pointers.
+</p>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Printing commas</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+No particular magic in mine, but how people typically print commas first and number later.
+Following code will reveal why.
+Printing Commas Cleanly
+```
+for (int i = 0; i &lt; (int)dq.size(); i++)
+			{
+				if (i) cout &lt;&lt; ',';
+				cout &lt;&lt; dq[i];
+			}
+  ```
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">stringstream is said to be slow</h3>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

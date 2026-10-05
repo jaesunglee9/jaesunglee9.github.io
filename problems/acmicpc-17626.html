@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 17626 — Four Squares</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 17626 — Four Squares</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/17626">https://www.acmicpc.net/problem/17626</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+It was proven by Lagrange in 1770 that every natural number can be represented as the sum of four or fewer squares. Some numbers are represented in multiple ways. For example, 26 is the sum of 52 and 12; it can also be represented as 42 + 32 + 12. Expressing a number as the sum of four or fewer squares is historically a common problem posed to lightning calculators. It was reported in the early 1900s that a calculator produced a solution of 15663 = 1252 + 62 + 12 + 12 in 8 seconds. A more difficult problem took 56 seconds: 11339 = 1052 + 152 + 82 + 52.
+</p>
+
+<p>
+Given a natural number n, write a program to express n as the sum of as few squares as possible.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+Your program is to read from standard input. The input consists of a single line containing a natural number n, where 1 ≤ n ≤ 50,000.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<p>
+Your program is to write to standard output. Print exactly one line which contains the minimum number of squares whose sum is equal to n.
+</p>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">Test Case</h3>
+<div class="outline-text-3" id="text-org0ce0959">
+<p>
+예제 입력 1
+</p>
+
+<p>
+25
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+26
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+2
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+11339
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+3
+</p>
+
+<p>
+예제 입력 4
+</p>
+
+<p>
+34567
+</p>
+
+<p>
+예제 출력 4
+</p>
+
+<p>
+4
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Solution</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">dp</span>(50001, 5);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt;= 300; i++)
+        {
+                <span style="font-weight: bold;">if</span> (i * i &lt;= 50000)
+                {
+                        dp[i * i] = 1;
+                }
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt;= 50000; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 1; j &lt;= 50000; j++)
+                {
+                        <span style="font-weight: bold;">if</span> (i + j &gt; 50000) <span style="font-weight: bold;">continue</span>;
+
+                        <span style="font-weight: bold;">if</span> (dp[i] + dp[j] &lt; dp[i + j]) dp[i + j] = dp[i] + dp[j];
+                }       
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; 50000; i++) {
+                <span style="font-weight: bold;">if</span> (dp[i] == 0) cout &lt;&lt; <span style="font-style: italic;">"incorrect\n"</span>;
+        }
+
+        cout &lt;&lt; dp[n] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">dp</span>(50001, 5);
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt;= 300; i++)
+        {
+                <span style="font-weight: bold;">if</span> (i * i &lt;= 50000)
+                {
+                        dp[i * i] = 1;
+                }
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt;= 50000; i++)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = 1; j * j &lt; i; j++)
+                {
+                        dp[i] = min(dp[i], dp[j * j] + dp[i - j * j]);
+                }       
+        }
+
+        cout &lt;&lt; dp[n] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol2</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>)
+{
+        <span style="font-weight: bold;">if</span> (n == 0)
+        {
+                cout &lt;&lt; 0 &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                <span style="font-weight: bold;">return</span>;
+        }
+
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">v</span>(n + 1, 0);
+        <span style="font-weight: bold; text-decoration: underline;">queue</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">q</span>;
+
+        q.push(0);
+        v[0] = 0;
+
+        <span style="font-weight: bold;">while</span> (!q.empty())
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cur</span> = q.front(); q.pop();
+
+                <span style="font-weight: bold;">if</span> (cur == n)
+                {
+                        cout &lt;&lt; v[cur] &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                        <span style="font-weight: bold;">return</span>;
+                }
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; ; i++)
+                {
+                        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">next</span> = cur + (i * i);
+                        <span style="font-weight: bold;">if</span> (next &gt; n) <span style="font-weight: bold;">break</span>;
+
+                        <span style="font-weight: bold;">if</span> (v[next] == 0)
+                        {
+                                v[next] = v[cur] + 1;
+                                q.push(next);                   
+                        }
+                }
+        }
+}
+
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0); cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>; cin &gt;&gt; n;
+
+        sol2(n);
+
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Naive solution</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+First attempt, was a naive O(n<sup>2</sup>) solution, that looped over all possible combinations i and j and update dp. This algorithm is correct because of the "Time of Correctness" argument. Consider the following reasoning:
+</p>
+
+<p>
+Any number K has an optimal decomposition. Since Lagrange's theorem proves the answer is ≤4, the optimal sum for K is always formed by adding a Square Number to some number smaller than k.
+K=Smaller Number+Square
+</p>
+
+<p>
+The "Time of Correctness" Argument: Let's define "Time" as the value of your outer loop iterator i. We want to prove that when you calculate dp[A + B], the values dp[A] and dp[B] are already fully optimized.
+</p>
+
+<p>
+Level 1 (Squares): All perfect squares are initialized to 1 at the very start. They are correct at Time 0.
+</p>
+
+<p>
+Level 2 (Sum of 2 Squares):
+</p>
+
+<p>
+Take a number K=S1​+S2​ (where S are squares).
+</p>
+
+<p>
+Your code updates dp[K] when the outer loop hits i = S<sub>1</sub> (inner j = S<sub>2</sub>) OR i = S<sub>2</sub> (inner j = S<sub>1</sub>).
+</p>
+
+<p>
+This update happens at Time max(S1​,S2​).
+</p>
+
+<p>
+At this time, dp[S<sub>1</sub>] and dp[S<sub>2</sub>] are definitely 1 (from step 1). So dp[K] correctly becomes 2.
+</p>
+
+<p>
+Level 3 &amp; 4 (General Case):
+</p>
+
+<p>
+Consider a number N whose optimal solution requires combining two parts A and B (e.g., N=A+B).
+</p>
+
+<p>
+Assume A and B are already optimal (recursive hypothesis).
+</p>
+
+<p>
+Since A and B are positive integers, A&lt;N and B&lt;N.
+</p>
+
+<p>
+Crucially, the optimal dp[A] was computed at some time TA​≈max(components of A). Since the components are strictly smaller than A, dp[A] is ready before the loop reaches i = A.
+</p>
+
+<p>
+Therefore, when your loop reaches i = A (and inner j = B), dp[A] is ready and dp[B] is ready.
+</p>
+
+<p>
+The update dp[A+B] = dp[A] + dp[B] yields the correct result.
+</p>
+
+<p>
+In Plain English: Your code tries to combine every number with every number. Since the optimal way to build a number is to combine a Square with a Smaller Number, your code inevitably covers this specific "Square + Number" case because it covers all cases.
+</p>
+
+<p>
+Of course, this approach is suboptimal.
+</p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">sol1: O(Nroot(N)) Solution</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<p>
+This approach takes advantage of the fact that any solution to K will be a sum of one square to an optimal solution of the smaller number.
+</p>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">sol2: BFS Solution</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
+<p>
+This approach utilizes the fact that bfs always searches for shortest(most optimal, in our case) first. indeed this runs faster, since some unnecessary loops are stripped away, but dp is better for multiple queries. 
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Algorithm connections</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<ul class="org-ul">
+<li>Dynamic Programming — The recorded recurrence adds a square to an optimal smaller solution.</li>
+<li>Breadth First Search — The page separately records a shortest-search approach and compares it with DP for repeated queries.</li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

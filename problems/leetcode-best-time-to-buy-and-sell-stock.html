@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LeetCode 121 — Best Time to Buy and Sell Stock</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">LeetCode 121 — Best Time to Buy and Sell Stock</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/">https://leetcode.com/problems/best-time-to-buy-and-sell-stock/</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+</p>
+
+<p>
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+</p>
+
+<p>
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+</p>
+
+
+
+<p>
+Example 1:
+</p>
+
+<p>
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+</p>
+
+<p>
+Example 2:
+</p>
+
+<p>
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transactions are done and the max profit = 0.
+</p>
+
+
+
+<p>
+Constraints:
+</p>
+
+<p>
+1 &lt;= prices.length &lt;= 105
+0 &lt;= prices[i] &lt;= 104
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Solution</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">Solution</span> {
+<span style="font-weight: bold;">public</span>:
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">maxProfit</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">prices</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">mx</span> = 0;
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">mn</span> = 999999;
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; prices.size(); i++)
+        {
+            mn = (<span style="font-weight: bold; text-decoration: underline;">prices</span>[i] &lt; mn ? prices[i] : mn);
+            mx = (<span style="font-weight: bold; text-decoration: underline;">prices</span>[i] - mn &gt; mx ? prices[i] - mn : mx);
+        }
+
+        <span style="font-weight: bold;">return</span> mx;
+    }
+};
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Remarks</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+consider traversing the array in order. at every step, we have knowledge of the lowest price point until now, at which it is the best time to buy. On the other hand, we always keep a mx value which is updated every step, to see if it is the best time to sell. Another classic case of keeping a global variables to solve problems.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

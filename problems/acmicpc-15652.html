@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-06 Tue 04:32 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Baekjoon 15652 — N과 M (4)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/problems.html">Problems</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Baekjoon 15652 — N과 M (4)</h1>
+</header><section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Source</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://www.acmicpc.net/problem/15652">https://www.acmicpc.net/problem/15652</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.
+</p>
+
+<p>
+1부터 N까지 자연수 중에서 M개를 고른 수열
+같은 수를 여러 번 골라도 된다.
+고른 수열은 비내림차순이어야 한다.
+    길이가 K인 수열 A가 A1 ≤ A2 ≤ &hellip; ≤ AK-1 ≤ AK를 만족하면, 비내림차순이라고 한다.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+첫째 줄에 자연수 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)
+출력
+</p>
+
+<p>
+한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.
+</p>
+
+<p>
+수열은 사전 순으로 증가하는 순서로 출력해야 한다.
+예제 입력 1
+</p>
+
+<p>
+3 1
+</p>
+
+<p>
+예제 출력 1
+</p>
+
+<p>
+1
+2
+3
+</p>
+
+<p>
+예제 입력 2
+</p>
+
+<p>
+4 2
+</p>
+
+<p>
+예제 출력 2
+</p>
+
+<p>
+1 1
+1 2
+1 3
+1 4
+2 2
+2 3
+2 4
+3 3
+3 4
+4 4
+</p>
+
+<p>
+예제 입력 3
+</p>
+
+<p>
+3 3
+</p>
+
+<p>
+예제 출력 3
+</p>
+
+<p>
+1 1 1
+1 1 2
+1 1 3
+1 2 2
+1 2 3
+1 3 3
+2 2 2
+2 2 3
+2 3 3
+3 3 3
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;stack&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">E</span>
+{
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">idx</span>, <span style="font-weight: bold; font-style: italic;">val</span>;
+};
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol0</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">a</span>(m);
+
+        <span style="font-weight: bold; text-decoration: underline;">stack</span>&lt;<span style="font-weight: bold; text-decoration: underline;">E</span>&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = n; i &gt;= 1; i--)
+        {
+                s.push({0, i});
+        }
+
+        <span style="font-weight: bold;">while</span> (!s.empty())
+        {
+                <span style="font-weight: bold; text-decoration: underline;">E</span> <span style="font-weight: bold; font-style: italic;">e</span> = s.top(); s.pop();
+
+                a[e.idx] = e.val;
+                <span style="font-weight: bold;">if</span> (e.idx == m - 1)
+                {
+                        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; m; i++)
+                        {
+                                cout &lt;&lt; a[i] &lt;&lt; <span style="font-style: italic;">' '</span>;
+                        }
+                        cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                        <span style="font-weight: bold;">continue</span>;
+                }
+
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = n; j &gt;= e.val; j--)
+                {
+                        s.push({e.idx + 1, j});
+                }
+        }
+
+        <span style="font-weight: bold;">return</span>;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">dfs</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>,
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">idx</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">val</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span>)
+{
+        <span style="font-weight: bold;">if</span> (idx == m)
+        {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; m; i++)
+                {
+                        cout &lt;&lt; a[i] &lt;&lt; <span style="font-style: italic;">' '</span>;
+                }
+                cout &lt;&lt; <span style="font-style: italic;">'\n'</span>;
+                <span style="font-weight: bold;">return</span>;
+        }
+
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = val; i &lt;= n; i++)
+        {
+                a[idx] = i;
+                dfs(a, idx + 1, i, n, m);
+
+        }
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+
+<span style="font-weight: bold; text-decoration: underline;">void</span>
+<span style="font-weight: bold;">sol1</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">m</span>)
+{       
+        <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">a</span>(m);
+
+        dfs(a, 0, 1, n, m);
+        <span style="font-weight: bold;">return</span>;
+}
+
+
+<span style="font-weight: bold; text-decoration: underline;">int</span>
+<span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">void</span>)
+{
+        <span style="font-weight: bold; text-decoration: underline;">ios</span>::sync_with_stdio(0);cin.tie(0);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; font-style: italic;">m</span>;
+
+        cin &gt;&gt; n &gt;&gt; m;
+        sol1(n, m);
+        <span style="font-weight: bold;">return</span> 0;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">sol0</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<p>
+A standard depth first search problem, yet it becomes problematic If I try to implment it using stacks. Main problem I observed is, in recursive dfs, whenever I set a value in index, I enter the dfs. Come to think of it, it should not be problematic to implement it in another way.
+</p>
+
+<p>
+Of course not. Recursive approach has different constraints than iterative approach.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">sol1</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+Recursive approach. The basic idea is this: for each function call, place node, and call dfs on next range, for all possible nodes that come next. Since dfs search is ordered, There is no need to unset a[idx] after dfs .
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Became quite rusty at the whole Recursive thing, while not knowing how to do iterative search at all.
+</p>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Remember the reverse stack push method.</h3>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Algorithm connections</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<ul class="org-ul">
+<li>Depth First Search — The page contrasts iterative and recursive enumeration of nondecreasing sequences.</li>
+</ul>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
