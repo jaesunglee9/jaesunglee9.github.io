@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V3: Redirects overwhelm the database</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V3: Redirects overwhelm the database</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V3 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v2.html">V2</a></li>
+<li>Next: <a href="v4.html">V4</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">New requirement</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Usage grows to:
+</p>
+
+<ul class="org-ul">
+<li>100 million new links per month.</li>
+<li>About 100 redirects for each creation request in steady traffic.</li>
+<li>A busy period may reach ten times the average rate.</li>
+<li>The redirect path must remain fast under that peak.</li>
+</ul>
+
+<p>
+The average rates become:
+</p>
+
+<pre class="example" id="org99c01cb">
+100,000,000 / (30 * 24 * 60 * 60) = 38.6 creations/second
+38.6 * 100                          = 3,860 redirects/second
+</pre>
+
+<p>
+The busy-period targets are approximately 400 creations and 40,000 redirects
+per second. Reads now dominate the workload.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Where V2 fails</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+Adding application instances does not remove database reads. Every redirect
+still performs the same lookup, and popular links repeatedly request the same
+rows. Eventually the database's latency or read throughput misses the target.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Smallest revision</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Place a distributed cache in front of the mapping database:
+</p>
+
+<pre class="example" id="orgee35afe">
+client -&gt; load balancer -&gt; application -&gt; mapping cache
+                                      |
+                                      +----------&gt; database
+</pre>
+
+<p>
+The application uses the cache-aside pattern:
+</p>
+
+<ol class="org-ol">
+<li>Look up the code in the cache.</li>
+<li>On a hit, return the redirect.</li>
+<li>On a miss, read the database.</li>
+<li>Put the mapping in the cache and return the redirect.</li>
+</ol>
+
+<p>
+At 40,000 peak redirects per second, a 95 percent hit rate leaves:
+</p>
+
+<pre class="example" id="org0ce0959">
+40,000 * (1 - 0.95) = 2,000 database reads/second
+</pre>
+
+<p>
+That calculation describes the benefit more clearly than merely placing a
+cache box in a diagram. The hit-rate assumption must be verified against real
+traffic.
+</p>
+
+<p>
+If the frequently accessed set contains 20 million mappings and a cache entry
+requires roughly 300 bytes, its raw size is about 6 GB. Actual provisioning
+must also allow for cache metadata, allocator overhead, replication, and
+growth.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">New failure modes</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+The cache is an optimization rather than the authority. Losing it should
+increase database load, not lose mappings. The fallback is dangerous if the
+database cannot absorb a sudden wave of misses, so the service also needs
+timeouts, admission control, and a gradual cache warm-up strategy.
+</p>
+
+<p>
+Other cases now matter:
+</p>
+
+<ul class="org-ul">
+<li>An eviction policy decides which mappings remain cached.</li>
+<li>A short-lived negative entry can reduce repeated lookups for unknown codes.</li>
+<li>Disabled or changed links require invalidation or a bounded cache lifetime.</li>
+<li>Concurrent misses for one popular code should be coalesced.</li>
+<li>A very hot code may need replication across cache nodes or a small
+per-instance cache.</li>
+</ul>
+
+<p>
+V3 improves redirect capacity and latency. It does not make the source of truth
+highly available.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v2.html">URL Shortener V2: Survive an application-machine failure</a></td><td><a href="v2.html">URL Shortener V2: Survive an application-machine failure</a></td></tr><tr><td><a href="v4.html">URL Shortener V4: Survive a database failure</a></td><td><a href="v4.html">URL Shortener V4: Survive a database failure</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

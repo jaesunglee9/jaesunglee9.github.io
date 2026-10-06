@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V4: Survive a database failure</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V4: Survive a database failure</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V4 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v3.html">V3</a></li>
+<li>Next: <a href="v5.html">V5</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">New requirement</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Redirects must continue when a database machine fails. A link must also work
+as soon as the service reports that its creation succeeded.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Where V3 fails</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+A warm cache may hide a database outage for popular links, but uncached links
+still fail. The only database machine also remains necessary for every
+creation. A cache is not a durable replica.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Smallest revision</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Use a primary database and read replicas:
+</p>
+
+<pre class="example" id="org7925b9e">
+                                  +-&gt; read replica 1
+application -&gt; cache or database +-&gt; read replica 2
+                                  +-&gt; primary
+</pre>
+
+<p>
+Creation commits on the primary. Cache misses can use replicas, and a failed
+replica can be removed from the read pool. If the primary fails, an eligible
+replica can be promoted according to the database's failover procedure.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Replication changes consistency</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+With asynchronous replication, the following execution is possible:
+</p>
+
+<pre class="example" id="org0ce0959">
+t0  primary commits code aB3xQ9
+t1  service returns the new short URL
+t2  client requests aB3xQ9
+t3  a lagging replica does not contain aB3xQ9 and returns no row
+</pre>
+
+<p>
+Returning <code>404</code> at <code>t3</code> would violate the new requirement. Populating the cache
+after the database commit improves the common case, but does not guarantee
+visibility: the cache write can fail or the entry can be evicted.
+</p>
+
+<p>
+Two stronger policies are available:
+</p>
+
+<ul class="org-ul">
+<li>On a replica miss, query the primary before returning <code>404</code>.</li>
+<li>Replicate synchronously before acknowledging creation.</li>
+</ul>
+
+<p>
+Primary fallback keeps ordinary writes fast but sends unknown codes and recent
+codes to the primary. Synchronous replication provides a stronger storage
+guarantee at the cost of write latency and write availability when replicas
+cannot acknowledge. The design must choose explicitly between those costs.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Failover is a capacity question</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+Replication helps only if the remaining machines can serve the redirected
+load. Health checks, promotion rules, connection rerouting, and capacity
+reserved for failure must be tested together. Recovery point and recovery time
+objectives should state how much committed data may be lost and how long
+creation or redirection may be unavailable.
+</p>
+
+<p>
+V4 makes storage-machine failure survivable, while adding replication lag and
+failover as behaviors the service must manage.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v3.html">URL Shortener V3: Redirects overwhelm the database</a></td><td><a href="v3.html">URL Shortener V3: Redirects overwhelm the database</a></td></tr><tr><td><a href="v5.html">URL Shortener V5: The mapping set reaches billions of links</a></td><td><a href="v5.html">URL Shortener V5: The mapping set reaches billions of links</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

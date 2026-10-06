@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V7: Record clicks without slowing redirects</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V7: Record clicks without slowing redirects</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V7 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v6.html">V6</a></li>
+<li>Next: End of the current series</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">New requirement</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Users want click counts by link, time, and region. Counts may be delayed and
+occasionally approximate, but analytics must not noticeably increase redirect
+latency.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Where the previous design fails</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Updating a counter in the mapping row for every redirect changes a read-heavy
+path into a write-heavy one. A popular link causes many clients to contend on
+the same counter, and an analytics outage can interrupt redirects.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Smallest revision</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Append a click event to a log and aggregate it outside the redirect's mapping
+lookup:
+</p>
+
+<pre class="example" id="org7925b9e">
+                         +-&gt; cache / mapping store -&gt; redirect
+redirect application ---+
+                         +-&gt; event log -&gt; consumers -&gt; analytics store
+</pre>
+
+<p>
+An event might contain the code, timestamp, request region, and a small amount
+of deliberately selected metadata. Consumers aggregate events into reporting
+tables independently of link resolution.
+</p>
+
+<p>
+At the V3 average of about 3,860 redirects per second, 200 bytes of raw event
+data per redirect produces:
+</p>
+
+<pre class="example" id="orgee35afe">
+3,860 events/second * 200 bytes * 86,400 seconds
+  = about 67 GB/day of raw events
+</pre>
+
+<p>
+At the 40,000-request peak, the event log must temporarily accept about 8 MB
+per second before its own replication and protocol overhead.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Delivery and counting semantics</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+If the application waits for a durable log acknowledgement, it reduces event
+loss but adds a dependency to the request. If it sends without waiting,
+redirects are less coupled to the log but events can disappear during failure.
+At-least-once delivery may duplicate events, so consumers need event IDs or
+must accept approximate counts.
+</p>
+
+<p>
+These are product choices. “Exactly once” is not a free queue setting; it
+requires the producer, log, consumer, and analytics store to agree on how a
+processed event is identified and committed.
+</p>
+
+<p>
+If the pipeline stops, redirects should continue while the log retains events
+for later processing. Retention capacity determines how long consumers may
+fall behind before analytics data is lost.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Abuse uses the same separation carefully</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+Rate limits and coarse abuse checks can happen synchronously at the edge.
+Expensive classification and reporting can consume the event stream
+asynchronously. Disabling a confirmed malicious link returns to the mapping
+system, where cache invalidation and cross-region propagation determine how
+quickly redirects stop.
+</p>
+
+<p>
+V7 keeps reporting work away from the latency-sensitive lookup while making
+the permitted delay and loss explicit.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v6.html">URL Shortener V6: Serve users in several regions</a></td><td><a href="v6.html">URL Shortener V6: Serve users in several regions</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

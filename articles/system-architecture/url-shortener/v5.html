@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V5: The mapping set reaches billions of links</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V5: The mapping set reaches billions of links</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V5 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v4.html">V4</a></li>
+<li>Next: <a href="v6.html">V6</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">New requirement</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+V3's creation rate continues for five years, and links still do not expire:
+</p>
+
+<pre class="example" id="org99c01cb">
+100,000,000 links/month * 60 months = 6,000,000,000 mappings
+6,000,000,000 * 500 bytes          = 3 TB logical data
+</pre>
+
+<p>
+With three copies, the mapping store alone requires roughly 9 TB before
+backups and additional operational headroom. Index maintenance, backup time,
+restore time, and re-replication may become unacceptable before raw disk space
+runs out.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Where V4 fails</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+A larger primary can postpone the problem, and that may be the correct
+response. Eventually, however, one database's storage, write throughput, or
+recovery time crosses its operational limit. Read replicas copy the whole data
+set; they do not divide it.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Smallest revision</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+Partition mappings by a hash of the short code:
+</p>
+
+<pre class="example" id="orgee35afe">
+                          +-&gt; shard 1 -&gt; replicas
+application -&gt; router ---+-&gt; shard 2 -&gt; replicas
+                          +-&gt; shard 3 -&gt; replicas
+                          +-&gt; ...
+</pre>
+
+<p>
+Every code maps to exactly one primary shard, and its replicas hold redundant
+copies. A lookup and an insertion use the same routing rule. Because generated
+codes are random, a suitable partition function distributes new mappings
+broadly rather than concentrating them in one increasing key range.
+</p>
+
+<p>
+If the operational target is no more than 300 GB of logical data per primary
+shard, 3 TB requires at least ten shards:
+</p>
+
+<pre class="example" id="org0ce0959">
+3 TB / 300 GB = 10 primary shards
+</pre>
+
+<p>
+Provisioning twelve would leave some growth and rebalancing room, but the real
+choice must also include request throughput and the capacity needed while a
+machine is unavailable.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Rebalancing the data</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+A rule such as <code>hash(code) mod shard_count</code> assigns keys evenly at a fixed
+shard count. Increasing the count changes the result for many existing keys,
+which forces a large migration.
+</p>
+
+<p>
+A routing table, virtual partitions, or consistent hashing can separate
+logical partitions from physical machines and reduce the data moved during a
+capacity change. The router and its configuration then become critical
+infrastructure. Configuration versions must be rolled out safely so that old
+and new application instances do not disagree about where a mapping lives.
+</p>
+
+<p>
+Partitioning supplies capacity; replication supplies redundancy. A shard with
+no replica is still unavailable when its machine fails.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Cost of this version</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+Cross-shard backups, rebalancing, schema changes, and recovery are harder than
+their single-database equivalents. The service should adopt V5 only when
+measurements show that vertical growth, caching, and replication no longer
+meet storage, throughput, or recovery requirements.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">References</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<ul class="org-ul">
+<li><a href="https://dl.acm.org/doi/10.1145/258533.258660">Consistent Hashing and Random Trees</a></li>
+</ul>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v4.html">URL Shortener V4: Survive a database failure</a></td><td><a href="v4.html">URL Shortener V4: Survive a database failure</a></td></tr><tr><td><a href="v6.html">URL Shortener V6: Serve users in several regions</a></td><td><a href="v6.html">URL Shortener V6: Serve users in several regions</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

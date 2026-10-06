@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V1: The smallest durable shortener</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V1: The smallest durable shortener</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V1 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v0.html">V0</a></li>
+<li>Next: <a href="v2.html">V2</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Requirement</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The first version has modest traffic:
+</p>
+
+<ul class="org-ul">
+<li>1 million new links per month.</li>
+<li>About 10 redirects for each creation request in steady traffic.</li>
+<li>A busy period may reach ten times the average rate.</li>
+<li>Links do not expire automatically.</li>
+<li>Data must survive an application restart.</li>
+<li>Temporary downtime during a machine failure is acceptable.</li>
+</ul>
+
+<p>
+Using a 30-day month, the average request rates are:
+</p>
+
+<pre class="example" id="org99c01cb">
+1,000,000 / (30 * 24 * 60 * 60) = 0.39 creations/second
+0.39 * 10                           = 3.9 redirects/second
+</pre>
+
+<p>
+The approximate busy-period rates are therefore 4 creations and 40 redirects
+per second. One ordinary application and database can plausibly serve this
+workload. We should measure the implementation before assuming otherwise.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Design</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+The complete architecture is:
+</p>
+
+<pre class="example" id="org7925b9e">
+client -&gt; application -&gt; database
+</pre>
+
+<p>
+The database contains the durable mapping:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">CREATE</span> <span style="font-weight: bold;">TABLE</span> <span style="font-weight: bold;">links</span> (
+    code       TEXT <span style="font-weight: bold;">PRIMARY</span> <span style="font-weight: bold;">KEY</span>,
+    target_url TEXT <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">NULL</span>,
+    created_at TEXT <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">NULL</span>
+);
+</code></pre>
+</div>
+
+<p>
+Creating a link follows this path:
+</p>
+
+<ol class="org-ol">
+<li>Parse the destination and apply the service's URL policy.</li>
+<li>Generate a candidate short code.</li>
+<li>Insert the mapping.</li>
+<li>If the primary-key constraint reports a collision, generate another code
+and retry.</li>
+<li>Return only after the database commits.</li>
+</ol>
+
+<p>
+The application uses a standard URL parser and accepts only absolute <code>http</code>
+or <code>https</code> destinations with a host.
+</p>
+
+<p>
+Redirection is a primary-key lookup from <code>code</code> to <code>target_url</code>. The
+application returns the stored destination in a <code>Location</code> header.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Choosing a code</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+A database sequence would provide unique integers. Encoding an integer in base
+62 makes it shorter, but does not make neighboring values unpredictable. The
+sequence also makes the database the allocation point for every code.
+</p>
+
+<p>
+Instead, the application can generate a ten-character base-62 code with a
+cryptographically secure random generator. Its namespace contains:
+</p>
+
+<pre class="example" id="org7f6f53b">
+62^10 = 839,299,365,868,340,224 possible codes
+</pre>
+
+<p>
+The database constraint, rather than probability, supplies the uniqueness
+guarantee. Randomness merely makes collisions uncommon and allows independent
+application instances to propose codes without coordinating first.
+</p>
+
+<p>
+Hashing the destination is not required. A deterministic hash would introduce
+a global deduplication policy: the service would need to decide whether URL
+variants are equivalent and how different owners, expiration dates, and
+analytics share one code. This design gives each intentional creation its own
+link.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Retrying a creation</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+If the database commits but the response is lost, the client cannot tell
+whether the mapping was created. Retrying the baseline request creates another
+short link.
+</p>
+
+<p>
+A product that requires safe retries can accept an idempotency key and store it
+with the mapping under a unique constraint. Repeating a request with the same
+key can then return the original link, while a new key represents an
+intentional new link. The baseline does not require this behavior, so the
+schema and creation flow above omit it.
+</p>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Capacity</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+Suppose one row, its metadata, and its index overhead consume approximately
+500 bytes. Five years of V1 growth require:
+</p>
+
+<pre class="example" id="org2dc1f56">
+1,000,000 links/month * 60 months * 500 bytes = 30 GB
+</pre>
+
+<p>
+This estimate should later be replaced by measurements from the actual schema.
+For now, it confirms that a single database is a reasonable starting point.
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Failure boundary and deferred work</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+The application machine and database are both single points of failure. That
+is consistent with the V1 requirement. Caches, replicas, shards, queues, and
+regional deployments would add failure modes without solving a current
+requirement, so V1 defers them.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">References</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<ul class="org-ul">
+<li><a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986, URI generic syntax</a></li>
+</ul>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v2.html">URL Shortener V2: Survive an application-machine failure</a></td><td><a href="v2.html">URL Shortener V2: Survive an application-machine failure</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

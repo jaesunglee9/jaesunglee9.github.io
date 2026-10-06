@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V2: Survive an application-machine failure</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V2: Survive an application-machine failure</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V2 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v1.html">V1</a></li>
+<li>Next: <a href="v3.html">V3</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">New requirement</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Temporary downtime from losing an application machine is no longer acceptable.
+Deploying a new application version should also avoid interrupting redirects.
+Traffic and storage remain at V1 levels.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Where V1 fails</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+In V1, the process accepting requests is the only route to the database. The
+data may be intact while a process crash, machine failure, or deployment makes
+the entire service unreachable.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Smallest revision</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Run multiple application instances behind a load balancer:
+</p>
+
+<pre class="example" id="org7925b9e">
+                         +----------------+
+                     +--&gt;| application 1  |--+
+client -&gt; load balancer  +----------------+  |
+                     |                       +--&gt; database
+                     +--&gt;| application 2  |--+
+                         +----------------+
+</pre>
+
+<p>
+The instances keep no authoritative local state. A request can reach any
+healthy instance, and the database remains the source of truth. The load
+balancer stops routing to an instance that fails its health check.
+</p>
+
+<p>
+Random code generation already supports multiple writers. Each instance
+generates candidates independently, and the database primary-key constraint
+resolves the unlikely case in which two instances propose the same code.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">What this version buys and costs</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+The application tier can now survive one instance failure if the remaining
+instances have enough capacity. Deployments can replace instances gradually.
+The load balancer becomes infrastructure that must itself be redundant, and
+the database is still a single point of failure.
+</p>
+
+<p>
+Notice that V2 did not add a cache. Redundancy in the application tier and
+database read capacity are different requirements.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v1.html">URL Shortener V1: The smallest durable shortener</a></td><td><a href="v1.html">URL Shortener V1: The smallest durable shortener</a></td></tr><tr><td><a href="v3.html">URL Shortener V3: Redirects overwhelm the database</a></td><td><a href="v3.html">URL Shortener V3: Redirects overwhelm the database</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 01:02 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener V6: Serve users in several regions</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener V6: Serve users in several regions</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Series navigation</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This paper is V6 of the <a href="v0.html">URL Shortener architecture series</a>.
+</p>
+
+<ul class="org-ul">
+<li>Previous: <a href="v5.html">V5</a></li>
+<li>Next: <a href="v7.html">V7</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">New requirement</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Users far from the original deployment experience unacceptable network
+latency. Redirects should continue when an entire region is unavailable.
+Creation may also need to remain available from more than one region.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Where V5 fails</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Sharding divides data but does not move it closer to users. A request still
+crosses a continent or ocean to reach the deployment, and a regional network
+failure can make every shard unreachable.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">First option: one write region, global reads</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+Keep creation in one home region and replicate mappings to read stores or
+caches elsewhere:
+</p>
+
+<pre class="example" id="org7925b9e">
+                         +-&gt; region A: primary writes
+global traffic routing -+-&gt; region B: cache + read replica
+                         +-&gt; region C: cache + read replica
+</pre>
+
+<p>
+This keeps one ordering authority for creation and makes the redirect path
+local for most users. Its main costs are replication lag and reduced creation
+availability when the home region fails. The V4 rule for avoiding false <code>404</code>
+responses must now work across a much slower regional boundary.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Second option: create links in every region</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Random codes allow regions to generate candidates without sharing a global
+sequence. Each region can durably accept creations and replicate mappings to
+the others.
+</p>
+
+<p>
+This improves creation latency and regional availability, but introduces
+concurrent writes, collision resolution across regions, replication conflicts,
+and more complicated ownership of each record. A uniqueness constraint within
+one region is no longer a global guarantee. If two regions accept the same code
+for different destinations, discovering the conflict later cannot preserve
+both short URLs as originally returned.
+</p>
+
+<p>
+The service must therefore choose a global uniqueness strategy. It can reserve
+codes through a shared authority, divide the code space into disjoint regional
+namespaces, or accept a quantified collision risk from a sufficiently large
+random namespace. The last choice is probabilistic rather than a correctness
+guarantee and must be described that way.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Choosing between them</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+The choice depends on the required behavior during a regional partition:
+</p>
+
+<ul class="org-ul">
+<li>If globally consistent creation matters more than write availability, keep a
+single write authority or require cross-region agreement.</li>
+<li>If regional creation availability matters more, accept asynchronous
+replication and define conflict behavior.</li>
+<li>Redirects can usually favor availability because existing mappings rarely
+change, but disabling an abusive link may require faster global propagation.</li>
+</ul>
+
+<p>
+Multi-region architecture is therefore a consistency and operations decision,
+not merely another layer of load balancers.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v5.html">URL Shortener V5: The mapping set reaches billions of links</a></td><td><a href="v5.html">URL Shortener V5: The mapping set reaches billions of links</a></td></tr><tr><td><a href="v7.html">URL Shortener V7: Record clicks without slowing redirects</a></td><td><a href="v7.html">URL Shortener V7: Record clicks without slowing redirects</a></td></tr><tr><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td><td><a href="v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
