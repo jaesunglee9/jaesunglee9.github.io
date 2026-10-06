@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-07 Wed 00:08 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL Shortener: Problem and Architecture Roadmap</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL Shortener: Problem and Architecture Roadmap</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">This system is developed in versions</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+This system is developed as a sequence of versions. Each paper adds one
+requirement and the smallest architectural change that meets it. Its numbers
+are teaching assumptions, not measurements of an existing service.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">The general problem</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+A URL shortener stores a mapping from a short code to a destination URL. A
+client creates a mapping and receives a URL such as:
+</p>
+
+<pre class="example" id="org99c01cb">
+https://sho.rt/aB3xQ9
+</pre>
+
+<p>
+Opening that URL asks the service to resolve <code>aB3xQ9</code> and redirect the client
+to the stored destination. The API treats the short code as an opaque
+identifier: clients should not depend on its internal structure. Whether the
+code is sequential, random, or otherwise allocated belongs to V1.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Functional requirements</h2>
+<div class="outline-text-2" id="text-org7161a33">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Create a short link</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<dl class="org-dl">
+<dt>Input</dt><dd>An absolute destination URL.</dd>
+<dt>Success</dt><dd>The service atomically assigns a short code and durably records
+its mapping to the destination. It returns the short URL only after that
+transaction commits.</dd>
+<dt>Rejection</dt><dd>If the destination does not satisfy the service's URL policy,
+the service returns a validation error and creates no mapping.</dd>
+<dt>Storage failure</dt><dd>If the mapping cannot be committed, the service does not
+report successful creation.</dd>
+</dl>
+
+<p>
+The HTTP interface may take this form:
+</p>
+
+<pre class="example" id="org7925b9e">
+POST /links
+Content-Type: application/json
+
+{"url":"https://example.com/articles/a-long-path"}
+</pre>
+
+<p>
+A successful response uses <code>201 Created</code> and identifies the new resource:
+</p>
+
+<pre class="example" id="orgee35afe">
+HTTP/1.1 201 Created
+Location: https://sho.rt/aB3xQ9
+Content-Type: application/json
+
+{"short_url":"https://sho.rt/aB3xQ9"}
+</pre>
+
+<p>
+If the destination is not acceptable, the service rejects the request before
+opening the creation transaction:
+</p>
+
+<pre class="example" id="org0ce0959">
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{"error":"invalid_destination_url"}
+</pre>
+
+<p>
+No code or mapping is created in this case.
+</p>
+
+<p>
+If the service knows that durable storage is unavailable and cannot commit the
+mapping, it reports temporary unavailability rather than returning a short URL:
+</p>
+
+<pre class="example" id="org9639605">
+HTTP/1.1 503 Service Unavailable
+Retry-After: 1
+Content-Type: application/json
+
+{"error":"link_storage_unavailable"}
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Follow a short link</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<dl class="org-dl">
+<dt>Input</dt><dd>A short code in the request path.</dd>
+<dt>Success</dt><dd>For a known code, the service returns a redirect whose
+<code>Location</code> header contains the stored destination.</dd>
+<dt>Unknown code</dt><dd>If no mapping exists, the service returns <code>404 Not Found</code>.</dd>
+<dt>Storage failure</dt><dd>If the service cannot determine whether a mapping exists,
+it reports temporary unavailability rather than claiming that the code is
+unknown.</dd>
+</dl>
+
+<p>
+The client follows a short link with a request such as:
+</p>
+
+<pre class="example" id="orgb948b55">
+GET /aB3xQ9
+Host: sho.rt
+</pre>
+
+<p>
+For a known code, the response contains the stored destination:
+</p>
+
+<pre class="example" id="org9beed48">
+HTTP/1.1 302 Found
+Location: https://example.com/articles/a-long-path
+</pre>
+
+<p>
+For a code with no mapping, the service returns:
+</p>
+
+<pre class="example" id="org2dc1f56">
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+
+{"error":"short_link_not_found"}
+</pre>
+
+<p>
+If storage is unavailable and the service cannot complete the lookup, it
+returns a distinct failure:
+</p>
+
+<pre class="example" id="orgde0f8b8">
+HTTP/1.1 503 Service Unavailable
+Retry-After: 1
+Content-Type: application/json
+
+{"error":"link_lookup_unavailable"}
+</pre>
+
+<p>
+Returning <code>404</code> for this last case would make a temporary infrastructure failure behave identically with the case where the mapping does not exist.
+</p>
+
+<p>
+<code>302 Found</code> keeps future visits going through the shortener. A permanent
+redirect is a separate product choice for immutable links that clients may
+cache.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">Baseline assumptions</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<ul class="org-ul">
+<li>Each creation request creates a new short link, even when another link has
+the same destination.</li>
+<li>Destinations must be absolute HTTP or HTTPS URLs.</li>
+<li>Links do not expire or change in the baseline.</li>
+<li>The service redirects to destinations; it does not fetch their contents.</li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">Requirements that evolve</h2>
+<div class="outline-text-2" id="text-org0043671">
+<p>
+The papers vary five dimensions while keeping the functional contract
+recognizable:
+</p>
+
+<ul class="org-ul">
+<li>Request volume and the ratio of redirects to creations.</li>
+<li>Accumulated mappings and storage requirements.</li>
+<li>Machine, database, and regional failure tolerance.</li>
+<li>Consistency required immediately after creation or disabling a link.</li>
+<li>Work that may happen asynchronously, such as analytics.</li>
+</ul>
+
+<p>
+A larger value in one dimension does not automatically require every later
+component. For example, application redundancy does not by itself justify a
+cache, and partitioning does not provide replication.
+</p>
+</div>
+</section>
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Roadmap</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
+<p>
+Each link below names the new pressure, the limitation it exposes, and the
+change explored in that paper.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Paper</th>
+<th scope="col" class="org-left">New requirement</th>
+<th scope="col" class="org-left">Limitation exposed</th>
+<th scope="col" class="org-left">Architectural change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">V1: smallest durable shortener</td>
+<td class="org-left">Persist modest traffic</td>
+<td class="org-left">Memory is lost on restart</td>
+<td class="org-left">One application and one database</td>
+</tr>
+
+<tr>
+<td class="org-left">V2: application redundancy</td>
+<td class="org-left">Survive an application-machine failure</td>
+<td class="org-left">One process is the only request path</td>
+<td class="org-left">Load balancer and stateless instances</td>
+</tr>
+
+<tr>
+<td class="org-left">V3: redirect scale</td>
+<td class="org-left">Serve much heavier redirect traffic</td>
+<td class="org-left">Every redirect reaches the database</td>
+<td class="org-left">Distributed mapping cache</td>
+</tr>
+
+<tr>
+<td class="org-left">V4: database availability</td>
+<td class="org-left">Survive a database-machine failure</td>
+<td class="org-left">Cache is not durable storage</td>
+<td class="org-left">Replication and failover</td>
+</tr>
+
+<tr>
+<td class="org-left">V5: billions of mappings</td>
+<td class="org-left">Exceed one database's operational capacity</td>
+<td class="org-left">Replicas copy rather than divide data</td>
+<td class="org-left">Partitioned mapping store</td>
+</tr>
+
+<tr>
+<td class="org-left">V6: geographic distribution</td>
+<td class="org-left">Reduce distant-user latency and regional risk</td>
+<td class="org-left">One deployment is far away and one regional failure domain</td>
+<td class="org-left">Regional reads and global routing</td>
+</tr>
+
+<tr>
+<td class="org-left">V7: click analytics</td>
+<td class="org-left">Record clicks without delaying redirects</td>
+<td class="org-left">Synchronous counters turn reads into writes</td>
+<td class="org-left">Asynchronous event pipeline</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The requirements accumulate, but the teaching focus advances one pressure at
+a time. A real service should stop at the earliest version that meets its
+measured needs.
+</p>
+</div>
+</section>
+<section id="outline-container-orga55bdd4" class="outline-2">
+<h2 id="orga55bdd4">What changes across the series</h2>
+<div class="outline-text-2" id="text-orga55bdd4">
+<p>
+The version papers use the same reasoning sequence:
+</p>
+
+<ol class="org-ol">
+<li>State the new requirement and quantify it where useful.</li>
+<li>Trace the relevant operation through the previous architecture.</li>
+<li>Identify the exact resource, guarantee, or failure boundary that no longer
+satisfies the requirement.</li>
+<li>Add the smallest useful mechanism.</li>
+<li>Recalculate capacity or latency at the changed boundary.</li>
+<li>Describe the new failure modes and operational cost.</li>
+<li>Leave unrelated concerns for a later version.</li>
+</ol>
+
+<p>
+This keeps the comparison causal. The reader can see both what a component
+buys and what complexity arrives with it.
+</p>
+</div>
+</section>
+<section id="outline-container-org1520f12" class="outline-2">
+<h2 id="org1520f12">Architecture progression</h2>
+<div class="outline-text-2" id="text-org1520f12">
+<p>
+After V1 through V7 have settled, this page will import one diagram from each
+paper. The diagrams will use the same visual vocabulary and will highlight the
+component or data flow introduced by that version. Placing them together here
+will make the architectural changes visible without replacing the reasoning in
+the individual papers.
+</p>
+</div>
+</section>
+<section id="outline-container-orgff52af2" class="outline-2">
+<h2 id="orgff52af2">References</h2>
+<div class="outline-text-2" id="text-orgff52af2">
+<ul class="org-ul">
+<li><a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4">RFC 9110, HTTP redirection status codes</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986, URI generic syntax</a></li>
+</ul>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
