@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-13 Tue 22:15 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener: Problem and Architecture Roadmap</title>
@@ -13,48 +13,41 @@
 </head>
 <body>
 <header id="preamble" class="status">
-<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/articles/system-architecture/url-shortener/v0.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
 </header>
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener: Problem and Architecture Roadmap</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">This system is developed in versions</h2>
-<div class="outline-text-2" id="text-org7f16d57">
-<p>
-This system is developed as a sequence of versions. Each paper adds one
-requirement and the smallest architectural change that meets it. Its numbers
-are teaching assumptions, not measurements of an existing service.
-</p>
-</div>
-</section>
-<section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">The general problem</h2>
-<div class="outline-text-2" id="text-orgd98eb26">
-<p>
-A URL shortener stores a mapping from a short code to a destination URL. A
-client creates a mapping and receives a URL such as:
+</header><p>
+In this series, we'll design a URL shortener: a service that turns a long URL into a short link you can share. When someone opens that link, the service sends them to the original address.
 </p>
 
-<pre class="example" id="org99c01cb">
+<p>
+This article is the introduction to the series. It defines what the service should do, what happens when a request fails, and the assumptions we'll use. It also lays out the problems we'll tackle in later versions. The first design comes in V1, starting with one application server and one database.
+</p>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">What happens when someone opens a short link?</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+The service stores a mapping from a short code to the original URL. After submitting a URL, a client receives a short link such as:
+</p>
+
+<pre class="example" id="org7f16d57">
 https://sho.rt/aB3xQ9
 </pre>
 
 <p>
-Opening that URL asks the service to resolve <code>aB3xQ9</code> and redirect the client
-to the stored destination. The API treats the short code as an opaque
-identifier: clients should not depend on its internal structure. Whether the
-code is sequential, random, or otherwise allocated belongs to V1.
+Opening this link asks the service to look up <code>aB3xQ9</code> and redirect the client to the stored URL. The client only needs the code to work; it should not depend on how the code is constructed. We'll decide how to allocate codes in V1, including whether to generate them sequentially, randomly, or another way.
 </p>
 </div>
 </section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">Functional requirements</h2>
-<div class="outline-text-2" id="text-org7161a33">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Functional requirements</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 </div>
-<div id="outline-container-org7f6f53b" class="outline-3">
-<h3 id="org7f6f53b">Create a short link</h3>
-<div class="outline-text-3" id="text-org7f6f53b">
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Create a short link</h3>
+<div class="outline-text-3" id="text-org9639605">
 <dl class="org-dl">
 <dt>Input</dt><dd>An absolute destination URL.</dd>
 <dt>Success</dt><dd>The service atomically assigns a short code and durably records
@@ -70,7 +63,7 @@ report successful creation.</dd>
 The HTTP interface may take this form:
 </p>
 
-<pre class="example" id="org7925b9e">
+<pre class="example" id="orgd98eb26">
 POST /links
 Content-Type: application/json
 
@@ -81,7 +74,7 @@ Content-Type: application/json
 A successful response uses <code>201 Created</code> and identifies the new resource:
 </p>
 
-<pre class="example" id="orgee35afe">
+<pre class="example" id="org7925b9e">
 HTTP/1.1 201 Created
 Location: https://sho.rt/aB3xQ9
 Content-Type: application/json
@@ -94,7 +87,7 @@ If the destination is not acceptable, the service rejects the request before
 opening the creation transaction:
 </p>
 
-<pre class="example" id="org0ce0959">
+<pre class="example" id="orgee35afe">
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
@@ -110,7 +103,7 @@ If the service knows that durable storage is unavailable and cannot commit the
 mapping, it reports temporary unavailability rather than returning a short URL:
 </p>
 
-<pre class="example" id="org9639605">
+<pre class="example" id="org0ce0959">
 HTTP/1.1 503 Service Unavailable
 Retry-After: 1
 Content-Type: application/json
@@ -119,9 +112,9 @@ Content-Type: application/json
 </pre>
 </div>
 </div>
-<div id="outline-container-orgfa898cb" class="outline-3">
-<h3 id="orgfa898cb">Follow a short link</h3>
-<div class="outline-text-3" id="text-orgfa898cb">
+<div id="outline-container-orgde0f8b8" class="outline-3">
+<h3 id="orgde0f8b8">Follow a short link</h3>
+<div class="outline-text-3" id="text-orgde0f8b8">
 <dl class="org-dl">
 <dt>Input</dt><dd>A short code in the request path.</dd>
 <dt>Success</dt><dd>For a known code, the service returns a redirect whose
@@ -136,7 +129,7 @@ unknown.</dd>
 The client follows a short link with a request such as:
 </p>
 
-<pre class="example" id="orgb948b55">
+<pre class="example" id="org7f6f53b">
 GET /aB3xQ9
 Host: sho.rt
 </pre>
@@ -145,7 +138,7 @@ Host: sho.rt
 For a known code, the response contains the stored destination:
 </p>
 
-<pre class="example" id="org9beed48">
+<pre class="example" id="orgb948b55">
 HTTP/1.1 302 Found
 Location: https://example.com/articles/a-long-path
 </pre>
@@ -154,7 +147,7 @@ Location: https://example.com/articles/a-long-path
 For a code with no mapping, the service returns:
 </p>
 
-<pre class="example" id="org2dc1f56">
+<pre class="example" id="org9beed48">
 HTTP/1.1 404 Not Found
 Content-Type: application/json
 
@@ -166,7 +159,7 @@ If storage is unavailable and the service cannot complete the lookup, it
 returns a distinct failure:
 </p>
 
-<pre class="example" id="orgde0f8b8">
+<pre class="example" id="org2dc1f56">
 HTTP/1.1 503 Service Unavailable
 Retry-After: 1
 Content-Type: application/json
@@ -186,9 +179,9 @@ cache.
 </div>
 </div>
 </section>
-<section id="outline-container-org194cf40" class="outline-2">
-<h2 id="org194cf40">Baseline assumptions</h2>
-<div class="outline-text-2" id="text-org194cf40">
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Baseline assumptions</h2>
+<div class="outline-text-2" id="text-org7161a33">
 <ul class="org-ul">
 <li>Each creation request creates a new short link, even when another link has
 the same destination.</li>
@@ -198,9 +191,9 @@ the same destination.</li>
 </ul>
 </div>
 </section>
-<section id="outline-container-org0043671" class="outline-2">
-<h2 id="org0043671">Variable requirements</h2>
-<div class="outline-text-2" id="text-org0043671">
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">Variable requirements</h2>
+<div class="outline-text-2" id="text-org194cf40">
 <p>
 The papers vary five dimensions while keeping the functional contract
 recognizable:
@@ -221,12 +214,15 @@ cache, and partitioning does not provide replication.
 </p>
 </div>
 </section>
-<section id="outline-container-org0c8fbd7" class="outline-2">
-<h2 id="org0c8fbd7">Roadmap</h2>
-<div class="outline-text-2" id="text-org0c8fbd7">
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">Roadmap</h2>
+<div class="outline-text-2" id="text-org0043671">
 <p>
-Each link below names the new pressure, the limitation it exposes, and the
-change explored in that paper.
+We'll grow the design one version at a time. Each article adds a requirement, shows where the previous design falls short, and introduces the smallest change that addresses it. The numbers used along the way are teaching assumptions, not measurements of an existing service.
+</p>
+
+<p>
+The table below shows what changes at each step and why.
 </p>
 
 <table>
@@ -302,7 +298,7 @@ change explored in that paper.
 </table>
 
 <p>
-We will use the same problem solving approach throught the series.
+We'll use the same problem-solving approach throughout the series.
 </p>
 
 <ol class="org-ol">
@@ -322,9 +318,9 @@ buys and what complexity arrives with it.
 </p>
 </div>
 </section>
-<section id="outline-container-orga55bdd4" class="outline-2">
-<h2 id="orga55bdd4">Architecture progression</h2>
-<div class="outline-text-2" id="text-orga55bdd4">
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Architecture progression</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
 <p>
 After V1 through V7 have settled, this page will import one diagram from each
 paper. The diagrams will use the same visual vocabulary and will highlight the
@@ -334,9 +330,9 @@ the individual papers.
 </p>
 </div>
 </section>
-<section id="outline-container-org1520f12" class="outline-2">
-<h2 id="org1520f12">References</h2>
-<div class="outline-text-2" id="text-org1520f12">
+<section id="outline-container-orga55bdd4" class="outline-2">
+<h2 id="orga55bdd4">References</h2>
+<div class="outline-text-2" id="text-orga55bdd4">
 <ul class="org-ul">
 <li><a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4">RFC 9110, HTTP redirection status codes</a></li>
 <li><a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986, URI generic syntax</a></li>
