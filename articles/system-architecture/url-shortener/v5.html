@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V5: The mapping set reaches billions of links</title>
@@ -18,127 +18,212 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V5: The mapping set reaches billions of links</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+Replication gave us another copy of the mappings. It did not make the original copy smaller. Every replica still has to store, index, and recover the full data set.
+</p>
+
 <p>
-This paper is V5 of the <a href="v0.html">URL Shortener architecture series</a>.
+In this version, we'll split the mappings across database groups. The important question is how a request finds its owner—and how that answer changes while data moves.
 </p>
 
 <ul class="org-ul">
+<li>Series: <a href="v0.html">URL Shortener architecture series</a></li>
 <li>Previous: <a href="v4.html">V4</a></li>
 <li>Next: <a href="v6.html">V6</a></li>
 </ul>
-</div>
-</section>
 <section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">New requirement</h2>
+<h2 id="orgd98eb26">The limit is operational, not just disk space</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-V3's creation rate continues for five years, and links still do not expire:
+Keep V3's creation rate for five years, with no automatic expiration:
 </p>
 
-<pre class="example" id="org99c01cb">
+<pre class="example" id="org7f16d57">
 100,000,000 links/month * 60 months = 6,000,000,000 mappings
 6,000,000,000 * 500 bytes          = 3 TB logical data
 </pre>
 
 <p>
-With three copies, the mapping store alone requires roughly 9 TB before
-backups and additional operational headroom. Index maintenance, backup time,
-restore time, and re-replication may become unacceptable before raw disk space
-runs out.
-</p>
-</div>
-</section>
-<section id="outline-container-org7925b9e" class="outline-2">
-<h2 id="org7925b9e">Where V4 fails</h2>
-<div class="outline-text-2" id="text-org7925b9e">
-<p>
-A larger primary can postpone the problem, and that may be the correct
-response. Eventually, however, one database's storage, write throughput, or
-recovery time crosses its operational limit. Read replicas copy the whole data
-set; they do not divide it.
-</p>
-</div>
-</section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Smallest revision</h2>
-<div class="outline-text-2" id="text-org9639605">
-<p>
-Partition mappings by a hash of the short code:
-</p>
-
-<pre class="example" id="orgee35afe">
-                          +-&gt; shard 1 -&gt; replicas
-application -&gt; router ---+-&gt; shard 2 -&gt; replicas
-                          +-&gt; shard 3 -&gt; replicas
-                          +-&gt; ...
-</pre>
-
-<p>
-Every code maps to exactly one primary shard, and its replicas hold redundant
-copies. A lookup and an insertion use the same routing rule. Because generated
-codes are random, a suitable partition function distributes new mappings
-broadly rather than concentrating them in one increasing key range.
+The 500-byte estimate includes the assumed row and index overhead from V1. Two durable copies would use roughly 6 TB under that model. With an additional full read replica, three copies use roughly 9 TB. Backups, recovery logs, and operating headroom are extra.
 </p>
 
 <p>
-If the operational target is no more than 300 GB of logical data per primary
-shard, 3 TB requires at least ten shards:
+Three terabytes is not a universal sharding threshold. A larger machine may be the cheapest way to keep the design simple. The reason to split the database is a measured limit: write throughput, maintenance time, restore time, or storage growth that one primary can no longer handle acceptably.
 </p>
 
-<pre class="example" id="org0ce0959">
+<p>
+We'll assume the operational target is at most 300 GB of logical data per primary. That gives a lower bound:
+</p>
+
+<pre class="example" id="org99c01cb">
 3 TB / 300 GB = 10 primary shards
 </pre>
 
 <p>
-Provisioning twelve would leave some growth and rebalancing room, but the real
-choice must also include request throughput and the capacity needed while a
-machine is unavailable.
+Choosing twelve primary shards would leave some room for growth and movement. The actual choice also depends on request distribution and failure capacity. None of these numbers is a benchmark result.
 </p>
 </div>
 </section>
-<section id="outline-container-org7f6f53b" class="outline-2">
-<h2 id="org7f6f53b">Rebalancing the data</h2>
-<div class="outline-text-2" id="text-org7f6f53b">
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Each mapping has one owning shard</h2>
+<div class="outline-text-2" id="text-orgee35afe">
 <p>
-A rule such as <code>hash(code) mod shard_count</code> assigns keys evenly at a fixed
-shard count. Increasing the count changes the result for many existing keys,
-which forces a large migration.
+A shard stores a subset of the mappings. Its standby stores another copy of that same subset, using the durability and failover policy from V4.
+</p>
+
+<pre class="example" id="org7925b9e">
+                            +-&gt; shard group 1: primary + standby
+application -&gt; routing map -+-&gt; shard group 2: primary + standby
+                            +-&gt; shard group 3: primary + standby
+                            +-&gt; ...
+</pre>
+
+<p>
+The cache lookup can still use the short code directly. On a cache miss, the application routes the database request to the group that owns that code.
 </p>
 
 <p>
-A routing table, virtual partitions, or consistent hashing can separate
-logical partitions from physical machines and reduce the data moved during a
-capacity change. The router and its configuration then become critical
-infrastructure. Configuration versions must be rolled out safely so that old
-and new application instances do not disagree about where a mapping lives.
+Creation follows the same route: generate a candidate code, determine its owning shard, and attempt the insert there. If the primary-key constraint reports a collision, generate another candidate and route that one.
 </p>
 
 <p>
-Partitioning supplies capacity; replication supplies redundancy. A shard with
-no replica is still unavailable when its machine fails.
+This still enforces code uniqueness without checking every shard. Identical codes always select the same logical partition and therefore the same active owner. The argument depends on all writers agreeing on the partition function and ownership; inconsistent routing can break it.
+</p>
+
+<p>
+Hash the short code, not the destination URL. Two intentional creations for the same destination should remain independent, as they were in V1.
 </p>
 </div>
 </section>
 <section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Cost of this version</h2>
+<h2 id="orgb948b55">Why not take the hash modulo the server count?</h2>
 <div class="outline-text-2" id="text-orgb948b55">
 <p>
-Cross-shard backups, rebalancing, schema changes, and recovery are harder than
-their single-database equivalents. The service should adopt V5 only when
-measurements show that vertical growth, caching, and replication no longer
-meet storage, throughput, or recovery requirements.
+A direct rule is easy to write:
+</p>
+
+<pre class="example" id="org0ce0959">
+owner = hash(code) mod number_of_shards
+</pre>
+
+<p>
+It also changes many owners when we add a shard. For a small arithmetic example, consider a code whose hash value is eight:
+</p>
+
+<pre class="example" id="org9639605">
+8 mod 3 = 2
+8 mod 4 = 0
+</pre>
+
+<p>
+After adding a fourth shard, the same lookup goes somewhere else. Unless the data has moved too, a valid code appears missing. Recomputing the owner is only one part of a migration.
+</p>
+
+<p>
+We'll separate a stable logical partition from its current physical owner. For this teaching design, use a fixed set of 1,024 buckets:
+</p>
+
+<pre class="example" id="org7f6f53b">
+bucket = hash(code) mod 1024
+
+Routing map, epoch 17:
+bucket 37 -&gt; shard group 2
+bucket 38 -&gt; shard group 5
+
+Routing map, epoch 18:
+bucket 37 -&gt; shard group 12
+bucket 38 -&gt; shard group 5
+</pre>
+
+<p>
+Adding a shard changes selected routing-map entries. The bucket calculation stays the same. We choose the hash algorithm and byte encoding once and treat them as part of the storage format.
+</p>
+
+<p>
+The fixed bucket count is itself a choice with a future limit. Changing it later requires another migration plan. Virtual partitions and consistent hashing offer related ways to avoid tying every key directly to the current machine count; the <a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Dynamo paper</a> describes virtual nodes in a production storage design.
 </p>
 </div>
 </section>
 <section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">References</h2>
+<h2 id="org9beed48">Move one bucket without losing its writes</h2>
 <div class="outline-text-2" id="text-org9beed48">
-<ul class="org-ul">
-<li><a href="https://dl.acm.org/doi/10.1145/258533.258660">Consistent Hashing and Random Trees</a></li>
-</ul>
+<p>
+Suppose we want to move bucket 37 from group 2 to group 12. Group 2 must remain responsible while its data is being copied. Otherwise a creation can arrive between the copy and the ownership switch and disappear from the destination.
+</p>
+
+<p>
+A teaching migration protocol can use these steps:
+</p>
+
+<ol class="org-ol">
+<li>Record the migration and its starting log position. Group 2 remains the only writer.</li>
+<li>Copy a consistent snapshot of the bucket into group 12.</li>
+<li>Stream changes after the snapshot until the destination is almost caught up.</li>
+<li>Pause writes to this bucket and drain in-flight writes. The source continues to hold ownership.</li>
+<li>Apply the final changes and durably replicate them at the destination.</li>
+<li>Fence writes at the old owner, publish the new ownership epoch, and allow the new owner to serve the bucket.</li>
+<li>Keep the old copy until stale routes and in-flight reads have been handled and the migration is verified.</li>
+</ol>
+
+<p>
+Reads may briefly retry during the ownership switch, and writes to this bucket can receive a temporary failure. This design deliberately permits that bounded pause instead of requiring two writable owners.
+</p>
+
+<p>
+Requests carry the routing epoch. A server that no longer owns the bucket rejects or redirects a stale request so the application can refresh its map. It must not return “no row” as though a stale route were an authoritative lookup. If it cannot establish current ownership, it returns a temporary failure.
+</p>
+
+<p>
+The ownership transition needs a consistent metadata store and enforcement at the database access boundary. A local configuration reload alone cannot fence an old writer. This protocol explains the required behavior; it is not a complete migration implementation. <a href="https://www.mongodb.com/docs/manual/core/sharding-balancer-administration/#range-migration-procedure">MongoDB's range-migration procedure</a> is a concrete example of copying data, catching up changes, updating ownership metadata, and cleaning up afterward.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">What if the migration fails halfway?</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Before the ownership switch, group 2 remains authoritative. We can discard or resume the incomplete destination copy.
+</p>
+
+<p>
+After the switch, group 12 is authoritative. We cannot roll back by simply pointing the router at the old copy, because new writes may already exist only on group 12. Moving back is another coordinated migration.
+</p>
+
+<p>
+The migration record must survive process restarts and identify whether ownership changed. Data movement also consumes disk, network, and replication capacity. Limit concurrent moves so rebalancing does not overwhelm the same shards that are serving requests.
+</p>
+
+<p>
+If the metadata service is temporarily unavailable, applications can use a known map only while the ownership protocol still makes that safe. Ownership changes should stop until coordination recovers. Blindly allowing new moves while routers cannot learn about them creates conflicting views.
+</p>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Data balance and traffic balance are different</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+Random codes and a suitable hash should spread new mappings across buckets. That balances storage reasonably well under the assumptions, but one famous link can still create most of the traffic.
+</p>
+
+<p>
+Splitting other buckets will not divide requests for that single code. V3's cache and hot-key handling remain relevant. We therefore watch storage size, request rate, and latency per shard, not just total cluster utilization.
+</p>
+
+<p>
+Backups also become a collection of related artifacts: shard data, recovery positions, the routing map, and in-progress migration state. A restore must reconstruct ownership as well as rows. Immutable, independent mappings make this easier than transactions spanning several shards, but restoration still needs a test.
+</p>
+</div>
+</section>
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">What has V5 actually added?</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
+<p>
+We would validate this design by inserting and reading codes through different application instances, moving a bucket under traffic, restarting the migration controller, and deliberately using an old routing epoch. Every acknowledged mapping should remain reachable through its current owner, and stale routes should never create false 404s.
+</p>
+
+<p>
+The service can now grow storage and write capacity by adding shard groups. Each group still needs replication to survive a machine failure. The whole deployment remains in one region, so distant users still cross the same long network path. <a href="v6.html">V6</a> changes that geographic boundary.
+</p>
 </div>
 </section>
 </article>

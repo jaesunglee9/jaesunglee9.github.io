@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V7: Record clicks without slowing redirects</title>
@@ -18,113 +18,240 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V7: Record clicks without slowing redirects</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+A creator wants to know whether anyone opened the link they shared. We could increment a counter every time we redirect, but that adds a write to the operation we have spent the series making fast.
+</p>
+
 <p>
-This paper is V7 of the <a href="v0.html">URL Shortener architecture series</a>.
+We'll send click events to a separate processing path and decide exactly what happens when that path slows down. “Asynchronous” only helps once queues, retries, and data loss have concrete rules.
 </p>
 
 <ul class="org-ul">
+<li>Series: <a href="v0.html">URL Shortener architecture series</a></li>
 <li>Previous: <a href="v6.html">V6</a></li>
 <li>Next: End of the current series</li>
 </ul>
-</div>
-</section>
-<section id="outline-container-org99c01cb" class="outline-2">
-<h2 id="org99c01cb">New requirement</h2>
-<div class="outline-text-2" id="text-org99c01cb">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Decide what the count represents</h2>
+<div class="outline-text-2" id="text-org7f16d57">
 <p>
-Users want click counts by link, time, and region. Counts may be delayed and
-occasionally approximate, but analytics must not noticeably increase redirect
-latency.
+The product wants counts by link, time, and region. Results may arrive late, and occasional missing events are acceptable. Analytics must not noticeably increase redirect latency.
+</p>
+
+<p>
+Here, a click event means the service handled a valid redirect request. It does not prove that a human clicked, that the browser received the response, or that the destination loaded. Bots, previews, and client retries can all produce requests. Unique visitors and fraud-adjusted counts would need separate definitions.
+</p>
+
+<p>
+We preserve the explicit no-store redirect policy from V1 so compliant caches do not routinely serve repeat redirects without contacting the service. Even then, request counts remain an observation of the shortener's traffic rather than a measurement of successful page views.
 </p>
 </div>
 </section>
 <section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Where the previous design fails</h2>
+<h2 id="orgd98eb26">Why a counter in the mapping row becomes a problem</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-Updating a counter in the mapping row for every redirect changes a read-heavy
-path into a write-heavy one. A popular link causes many clients to contend on
-the same counter, and an analytics outage can interrupt redirects.
+Suppose a popular code receives ten thousand requests in one second. If each request increments the same database row before returning, they compete to update the same piece of state.
+</p>
+
+<p>
+Sharding mappings does not spread that one counter across shards. The analytics write can delay the redirect, and an unavailable counter store can prevent an otherwise valid link from working.
+</p>
+
+<p>
+We instead give reporting its own path:
+</p>
+
+<pre class="example" id="org99c01cb">
+                           +-&gt; cache / mapping store -&gt; redirect response
+redirect application -----+
+                           +-&gt; bounded local buffer
+                                  -&gt; event log -&gt; consumers -&gt; analytics store
+</pre>
+
+<p>
+The buffer is part of the failure model. It is not an unlimited place where writes can wait until the problem disappears.
 </p>
 </div>
 </section>
-<section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">Smallest revision</h2>
-<div class="outline-text-2" id="text-org0ce0959">
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">Choose a concrete delivery policy</h2>
+<div class="outline-text-2" id="text-orgee35afe">
 <p>
-Append a click event to a log and aggregate it outside the redirect's mapping
-lookup:
+For this version, the request handler attempts a nonblocking enqueue after resolving a valid mapping. A background sender batches buffered events into a replicated log. The redirect does not wait for that log to acknowledge the batch.
+</p>
+
+<p>
+An event can contain:
 </p>
 
 <pre class="example" id="org7925b9e">
-                         +-&gt; cache / mapping store -&gt; redirect
-redirect application ---+
-                         +-&gt; event log -&gt; consumers -&gt; analytics store
+event_id:       one stable ID for this event
+code:           the resolved short code
+occurred_at:    time the service handled the request
+request_region: the region serving the request
 </pre>
 
 <p>
-An event might contain the code, timestamp, request region, and a small amount
-of deliberately selected metadata. Consumers aggregate events into reporting
-tables independently of link resolution.
+The sender reuses the same event ID when retrying an uncertain append. It does not create a new ID for each delivery attempt.
 </p>
 
 <p>
-At the V3 average of about 3,860 redirects per second, 200 bytes of raw event
-data per redirect produces:
+We collect only the fields needed for the defined reports. Adding IP addresses or full user-agent strings has privacy and retention consequences and is unnecessary for the counts above.
 </p>
 
-<pre class="example" id="orgee35afe">
+<p>
+There are two places where an event can be lost before reaching the log: the local buffer can be full, or the application can crash while holding unsent events. In either case, the redirect remains available and the count may be low. We record buffer drops and sender failures as operational metrics so approximate counts do not silently look exact.
+</p>
+
+<p>
+This is a deliberate best-effort policy at the request boundary. If the product later requires an audit record for every accepted redirect, it must pay for a stronger acknowledgement path or change the acceptance rule.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Size the log and the recovery work</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+Using V3's average rate and 200 bytes of raw event data:
+</p>
+
+<pre class="example" id="org0ce0959">
 3,860 events/second * 200 bytes * 86,400 seconds
-  = about 67 GB/day of raw events
+  = 66,700,800,000 bytes/day
+  = about 66.7 GB/day
 </pre>
 
 <p>
-At the 40,000-request peak, the event log must temporarily accept about 8 MB
-per second before its own replication and protocol overhead.
+At the peak rate:
+</p>
+
+<pre class="example" id="org9639605">
+40,000 events/second * 200 bytes = 8 MB/second
+</pre>
+
+<p>
+Replication, record metadata, indexes, and protocol overhead add to those raw numbers. Three days of raw events would be roughly 200 GB; three replicated copies would be roughly 600 GB before overhead.
+</p>
+
+<p>
+Storage retention tells us how long consumers may fall behind. It does not tell us how fast they catch up. For example, a one-hour consumer outage at the average rate creates:
+</p>
+
+<pre class="example" id="org7f6f53b">
+3,860 * 3,600 = 13,896,000 events of backlog
+
+If consumers process 8,000 events/second after recovery:
+net drain rate = 8,000 - 3,860 = 4,140 events/second
+catch-up time  = 13,896,000 / 4,140 = about 56 minutes
+</pre>
+
+<p>
+That estimate assumes arrivals remain at the average rate and the consumer sustains the proposed capacity. Those are teaching assumptions. If consumption merely matches new arrivals, the backlog never shrinks.
+</p>
+
+<p>
+A ten-second local buffer at the peak rate would hold 400,000 events, or about 80 MB of raw payload across the fleet, with additional object overhead. A long log outage will exceed it. We cap the buffer, count dropped events, and continue redirecting.
 </p>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Delivery and counting semantics</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Process an event once even when delivery repeats</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
 <p>
-If the application waits for a durable log acknowledgement, it reduces event
-loss but adds a dependency to the request. If it sends without waiting,
-redirects are less coupled to the log but events can disappear during failure.
-At-least-once delivery may duplicate events, so consumers need event IDs or
-must accept approximate counts.
+A sender can append an event successfully and lose the acknowledgement. Retrying may put the same event into the log again. A consumer can also process an event and crash before recording its progress.
 </p>
 
 <p>
-These are product choices. “Exactly once” is not a free queue setting; it
-requires the producer, log, consumer, and analytics store to agree on how a
-processed event is identified and committed.
+Suppose event E increments the count, then the consumer crashes:
+</p>
+
+<pre class="example" id="org9beed48">
+1. Read E.
+2. Increment the hourly counter.
+3. Crash before acknowledging progress.
+4. Restart and receive E again.
+</pre>
+
+<p>
+Simply replaying step two would double-count E. If we want to suppress these delivery duplicates, the analytics store can keep processed event IDs with a uniqueness constraint.
 </p>
 
 <p>
-If the pipeline stops, redirects should continue while the log retains events
-for later processing. Retention capacity determines how long consumers may
-fall behind before analytics data is lost.
+The consumer performs one local transaction:
+</p>
+
+<pre class="example" id="org2dc1f56">
+begin transaction
+insert event ID into the processed-events table
+if the ID was newly inserted:
+    increment the aggregate for code, time bucket, and region
+commit transaction
+acknowledge consumer progress afterward
+</pre>
+
+<p>
+If the transaction fails, neither effect commits. If it commits and progress acknowledgement is lost, replay sees the existing ID and skips the increment. Inserting the ID and updating the counter in separate transactions would leave another crash window.
+</p>
+
+<p>
+Deduplication storage needs its own capacity and retention policy. IDs must remain available for at least the replay window we promise to handle; replaying older events after removing their IDs can count them again.
+</p>
+
+<p>
+This gives a precise guarantee for processed events within that policy. It cannot recover events dropped before the log. It also does not merge two distinct redirect requests from a client retry: those are different events under our counting definition.
+</p>
+
+<p>
+<a href="https://kafka.apache.org/41/design/design/">Kafka's delivery-semantics documentation</a> makes the same boundary important: writing results to an external store requires coordinating stored results with consumer progress. A log's delivery setting alone does not make every downstream effect exactly once.
 </p>
 </div>
 </section>
-<section id="outline-container-org7f6f53b" class="outline-2">
-<h2 id="org7f6f53b">Abuse uses the same separation carefully</h2>
-<div class="outline-text-2" id="text-org7f6f53b">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Keep reporting scalable too</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <p>
-Rate limits and coarse abuse checks can happen synchronously at the edge.
-Expensive classification and reporting can consume the event stream
-asynchronously. Disabling a confirmed malicious link returns to the mapping
-system, where cache invalidation and cross-region propagation determine how
-quickly redirects stop.
+If we partition the event log only by short code, one very popular link can concentrate work on one partition. Our counts do not require a global order of clicks, so we can distribute events more broadly, for example by event ID.
 </p>
 
 <p>
-V7 keeps reporting work away from the latency-sensitive lookup while making
-the permitted delay and loss explicit.
+Consumers can aggregate batches before writing results. At larger scale, they can maintain partial counters and combine them for reporting so one global row does not become the same hot counter we removed from the redirect path. Partial aggregation and duplicate handling must agree; retries must not add the same batch twice.
+</p>
+
+<p>
+For hourly reports, use the event's occurrence time rather than the time a delayed consumer happens to process it. Late events can update an earlier bucket. Clock skew still limits accuracy, so the report should expose its freshness and avoid implying that the newest bucket is complete.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Walk through an analytics outage</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+If consumers stop while the log remains available, senders can continue appending. Alerts on the age of the oldest unprocessed event and remaining retention time tell us how close we are to losing replayable data.
+</p>
+
+<p>
+If the log becomes unavailable, senders retry within bounded budgets and buffers fill. Once buffers are full, the chosen policy drops analytics events and increments drop metrics. It does not make redirect handlers wait indefinitely or consume unbounded memory.
+</p>
+
+<p>
+Recovery should drain gradually. A sender retry storm and a consumer catch-up storm can overload the log and analytics store just as a cold cache can overload the mapping database.
+</p>
+
+<p>
+Expensive abuse classification can consume these events separately. A confirmed disable decision goes back to the mapping and policy system, where V3's cache rules and V6's regional propagation rules determine when redirects stop. Analytics lag must not be confused with a guarantee of immediate enforcement.
+</p>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">What completes this design?</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<p>
+Before trusting the reports, inject duplicate deliveries, crash a consumer before and after its transaction commits, fill the producer buffer, and stop the log. Check both the counts and redirect latency. These are proposed implementation checks; the capacity numbers here have not been measured.
+</p>
+
+<p>
+The series began with a mapping stored in one database. Each revision added a mechanism for a stated problem: another application path, cached reads, a surviving database copy, partitioned storage, regional access, and finally asynchronous reporting. Each also added a condition under which the service waits, rejects work, or loses optional data. Those conditions are part of the architecture the user experiences.
 </p>
 </div>
 </section>

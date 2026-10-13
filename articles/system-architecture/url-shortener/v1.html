@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V1: The smallest durable shortener</title>
@@ -18,185 +18,278 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V1: The smallest durable shortener</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+A user pastes a long URL, receives a short one, and shares it. Tomorrow, the application restarts. That short link should still work. Our first design needs somewhere to keep the mapping, but it does not yet need a fleet of servers.
+</p>
+
 <p>
-This paper is V1 of the <a href="v0.html">URL Shortener architecture series</a>.
+This is V1 of the <a href="v0.html">URL Shortener architecture series</a>. We'll follow a link from creation to redirection, then look at what happens when the database commits but the client never receives the response.
 </p>
 
 <ul class="org-ul">
 <li>Previous: <a href="v0.html">V0</a></li>
 <li>Next: <a href="v2.html">V2</a></li>
 </ul>
-</div>
-</section>
-<section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Requirement</h2>
-<div class="outline-text-2" id="text-orgd98eb26">
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">How much work does the first version do?</h2>
+<div class="outline-text-2" id="text-org99c01cb">
 <p>
-The first version has modest traffic:
+We'll use these teaching assumptions:
 </p>
 
 <ul class="org-ul">
-<li>1 million new links per month.</li>
-<li>About 10 redirects for each creation request in steady traffic.</li>
-<li>A busy period may reach ten times the average rate.</li>
-<li>Links do not expire automatically.</li>
-<li>Data must survive an application restart.</li>
-<li>Temporary downtime during a machine failure is acceptable.</li>
+<li>One million new links per month, with no automatic expiration.</li>
+<li>About ten redirects per creation in average traffic.</li>
+<li>Busy periods at ten times the average request rate.</li>
+<li>Mappings survive application restarts.</li>
+<li>Temporary service interruption during a server failure is acceptable.</li>
 </ul>
 
 <p>
-Using a 30-day month, the average request rates are:
+A 30-day month gives us:
 </p>
 
-<pre class="example" id="org99c01cb">
-1,000,000 / (30 * 24 * 60 * 60) = 0.39 creations/second
-0.39 * 10                           = 3.9 redirects/second
+<pre class="example" id="org7f16d57">
+1,000,000 / (30 * 24 * 60 * 60) = 0.386 creations/second
+0.386 * 10                     = 3.86 redirects/second
+
+Busy period: about 4 creations and 40 redirects/second
 </pre>
 
 <p>
-The approximate busy-period rates are therefore 4 creations and 40 redirects
-per second. One ordinary application and database can plausibly serve this
-workload. We should measure the implementation before assuming otherwise.
+Those numbers make one application server and one database a reasonable starting point. They do not prove that a particular implementation will be fast enough. We still need to measure request latency, database work, and connection use under the expected mix of requests.
 </p>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Design</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Give the mapping one home</h2>
+<div class="outline-text-2" id="text-org0ce0959">
 <p>
-The complete architecture is:
+The application handles HTTP and the database owns the mappings. We'll use PostgreSQL to make the schema and transaction examples concrete.
 </p>
 
-<pre class="example" id="org7925b9e">
-client -&gt; application -&gt; database
+<pre class="example" id="orgd98eb26">
+client -&gt; application -&gt; PostgreSQL
+             |
+             +-&gt; HTTP redirect back to the client
 </pre>
 
 <p>
-The database contains the durable mapping:
+The redirect is a response to the client. The application does not fetch the destination page or relay its contents.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-sql"><code><span style="font-weight: bold;">CREATE</span> <span style="font-weight: bold;">TABLE</span> <span style="font-weight: bold;">links</span> (
     code       TEXT <span style="font-weight: bold;">PRIMARY</span> <span style="font-weight: bold;">KEY</span>,
     target_url TEXT <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">NULL</span>,
-    created_at TEXT <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">NULL</span>
+    created_at TIMESTAMPTZ <span style="font-weight: bold;">NOT</span> <span style="font-weight: bold;">NULL</span> <span style="font-weight: bold;">DEFAULT</span> <span style="font-weight: bold;">CURRENT_TIMESTAMP</span>
 );
 </code></pre>
 </div>
 
 <p>
-Creating a link follows this path:
-</p>
-
-<ol class="org-ol">
-<li>Parse the destination and apply the service's URL policy.</li>
-<li>Generate a candidate short code.</li>
-<li>Insert the mapping.</li>
-<li>If the primary-key constraint reports a collision, generate another code
-and retry.</li>
-<li>Return only after the database commits.</li>
-</ol>
-
-<p>
-The application uses a standard URL parser and accepts only absolute <code>http</code>
-or <code>https</code> destinations with a host.
+The primary key prevents two mappings from owning the same code. The target URL need not be unique: two intentional creation requests can produce two short links to the same destination.
 </p>
 
 <p>
-Redirection is a primary-key lookup from <code>code</code> to <code>target_url</code>. The
-application returns the stored destination in a <code>Location</code> header.
-</p>
-</div>
-</section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Choosing a code</h2>
-<div class="outline-text-2" id="text-orgb948b55">
-<p>
-A database sequence would provide unique integers. Encoding an integer in base
-62 makes it shorter, but does not make neighboring values unpredictable. The
-sequence also makes the database the allocation point for every code.
-</p>
-
-<p>
-Instead, the application can generate a ten-character base-62 code with a
-cryptographically secure random generator. Its namespace contains:
-</p>
-
-<pre class="example" id="org7f6f53b">
-62^10 = 839,299,365,868,340,224 possible codes
-</pre>
-
-<p>
-The database constraint, rather than probability, supplies the uniqueness
-guarantee. Randomness merely makes collisions uncommon and allows independent
-application instances to propose codes without coordinating first.
-</p>
-
-<p>
-Hashing the destination is not required. A deterministic hash would introduce
-a global deduplication policy: the service would need to decide whether URL
-variants are equivalent and how different owners, expiration dates, and
-analytics share one code. This design gives each intentional creation its own
-link.
-</p>
-</div>
-</section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Retrying a creation</h2>
-<div class="outline-text-2" id="text-org9beed48">
-<p>
-If the database commits but the response is lost, the client cannot tell
-whether the mapping was created. Retrying the baseline request creates another
-short link.
-</p>
-
-<p>
-A product that requires safe retries can accept an idempotency key and store it
-with the mapping under a unique constraint. Repeating a request with the same
-key can then return the original link, while a new key represents an
-intentional new link. The baseline does not require this behavior, so the
-schema and creation flow above omit it.
+For this version, a mapping is immutable once created. Link editing, expiration, and disabling will need explicit rules when we introduce caches and abuse handling.
 </p>
 </div>
 </section>
 <section id="outline-container-orgde0f8b8" class="outline-2">
-<h2 id="orgde0f8b8">Capacity</h2>
+<h2 id="orgde0f8b8">Follow one creation</h2>
 <div class="outline-text-2" id="text-orgde0f8b8">
 <p>
-Suppose one row, its metadata, and its index overhead consume approximately
-500 bytes. Five years of V1 growth require:
+Suppose the client sends:
+</p>
+
+<pre class="example" id="org9639605">
+POST /links
+Content-Type: application/json
+
+{"url":"https://example.com/articles/a-long-path"}
+</pre>
+
+<p>
+The application first parses the URL with a standard parser. Our initial policy accepts an absolute HTTP or HTTPS URL with a host and rejects embedded credentials. We also set input-size limits before storing it. Parsing checks the form of the address; it does not establish that the destination is trustworthy or will remain available.
+</p>
+
+<p>
+Next, the application generates a candidate code and tries to insert it. This PostgreSQL statement uses parameters supplied by the driver:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">INSERT</span> <span style="font-weight: bold;">INTO</span> links (code, target_url)
+<span style="font-weight: bold;">VALUES</span> ($1, $2)
+<span style="font-weight: bold;">ON</span> CONFLICT (code) DO NOTHING
+RETURNING code;
+</code></pre>
+</div>
+
+<p>
+<a href="https://www.postgresql.org/docs/current/sql-insert.html">PostgreSQL's INSERT documentation</a> explains the two parts we need: a conflict can skip the insert, and the returning clause reports rows actually inserted. A returned code means this statement inserted a row. An empty result means another mapping already owns that code.
+</p>
+
+<p>
+The request handler therefore has a small loop:
+</p>
+
+<pre class="example" id="org9beed48">
+validate the destination
+repeat up to a bounded collision limit:
+    generate a candidate
+    begin a transaction
+    attempt the insert
+    if no row was inserted:
+        end the transaction and try a new candidate
+    otherwise:
+        commit
+        return the short URL only after commit succeeds
+return a temporary failure if no attempt succeeds
+</pre>
+
+<p>
+Only a code collision belongs in that retry loop. A connection failure or a timeout is a different outcome. Retrying every database error as though it were a collision can hide an outage and produce an unbounded request.
+</p>
+
+<p>
+After the commit succeeds, the service returns:
 </p>
 
 <pre class="example" id="org2dc1f56">
+HTTP/1.1 201 Created
+Location: https://sho.rt/aB3xQ9mN2z
+Content-Type: application/json
+
+{"short_url":"https://sho.rt/aB3xQ9mN2z"}
+</pre>
+
+<p>
+The ordering matters. Returning the URL before committing would let a client receive a link that disappears when the application crashes. Here we assume the database uses durable commit settings and persistent storage. A database acknowledgement is only as strong as those settings and the failures the storage can withstand.
+</p>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">Why random codes still need a constraint</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<p>
+A sequence would give us unique integers. Encoding them in base 62 makes them compact, but neighboring values remain easy to enumerate.
+</p>
+
+<p>
+We'll instead generate ten characters uniformly from the 62 ASCII letters and digits, using a cryptographically secure random generator. A library should sample the alphabet without modulo bias. The available space is:
+</p>
+
+<pre class="example" id="orgfa898cb">
+62^10 = 839,299,365,868,340,224 codes
+</pre>
+
+<p>
+After five years at V1's creation rate, we would have 60 million mappings. With uniform independent candidates, the chance that the next candidate is already occupied is approximately:
+</p>
+
+<pre class="example" id="org7161a33">
+60,000,000 / 62^10 = 7.15 * 10^-11
+</pre>
+
+<p>
+That is the probability for the next attempt, not the probability that no collision ever occurs. We do not need collisions to be impossible. If two concurrent requests choose the same candidate, the primary key admits at most one mapping; the other request generates a new candidate.
+</p>
+
+<p>
+Randomness makes this rare and lets application instances generate candidates independently. The database supplies the uniqueness guarantee. Neither property makes a short URL an authorization mechanism: anyone who has a public short link can use it.
+</p>
+
+<p>
+Hashing the destination would solve a different problem. Reusing one code for an identical URL introduces deduplication rules, including what to do with URL variants, different owners, and different expiration policies. We do not need those rules to satisfy the current requirements.
+</p>
+</div>
+</section>
+<section id="outline-container-org1520f12" class="outline-2">
+<h2 id="org1520f12">Follow the short link</h2>
+<div class="outline-text-2" id="text-org1520f12">
+<p>
+For a request to the short path, the application runs a parameterized lookup:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> target_url <span style="font-weight: bold;">FROM</span> links <span style="font-weight: bold;">WHERE</span> code = $1;
+</code></pre>
+</div>
+
+<p>
+A found row produces:
+</p>
+
+<pre class="example" id="orga55bdd4">
+HTTP/1.1 302 Found
+Location: https://example.com/articles/a-long-path
+Cache-Control: no-store
+</pre>
+
+<p>
+We choose a temporary redirect and explicitly ask caches not to store the response. A 302 status alone does not mean “never cache this.” The cache policy matters if later visits must reach the shortener, for example to enforce disabling or record visits. See <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.3">the redirect semantics</a> and <a href="https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.5">the no-store directive</a>.
+</p>
+
+<p>
+A successful lookup with no row produces a 404. A failed lookup produces a temporary failure such as 503. We also prevent caching those responses in this design, so a temporary error is not retained as a lasting result. The application must not translate “I could not reach the database” into “this link does not exist.”
+</p>
+</div>
+</section>
+<section id="outline-container-org79c4fb7" class="outline-2">
+<h2 id="org79c4fb7">The awkward case: the commit succeeds, the response disappears</h2>
+<div class="outline-text-2" id="text-org79c4fb7">
+<p>
+There is a gap between storing a mapping and delivering its URL:
+</p>
+
+<pre class="example" id="orgff52af2">
+1. Database commits code A.
+2. Application sends the success response.
+3. Connection breaks before the client receives it.
+4. Client retries the creation request.
+5. Database commits code B for the same destination.
+</pre>
+
+<p>
+Both links are valid. The client simply does not know about A. This is the baseline behavior, and a timeout can leave the client uncertain even when the server reports no success.
+</p>
+
+<p>
+If duplicate creation is unacceptable, the API can accept an idempotency key. Store the key, a fingerprint of the request, and the resulting mapping together under a unique constraint. A retry with the same key and input returns the original result; reusing the key for different input is rejected. With authenticated users, scope the key to the caller.
+</p>
+
+<p>
+That change also needs a retention policy: forgetting a key eventually allows the same request to create another link. We defer it here because V0 permits a new mapping for each creation request.
+</p>
+</div>
+</section>
+<section id="outline-container-org0b22235" class="outline-2">
+<h2 id="org0b22235">What do we need to operate this?</h2>
+<div class="outline-text-2" id="text-org0b22235">
+<p>
+Suppose a row, its metadata, and its share of the index consume 500 bytes. This is a sizing assumption, not a measurement of the schema above.
+</p>
+
+<pre class="example" id="orgf718da5">
 1,000,000 links/month * 60 months * 500 bytes = 30 GB
 </pre>
 
 <p>
-This estimate should later be replaced by measurements from the actual schema.
-For now, it confirms that a single database is a reasonable starting point.
+Long URLs and database overhead can change the result substantially. We would measure representative rows and indexes, then allow room for logs, maintenance, backups, and growth.
 </p>
-</div>
-</section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Failure boundary and deferred work</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+
 <p>
-The application machine and database are both single points of failure. That
-is consistent with the V1 requirement. Caches, replicas, shards, queues, and
-regional deployments would add failure modes without solving a current
-requirement, so V1 defers them.
+Before relying on this design, test the failure sequences it claims to handle: restart the application after a successful creation, force a code collision, disconnect during commit, and make the database unavailable during a lookup. These are proposed checks; no benchmark or failure experiment is claimed here.
 </p>
-</div>
-</section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">References</h2>
-<div class="outline-text-2" id="text-org7161a33">
-<ul class="org-ul">
-<li><a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986, URI generic syntax</a></li>
-</ul>
+
+<p>
+Persistent storage also needs a recovery plan. A backup and a tested restore protect against mistakes and storage loss that an application restart test does not cover. The acceptable amount of lost data and restore time must be decided before deployment.
+</p>
+
+<p>
+At this stage, losing the application server still makes every link unreachable until it recovers. The mappings can be perfectly intact while the service is down. <a href="v2.html">V2</a> addresses that specific failure.
+</p>
 </div>
 </section>
 </article>

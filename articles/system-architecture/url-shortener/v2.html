@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V2: Survive an application-machine failure</title>
@@ -18,81 +18,179 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V2: Survive an application-machine failure</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+A link can be safely stored and still be unusable. In <a href="v1.html">V1</a>, the application server is the only way to reach it. Stop that process and every redirect stops, even though the database is healthy.
+</p>
+
 <p>
-This paper is V2 of the <a href="v0.html">URL Shortener architecture series</a>.
+We'll give requests another route to the same data. The interesting part is what happens between a server failing and the rest of the system noticing.
 </p>
 
 <ul class="org-ul">
+<li>Series: <a href="v0.html">URL Shortener architecture series</a></li>
 <li>Previous: <a href="v1.html">V1</a></li>
 <li>Next: <a href="v3.html">V3</a></li>
 </ul>
-</div>
-</section>
-<section id="outline-container-org99c01cb" class="outline-2">
-<h2 id="org99c01cb">New requirement</h2>
-<div class="outline-text-2" id="text-org99c01cb">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Define what surviving a failure means</h2>
+<div class="outline-text-2" id="text-org7f16d57">
 <p>
-Temporary downtime from losing an application machine is no longer acceptable.
-Deploying a new application version should also avoid interrupting redirects.
-Traffic and storage remain at V1 levels.
+Traffic remains about four creations and forty redirects per second during a busy period. Storage growth is unchanged. The new requirement is that one failed application server must not cause an outage that lasts until somebody repairs it.
+</p>
+
+<p>
+Failure detection is not instantaneous. A request already running on a failed server can fail, and a few new requests can reach it before health checks remove it. Our goal is to recover routing automatically after a bounded detection period. Planned deployments should avoid that failure window by draining requests before stopping a server.
+</p>
+
+<p>
+This is a more useful contract than promising that every request will succeed through any failure. We can measure the detection time, failed requests, and surviving capacity separately.
 </p>
 </div>
 </section>
 <section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Where V1 fails</h2>
+<h2 id="orgd98eb26">Two application instances, one set of mappings</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-In V1, the process accepting requests is the only route to the database. The
-data may be intact while a process crash, machine failure, or deployment makes
-the entire service unreachable.
+Place a load balancer in front of two instances on different machines:
+</p>
+
+<pre class="example" id="org99c01cb">
+                         +-&gt; application A --+
+client -&gt; load balancer -+                   +-&gt; database
+                         +-&gt; application B --+
+</pre>
+
+<p>
+The load balancer chooses a healthy instance for each request. It does not need to send a visitor to the instance that created the link.
+</p>
+
+<p>
+For example, A can create a mapping and B can later resolve it. Both use the same database and the same interpretation of a short code. The candidate-generation and primary-key rules from V1 already allow concurrent writers.
+</p>
+
+<p>
+This is what “stateless application instances” means here. They still have memory, connection pools, and temporary work. But losing that local state must not lose an acknowledged mapping or make a request valid only on one instance. An in-memory map of newly created links would violate that property.
+</p>
+
+<p>
+A load balancer also needs a failure strategy. For this article we assume a redundant or managed balancer and place the application instances in separate machine failure domains. Running both processes on one host would not satisfy the requirement. Losing a whole region and losing the database remain separate problems.
 </p>
 </div>
 </section>
 <section id="outline-container-orgee35afe" class="outline-2">
-<h2 id="orgee35afe">Smallest revision</h2>
+<h2 id="orgee35afe">Walk through an unplanned failure</h2>
 <div class="outline-text-2" id="text-orgee35afe">
 <p>
-Run multiple application instances behind a load balancer:
+Consider a balancer that checks readiness every five seconds and removes a target after two failed checks. These are illustrative settings, not a recommended configuration for every deployment.
 </p>
 
 <pre class="example" id="org7925b9e">
-                         +----------------+
-                     +--&gt;| application 1  |--+
-client -&gt; load balancer  +----------------+  |
-                     |                       +--&gt; database
-                     +--&gt;| application 2  |--+
-                         +----------------+
+t0       A and B pass readiness checks.
+t1       A crashes just after its last successful check.
+t1..t2   Some requests still go to A and fail.
+t2       A has failed enough checks; the balancer removes it.
+t3       New requests go to B.
+t4       A is repaired and passes the recovery checks.
+t5       A re-enters the target set.
 </pre>
 
 <p>
-The instances keep no authoritative local state. A request can reach any
-healthy instance, and the database remains the source of truth. The load
-balancer stops routing to an instance that fails its health check.
+The vulnerable interval depends on where the crash falls between checks, how long a check may wait, and how quickly routing changes propagate. Multiplying interval by failure count is only a rough estimate; test the observed interval with the selected balancer.
 </p>
 
 <p>
-Random code generation already supports multiple writers. Each instance
-generates candidates independently, and the database primary-key constraint
-resolves the unlikely case in which two instances propose the same code.
+An in-flight request does not move to B when A dies. The connection may close or time out. A client can retry a lookup, but creation has the ambiguous-commit case from V1. A proxy must not blindly replay a creation request unless the API provides the required idempotency semantics.
+</p>
+
+<p>
+Even for reads, retries need a deadline and a small attempt budget. If every layer retries independently, one client request can turn into many attempts during a failure. <a href="https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/">AWS's discussion of retries</a> explains this amplification and why backoff alone is insufficient without limits.
 </p>
 </div>
 </section>
 <section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">What this version buys and costs</h2>
+<h2 id="org0ce0959">A useful health check asks a narrow question</h2>
 <div class="outline-text-2" id="text-org0ce0959">
 <p>
-The application tier can now survive one instance failure if the remaining
-instances have enough capacity. Deployments can replace instances gradually.
-The load balancer becomes infrastructure that must itself be redundant, and
-the database is still a single point of failure.
+A readiness endpoint should answer whether this instance can currently accept useful traffic. It should stay unready until configuration, routing, and required local initialization are complete.
 </p>
 
 <p>
-Notice that V2 did not add a cache. Redundancy in the application tier and
-database read capacity are different requirements.
+Liveness asks a different question: is the process stuck in a state that needs a restart? Treating a temporary database outage as evidence that every application process needs restarting can turn one dependency failure into a restart storm.
+</p>
+
+<p>
+We therefore keep a simple process liveness check and use readiness to control routing. Database connectivity also deserves monitoring, but a shared database failure cannot be solved by switching between A and B. If readiness includes a database probe, its timeout and its behavior when every instance fails must be deliberate.
+</p>
+
+<p>
+Balancer behavior is product-specific. For example, <a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html">AWS Application Load Balancer can fail open when every registered target is unhealthy</a>. We must verify our chosen balancer's behavior instead of assuming that “unhealthy” always means no traffic.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Can B actually carry the service?</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+In normal operation each instance sees roughly half the requests. After A fails, B sees the full load.
+</p>
+
+<p>
+Suppose a load test of this request mix were to show that one instance can handle eighty requests per second within the chosen latency budget. That would leave room for the roughly forty-four requests per second expected after a failure. Eighty is an example measurement for the calculation, not a result from this project.
+</p>
+
+<p>
+The general check is:
+</p>
+
+<pre class="example" id="org9639605">
+capacity remaining after one failure &gt;= peak admitted traffic
+</pre>
+
+<p>
+Connection pools need the same attention. Two pools of twenty database connections can consume forty connections; adding ten instances can multiply that again without increasing database capacity. Keep a total connection budget, bound local concurrency, and reject excess work before queues grow without limit.
+</p>
+
+<p>
+Watch latency and failures during the transition, not just CPU before the failure. A survivor with a cold runtime or a burst of new connections may behave differently from one already serving steady traffic.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Deploy without abruptly cutting connections</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+A planned replacement gives us time to drain A:
+</p>
+
+<ol class="org-ol">
+<li>Start the replacement and wait for it to become ready.</li>
+<li>Stop assigning new requests to A.</li>
+<li>Let A finish existing requests, up to a drain deadline.</li>
+<li>Stop A, then repeat for the next instance.</li>
+</ol>
+
+<p>
+The drain deadline prevents one stuck request from blocking a deployment forever. Requests still running at the deadline can fail, so the application and balancer deadlines must fit together.
+</p>
+
+<p>
+Old and new application versions overlap during this process. Database schema changes must support that overlap. For example, add a new optional column before code starts using it, and remove an old column only after old instances are gone. Otherwise “rolling deployment” can still produce a service-wide error.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">What would demonstrate that this works?</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Create a link through A and read it through B. Then stop A while sending requests and record how long failures continue. Repeat during a deployment, with slow in-flight requests, and with B near its capacity limit. These are validation steps for an implementation, not experiments already performed.
+</p>
+
+<p>
+The design now has an answer to losing one application machine: route future work to another instance with enough spare capacity. It still sends every redirect to the same database. A cache would not improve the failure mechanism we just built.
+</p>
+
+<p>
+In <a href="v3.html">V3</a>, the request volume changes enough to make those database reads the next problem.
 </p>
 </div>
 </section>

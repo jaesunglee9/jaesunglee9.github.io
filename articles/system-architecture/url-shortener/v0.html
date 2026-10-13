@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener: Problem and Architecture Roadmap</title>
@@ -172,9 +172,7 @@ Returning <code>404</code> for this last case would make a temporary infrastruct
 </p>
 
 <p>
-<code>302 Found</code> keeps future visits going through the shortener. A permanent
-redirect is a separate product choice for immutable links that clients may
-cache.
+<code>302 Found</code> is a temporary redirect, but does not by itself prevent caching. V1 will set an explicit cache policy so later visits reach the shortener. A permanent redirect is a separate product choice for immutable links that clients may cache.
 </p>
 </div>
 </div>

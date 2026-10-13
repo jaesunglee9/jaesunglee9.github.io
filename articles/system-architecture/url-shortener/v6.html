@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V6: Serve users in several regions</title>
@@ -18,107 +18,230 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V6: Serve users in several regions</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+A user on another continent can wait on the network even when our database query takes almost no time. Sharding helped us fit and operate the mappings, but all those shards still live far away.
+</p>
+
 <p>
-This paper is V6 of the <a href="v0.html">URL Shortener architecture series</a>.
+We'll move reads closer to users while keeping a clear answer to who may create a mapping. Then we'll examine what changes if every region must accept writes independently.
 </p>
 
 <ul class="org-ul">
+<li>Series: <a href="v0.html">URL Shortener architecture series</a></li>
 <li>Previous: <a href="v5.html">V5</a></li>
 <li>Next: <a href="v7.html">V7</a></li>
 </ul>
-</div>
-</section>
-<section id="outline-container-org99c01cb" class="outline-2">
-<h2 id="org99c01cb">New requirement</h2>
-<div class="outline-text-2" id="text-org99c01cb">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Decide what a region failure is allowed to interrupt</h2>
+<div class="outline-text-2" id="text-org7f16d57">
 <p>
-Users far from the original deployment experience unacceptable network
-latency. Redirects should continue when an entire region is unavailable.
-Creation may also need to remain available from more than one region.
+The new requirements are lower redirect latency for distant users and recovery when the primary region becomes unavailable. We continue to protect acknowledged mappings against the single failure boundary being discussed—now one region rather than one machine.
+</p>
+
+<p>
+Creation is much less frequent than redirection in our workload. For this version, we accept slower creation and a temporary creation outage during a regional partition. That lets us choose one write authority per shard instead of making concurrent regional writes a baseline requirement.
+</p>
+
+<p>
+Cached or locally replicated links should remain readable where a healthy copy exists. A lookup that cannot establish whether a mapping exists may return 503 during recovery. We still do not turn uncertainty into 404.
 </p>
 </div>
 </section>
 <section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Where V5 fails</h2>
+<h2 id="orgd98eb26">Put the frequent operation near the user</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-Sharding divides data but does not move it closer to users. A request still
-crosses a continent or ocean to reach the deployment, and a regional network
-failure can make every shard unreachable.
+Keep shard primaries in region A. Regions B and C have application instances, caches, and read copies. Global routing sends a visitor to a healthy nearby region.
+</p>
+
+<pre class="example" id="org99c01cb">
+                         +-&gt; region A: applications + shard primaries
+global traffic routing -+-&gt; region B: applications + cache + read copies
+                         +-&gt; region C: applications + cache + read copies
+
+Creation in B or C -&gt; write authority in A
+Replication       -&gt; copies in B and C
+</pre>
+
+<p>
+The regional service uses the same bucket mapping from V5 to find the relevant shard copy. Cross-region replication adds a second dimension to routing: which shard owns the code, and which regional copy can answer this request.
+</p>
+
+<p>
+For an illustrative comparison, suppose a distant round trip takes 160 milliseconds and a regional one takes 15 milliseconds. Avoiding the distant trip can save roughly 145 milliseconds on that part of a request. These are example inputs, not measured latency or a promise about a geographic pair.
+</p>
+
+<p>
+The benefit depends on how many requests can finish locally. Requests for a just-created mapping may still take the slower path, so we need to inspect tail latency as well as an average.
 </p>
 </div>
 </section>
 <section id="outline-container-orgee35afe" class="outline-2">
-<h2 id="orgee35afe">First option: one write region, global reads</h2>
+<h2 id="orgee35afe">Follow a link created in A and opened in B</h2>
 <div class="outline-text-2" id="text-orgee35afe">
 <p>
-Keep creation in one home region and replicate mappings to read stores or
-caches elsewhere:
+Asynchronous read copies can lag:
 </p>
 
 <pre class="example" id="org7925b9e">
-                         +-&gt; region A: primary writes
-global traffic routing -+-&gt; region B: cache + read replica
-                         +-&gt; region C: cache + read replica
+1. A commits code X.
+2. Client receives X and sends it to a user in B.
+3. B's cache misses.
+4. B's read copy has not applied X yet.
+5. B consults the current write authority.
+6. B returns the redirect and may cache X.
 </pre>
 
 <p>
-This keeps one ordering authority for creation and makes the redirect path
-local for most users. Its main costs are replication lag and reduced creation
-availability when the home region fails. The V4 rule for avoiding false <code>404</code>
-responses must now work across a much slower regional boundary.
+This is V4's replica-miss rule crossing a much slower network. The application must budget enough time for the remote lookup or return a temporary failure when its deadline expires.
+</p>
+
+<p>
+A locally found immutable mapping can be served immediately. A local absence needs an authoritative check. If the network to the authority is unavailable, B cannot distinguish “unknown code” from “known code that has not arrived here.” We choose 503 in that case.
+</p>
+
+<p>
+Do not cache that failure as an absent mapping. Otherwise restoring the network might still leave the new link hidden behind a negative entry.
 </p>
 </div>
 </section>
 <section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">Second option: create links in every region</h2>
+<h2 id="org0ce0959">Replication policy determines what survives losing A</h2>
 <div class="outline-text-2" id="text-org0ce0959">
 <p>
-Random codes allow regions to generate candidates without sharing a global
-sequence. Each region can durably accept creations and replicate mappings to
-the others.
+Asynchronous replication alone can leave the newest acknowledged mappings only in A. If A is lost before they reach another region, changing traffic routing does not recover them.
 </p>
 
 <p>
-This improves creation latency and regional availability, but introduces
-concurrent writes, collision resolution across regions, replication conflicts,
-and more complicated ownership of each record. A uniqueness constraint within
-one region is no longer a global guarantee. If two regions accept the same code
-for different destinations, discovering the conflict later cannot preserve
-both short URLs as originally returned.
+To keep our acknowledgement guarantee, each shard in this design requires a durable copy in a designated recovery region before creation succeeds. Assume that region is B. The local redundancy from V4 can remain, but it does not replace the cross-region copy.
 </p>
 
 <p>
-The service must therefore choose a global uniqueness strategy. It can reserve
-codes through a shared authority, divide the code space into disjoint regional
-namespaces, or accept a quantified collision risk from a sufficiently large
-random namespace. The last choice is probabilistic rather than a correctness
-guarantee and must be described that way.
+This adds a distant acknowledgement to creation latency and makes creation unavailable if the required cross-region path is broken. That is the cost we accepted at the start. C can remain an asynchronous read region and therefore is not automatically an eligible recovery authority.
+</p>
+
+<p>
+The distinction between a durable recovery record and a query-visible row still applies. Before serving authoritative reads after promotion, the candidate must apply the records required by its recovery policy. The <a href="https://www.postgresql.org/docs/current/warm-standby.html#SYNCHRONOUS-REPLICATION">PostgreSQL replication documentation</a> provides concrete examples of acknowledgement stages, though the complete regional failover procedure is a separate system design.
 </p>
 </div>
 </section>
 <section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Choosing between them</h2>
+<h2 id="org9639605">Follow the loss of the primary region</h2>
 <div class="outline-text-2" id="text-org9639605">
 <p>
-The choice depends on the required behavior during a regional partition:
+Recovering the service requires more than changing a DNS record:
 </p>
 
-<ul class="org-ul">
-<li>If globally consistent creation matters more than write availability, keep a
-single write authority or require cross-region agreement.</li>
-<li>If regional creation availability matters more, accept asynchronous
-replication and define conflict behavior.</li>
-<li>Redirects can usually favor availability because existing mappings rarely
-change, but disabling an abusive link may require faster global propagation.</li>
-</ul>
+<ol class="org-ol">
+<li>Stop routing new user traffic to A through the selected global routing mechanism.</li>
+<li>Establish that A cannot continue writing, using the database control system's fencing and ownership rules.</li>
+<li>Recover and promote the eligible shard copies in B.</li>
+<li>Publish the new shard authorities and refresh application connections.</li>
+<li>Re-establish the required remote durable copies before resuming creation under the same policy.</li>
+</ol>
 
 <p>
-Multi-region architecture is therefore a consistency and operations decision,
-not merely another layer of load balancers.
+Cached redirects in healthy regions can continue during parts of this sequence. Unresolved requests may fail temporarily while no safe authority is available.
+</p>
+
+<p>
+Routing changes do not instantly move existing connections or invalidate every cached DNS answer. Recovery tests must include clients still trying the old path and applications holding old shard maps.
+</p>
+
+<p>
+If A is merely isolated rather than destroyed, independently promoting writers on both sides would create competing authorities. We keep the single-writer policy even when that means refusing writes. Recovery ownership needs a coordination system that itself survives the intended region failure; a controller hosted only in A would leave a gap in the design.
+</p>
+
+<p>
+After promotion, creation may remain unavailable while another remote copy catches up. Requiring both zero acknowledged data loss and uninterrupted writes through arbitrary partitions would be a different contract.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">What if every region must create links?</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+Now suppose the product cannot accept that creation outage. A caller in an isolated region must receive a new working link without contacting another region.
+</p>
+
+<p>
+Random codes help regions propose candidates independently, but a local unique constraint checks only local data. Two regions could both accept the same code for different destinations. Discovering the conflict later cannot make the one public path preserve both promises.
+</p>
+
+<p>
+There are several possible choices:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Strategy</th>
+<th scope="col" class="org-left">Creation behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Shared global reservation</td>
+<td class="org-left">Wait for the reservation authority; an isolated region may be unable to create</td>
+</tr>
+
+<tr>
+<td class="org-left">Disjoint regional code spaces</td>
+<td class="org-left">Allocate within a region's permanently assigned space, with local collision checks</td>
+</tr>
+
+<tr>
+<td class="org-left">Large random space only</td>
+<td class="org-left">Accept a quantified collision risk rather than a strict global guarantee</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+For disjoint spaces, a region identifier can be part of the otherwise opaque code. Region assignments must never overlap or be carelessly reused. A region still needs local uniqueness and replication; the prefix does not make its data durable.
+</p>
+
+<p>
+This also does not make a new mapping instantly readable in another disconnected region. We would need to relax immediate global visibility, route reads to the code's origin, or wait for replication before reporting the stronger result. A uniqueness solution does not settle visibility or regional durability.
+</p>
+
+<p>
+We keep the single-authority design for this series because it matches the stated priorities. The alternative is useful when the product is ready to change those priorities explicitly. The <a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Dynamo paper</a> is useful background on the consequences of accepting updates during failures and reconciling versions.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">An immutable mapping can still need a global stop</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+Redirecting an old mapping is easy while its target never changes. Disabling an abusive link adds a changing piece of state.
+</p>
+
+<p>
+A disable decision made in A can arrive late at caches in B and C. A short lifetime bounds some stale responses, but does not create an immediate global stop. A stricter guarantee may require a current deny-list check or refusing redirects where the required policy state is unavailable.
+</p>
+
+<p>
+We therefore keep the tradeoff visible: serving a cached link during isolation favors availability; refusing it until policy freshness is established favors enforcement. The product needs to choose the acceptable delay, and every cache layer must obey it.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">What would we measure?</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Measure local completion rate, remote fallbacks, replication lag, creation latency, and recovery time per region. Test a new link opened remotely, an isolated write region, stale routing information, and a disable decision during partition. These are proposed checks, not measured results.
+</p>
+
+<p>
+The system now has a chosen regional read path and a defined authority during recovery. <a href="v7.html">V7</a> adds click reporting without making that latency-sensitive path wait on an analytics database.
 </p>
 </div>
 </section>

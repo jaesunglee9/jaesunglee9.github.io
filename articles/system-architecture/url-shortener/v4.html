@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 23:26 -->
+<!-- 2026-10-14 Wed 00:37 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener V4: Survive a database failure</title>
@@ -18,109 +18,188 @@
 <article id="content" class="content">
 <header>
 <h1 class="title">URL Shortener V4: Survive a database failure</h1>
-</header><section id="outline-container-org7f16d57" class="outline-2">
-<h2 id="org7f16d57">Series navigation</h2>
-<div class="outline-text-2" id="text-org7f16d57">
+</header><p>
+A warm cache can make a database outage look harmless. Popular links continue to redirect while a newly created or rarely used link fails. Creation stops too, because the database is still the only place that can commit a mapping.
+</p>
+
 <p>
-This paper is V4 of the <a href="v0.html">URL Shortener architecture series</a>.
+We'll add a durable copy and define which copy may take over. Then we'll follow a link created just before the primary fails—the case that determines whether replication actually meets our requirement.
 </p>
 
 <ul class="org-ul">
+<li>Series: <a href="v0.html">URL Shortener architecture series</a></li>
 <li>Previous: <a href="v3.html">V3</a></li>
 <li>Next: <a href="v5.html">V5</a></li>
 </ul>
-</div>
-</section>
-<section id="outline-container-org99c01cb" class="outline-2">
-<h2 id="org99c01cb">New requirement</h2>
-<div class="outline-text-2" id="text-org99c01cb">
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Make the failure requirement precise</h2>
+<div class="outline-text-2" id="text-org7f16d57">
 <p>
-Redirects must continue when a database machine fails. A link must also work
-as soon as the service reports that its creation succeeded.
+We want to survive one database-machine failure without losing acknowledged mappings. A newly created link must be readable after its successful creation response.
+</p>
+
+<p>
+There can be a brief interval while the system detects failure and promotes a replacement. During that interval, unresolved requests may receive 503. We do not claim uninterrupted success for every request, or survival after every copy of the data is destroyed.
+</p>
+
+<p>
+For this design, the recovery point objective is zero acknowledged mapping loss under the single-machine failure assumption. The recovery time objective needs a concrete deployment target and a measured failover procedure. We will describe the work inside that interval instead of inventing a recovery-time result.
 </p>
 </div>
 </section>
 <section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Where V3 fails</h2>
+<h2 id="orgd98eb26">Start with a primary and a designated standby</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-A warm cache may hide a database outage for popular links, but uncached links
-still fail. The only database machine also remains necessary for every
-creation. A cache is not a durable replica.
+Keep the V3 cache and application tier. Put the primary and its standby on separate machines and storage:
+</p>
+
+<pre class="example" id="org99c01cb">
+application -&gt; cache
+      |
+      +-&gt; primary P === synchronous durable copy ===&gt; standby S
+      |
+      +-&gt; optional asynchronous read replica R
+</pre>
+
+<p>
+P accepts creation transactions. S is the designated failover candidate. R is optional read capacity and is not automatically eligible to replace P.
+</p>
+
+<p>
+Our commit policy requires the transaction's recovery records to reach durable storage on both P and S before creation succeeds. We keep that rule explicit because “there is a replica” says nothing about which acknowledged writes it has.
+</p>
+
+<p>
+If S is unavailable, P can still serve reads, but creation cannot satisfy this policy. We return a temporary failure rather than silently weakening durability. A production system that must keep accepting writes after losing either machine needs additional replicas and a suitable acknowledgement and promotion policy.
 </p>
 </div>
 </section>
 <section id="outline-container-orgee35afe" class="outline-2">
-<h2 id="orgee35afe">Smallest revision</h2>
+<h2 id="orgee35afe">Stored on a replica is not necessarily visible to a query</h2>
 <div class="outline-text-2" id="text-orgee35afe">
 <p>
-Use a primary database and read replicas:
+Replication has several stages: sending a change, receiving it, making its recovery record durable, and applying it so queries can see the row.
+</p>
+
+<p>
+<a href="https://www.postgresql.org/docs/current/warm-standby.html#SYNCHRONOUS-REPLICATION">PostgreSQL distinguishes these stages in its synchronous replication settings</a>. Waiting for a durable standby copy does not by itself ensure that a query on any read replica sees the transaction. Waiting for remote application can provide visibility on the selected synchronous standby, but it says nothing about an unrelated lagging replica.
+</p>
+
+<p>
+Here is the problem with reading R immediately after creation:
 </p>
 
 <pre class="example" id="org7925b9e">
-                                  +-&gt; read replica 1
-application -&gt; cache or database +-&gt; read replica 2
-                                  +-&gt; primary
+t0  P and S durably record code A.
+t1  Service returns A to the client.
+t2  Client opens A; the cache has no entry.
+t3  R has not replayed A and returns no row.
 </pre>
 
 <p>
-Creation commits on the primary. Cache misses can use replicas, and a failed
-replica can be removed from the read pool. If the primary fails, an eligible
-replica can be promoted according to the database's failover procedure.
+A 404 at this point would falsely tell the client that its acknowledged link does not exist. Filling the cache during creation improves the common case, but a failed cache write or eviction brings the same problem back.
 </p>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Replication changes consistency</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Choose a read rule that preserves the contract</h2>
+<div class="outline-text-2" id="text-org0ce0959">
 <p>
-With asynchronous replication, the following execution is possible:
-</p>
-
-<pre class="example" id="org0ce0959">
-t0  primary commits code aB3xQ9
-t1  service returns the new short URL
-t2  client requests aB3xQ9
-t3  a lagging replica does not contain aB3xQ9 and returns no row
-</pre>
-
-<p>
-Returning <code>404</code> at <code>t3</code> would violate the new requirement. Populating the cache
-after the database commit improves the common case, but does not guarantee
-visibility: the cache write can fail or the entry can be evicted.
+For immutable mappings, a found row on R is usable. An absent row is inconclusive until we consult the current primary.
 </p>
 
 <p>
-Two stronger policies are available:
+Our lookup policy is:
 </p>
 
-<ul class="org-ul">
-<li>On a replica miss, query the primary before returning <code>404</code>.</li>
-<li>Replicate synchronously before acknowledging creation.</li>
-</ul>
+<ol class="org-ol">
+<li>Use the cache if it contains a mapping.</li>
+<li>On a cache miss, query a healthy read replica, if configured.</li>
+<li>If the replica has no row or cannot complete the query, try the current primary within the remaining request deadline and read budget.</li>
+<li>Return 404 only after an authoritative lookup confirms absence.</li>
+<li>Return 503 if the service cannot establish the result.</li>
+</ol>
 
 <p>
-Primary fallback keeps ordinary writes fast but sends unknown codes and recent
-codes to the primary. Synchronous replication provides a stronger storage
-guarantee at the cost of write latency and write availability when replicas
-cannot acknowledge. The design must choose explicitly between those costs.
+Without R, step two simply goes straight to the primary. V3's admission limits still apply; replication does not make an unlimited fallback safe.
+</p>
+
+<p>
+This policy preserves immediate reads while P is available. It also keeps negative caching disabled, since a cached absence could bypass the authoritative check. Unknown codes and recently created codes put more load on P, so their rate belongs in capacity planning.
+</p>
+
+<p>
+After failover, S becomes the authoritative primary only after replaying the required recovery records. We route authoritative reads there. A random replica with less data is not an equivalent replacement.
 </p>
 </div>
 </section>
 <section id="outline-container-org7f6f53b" class="outline-2">
-<h2 id="org7f6f53b">Failover is a capacity question</h2>
+<h2 id="org7f6f53b">Follow a primary failure</h2>
 <div class="outline-text-2" id="text-org7f6f53b">
 <p>
-Replication helps only if the remaining machines can serve the redirected
-load. Health checks, promotion rules, connection rerouting, and capacity
-reserved for failure must be tested together. Recovery point and recovery time
-objectives should state how much committed data may be lost and how long
-creation or redirection may be unavailable.
+Suppose P dies immediately after the client receives code A.
+</p>
+
+<pre class="example" id="org9639605">
+1. The creation response proves P and S durably recorded A.
+2. Failure detection declares P unavailable.
+3. The failover controller prevents P from accepting further writes.
+4. S replays the required records and is promoted.
+5. Applications refresh the primary endpoint and their connections.
+6. An authoritative lookup on S finds A.
+</pre>
+
+<p>
+Step three is fencing: making sure the old primary cannot continue acting as a writer. A machine can appear dead because the network is partitioned and later return. Promoting S while P still accepts writes can create two competing histories.
 </p>
 
 <p>
-V4 makes storage-machine failure survivable, while adding replication lag and
-failover as behaviors the service must manage.
+The <a href="https://www.postgresql.org/docs/current/warm-standby-failover.html">PostgreSQL failover documentation</a> discusses this old-primary problem and the need for external failure detection and coordination. We rely on a tested database failover controller and its fencing mechanism here; application instances do not independently elect their own preferred primary.
+</p>
+
+<p>
+If the controller cannot establish that promotion is safe, writes remain unavailable. This sacrifices availability in an uncertain partition to preserve the single-writer rule.
+</p>
+
+<p>
+A creation already in progress when P fails may have committed without delivering a response. That is still the ambiguous result from V1. Failover does not remove the need for idempotency when the product requires safe creation retries.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">What happens after promotion?</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+S now serves the workload that P previously handled. It needs enough CPU, I/O, connections, and memory to do so while applications reconnect and caches refill.
+</p>
+
+<p>
+For example, if the normal cache leaves two thousand database reads per second and four hundred writes, promotion must account for that mix—not just the standby's previous replay workload. Reconnection bursts and retry amplification can create a higher short-term load. Keep the admission controls while recovering.
+</p>
+
+<p>
+The old P must rejoin as a replica after its state is reconciled with the new primary. Merely restarting it with its old configuration is unsafe. A replacement standby must catch up before we can restore the original two-copy acknowledgement policy and resume creation under it.
+</p>
+
+<p>
+We should also distinguish a replica from a backup. Replication can quickly reproduce an accidental deletion or bad update. Backups with a tested recovery procedure address a different failure history.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Check the guarantee at its weakest point</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+A useful failover test records every creation response the client actually received, kills P, promotes S through the real controller, and checks every acknowledged code. It also tracks requests that never received a response separately; they may or may not have committed.
+</p>
+
+<p>
+Then test the cases that challenge the policy: a lagging read replica, loss of S, an isolated P that is still running, and promotion under peak admitted load. These are proposed tests, not results from this repository.
+</p>
+
+<p>
+V4 gives each acknowledged mapping a defined surviving copy and explains how that copy becomes authoritative. It has not divided the data: P, S, and R still store the same mapping set. <a href="v5.html">V5</a> addresses the point where storing and operating that whole set on one primary is the next limit.
 </p>
 </div>
 </section>
