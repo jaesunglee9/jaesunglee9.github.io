@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-13 Tue 22:15 -->
+<!-- 2026-10-13 Tue 23:09 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL Shortener: Problem and Architecture Roadmap</title>
@@ -225,6 +225,8 @@ We'll grow the design one version at a time. Each article adds a requirement, sh
 The table below shows what changes at each step and why.
 </p>
 
+<div class="roadmap-table-wrap" role="region" aria-label="V1–V7" tabindex="0">
+
 <table>
 
 
@@ -247,55 +249,57 @@ The table below shows what changes at each step and why.
 </thead>
 <tbody>
 <tr>
-<td class="org-left"><a href="v1.html">V1: smallest durable shortener</a></td>
+<td class="org-left"><a href="v1.html">V1</a></td>
 <td class="org-left">Persist modest traffic</td>
 <td class="org-left">Memory is lost on restart</td>
 <td class="org-left">One application and one database</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v2.html">V2: application redundancy</a></td>
+<td class="org-left"><a href="v2.html">V2</a></td>
 <td class="org-left">Survive an application-machine failure</td>
 <td class="org-left">One process is the only request path</td>
 <td class="org-left">Load balancer and stateless instances</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v3.html">V3: redirect scale</a></td>
+<td class="org-left"><a href="v3.html">V3</a></td>
 <td class="org-left">Serve much heavier redirect traffic</td>
 <td class="org-left">Every redirect reaches the database</td>
 <td class="org-left">Distributed mapping cache</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v4.html">V4: database availability</a></td>
+<td class="org-left"><a href="v4.html">V4</a></td>
 <td class="org-left">Survive a database-machine failure</td>
 <td class="org-left">Cache is not durable storage</td>
 <td class="org-left">Replication and failover</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v5.html">V5: billions of mappings</a></td>
+<td class="org-left"><a href="v5.html">V5</a></td>
 <td class="org-left">Exceed one database's operational capacity</td>
 <td class="org-left">Replicas copy rather than divide data</td>
 <td class="org-left">Partitioned mapping store</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v6.html">V6: geographic distribution</a></td>
+<td class="org-left"><a href="v6.html">V6</a></td>
 <td class="org-left">Reduce distant-user latency and regional risk</td>
 <td class="org-left">One deployment is far away and one regional failure domain</td>
 <td class="org-left">Regional reads and global routing</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="v7.html">V7: click analytics</a></td>
+<td class="org-left"><a href="v7.html">V7</a></td>
 <td class="org-left">Record clicks without delaying redirects</td>
 <td class="org-left">Synchronous counters turn reads into writes</td>
 <td class="org-left">Asynchronous event pipeline</td>
 </tr>
 </tbody>
 </table>
+
+</div>
 
 <p>
 We'll use the same problem-solving approach throughout the series.
