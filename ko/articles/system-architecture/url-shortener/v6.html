@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-13 Tue 23:26 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/articles/system-architecture/url-shortener/v6.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/articles/system-architecture/url-shortener/v6.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">시리즈 안내</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+이 글은 <a href="v0.html">URL 단축 서비스 아키텍처 시리즈</a>의 V6입니다.
+</p>
+
+<ul class="org-ul">
+<li>이전: <a href="v5.html">V5</a></li>
+<li>다음: <a href="v7.html">V7</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">새 요구사항</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+기존 배포 리전에서 멀리 떨어진 사용자는 허용하기 어려울 만큼 긴 네트워크 지연을 겪습니다. 리전 전체를 사용할 수 없어도 리디렉션은 계속되어야 합니다. 단축 URL 생성도 둘 이상의 리전에서 계속 가능해야 할 수 있습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">V5의 한계</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+샤딩은 데이터를 나누지만 사용자 가까이로 옮기지는 않습니다. 사용자의 요청은 여전히 대륙이나 바다를 건너 배포 리전에 도달해야 합니다. 리전의 네트워크에 장애가 나면 모든 샤드에 접근하지 못할 수 있습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">첫 번째 방식: 한 리전에서 생성하고 전 세계에서 조회하기</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+단축 URL 생성은 하나의 주 리전에서 처리하고, 매핑은 다른 리전의 조회용 저장소나 캐시로 복제합니다.
+</p>
+
+<pre class="example" id="org7925b9e">
+                         +-&gt; region A: primary writes
+global traffic routing -+-&gt; region B: cache + read replica
+                         +-&gt; region C: cache + read replica
+</pre>
+
+<p>
+이렇게 하면 한 곳에서 생성 순서를 정하면서 대부분의 사용자에게는 가까운 리전에서 리디렉션 응답을 보낼 수 있습니다. 대신 복제 지연이 생기고, 주 리전에 장애가 나면 단축 URL 생성 가용성이 떨어집니다. V4에서 잘못된 <code>404</code> 응답을 피하기 위해 세운 규칙도 이제는 훨씬 느린 리전 간 통신에서도 작동해야 합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">두 번째 방식: 모든 리전에서 생성하기</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+무작위 코드를 쓰면 전역 시퀀스를 공유하지 않고도 각 리전에서 후보 코드를 만들 수 있습니다. 각 리전은 생성 요청을 받아 매핑을 장애 후에도 보존되도록 저장하고, 다른 리전으로 복제할 수 있습니다.
+</p>
+
+<p>
+이 방식은 생성 지연을 줄이고 리전별 가용성을 높입니다. 하지만 여러 리전에서 동시에 쓰기가 일어나며, 리전 간 코드 충돌과 복제 충돌을 해결해야 합니다. 각 레코드를 어느 리전이 책임질지 정하는 일도 더 복잡해집니다. 한 리전의 고유성 제약만으로는 전역 고유성을 보장할 수 없습니다. 두 리전이 같은 코드를 서로 다른 원본 URL에 할당하고 생성 성공을 응답할 수도 있습니다. 나중에 충돌을 발견해도 두 단축 URL을 각각 처음 지정한 원본 URL로 연결할 수는 없습니다.
+</p>
+
+<p>
+따라서 전역 고유성을 어떻게 확보할지 정해야 합니다. 공통으로 코드를 예약하는 곳을 두거나, 코드 공간을 리전별로 겹치지 않게 나눌 수 있습니다. 충분히 큰 무작위 코드 공간을 사용하고, 충돌 위험을 수치로 평가해 받아들이는 방법도 있습니다. 마지막 방법은 정확성을 보장하지 않고 확률에 의존하므로, 이를 명확히 설명해야 합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">어떤 방식을 선택할까</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+리전 사이의 통신이 끊겼을 때 어떤 동작이 필요한지에 따라 선택이 달라집니다.
+</p>
+
+<ul class="org-ul">
+<li>생성 결과의 전역 일관성이 쓰기 가용성보다 중요하다면, 쓰기를 결정하는 곳을 하나로 유지하거나 리전 간 합의를 요구합니다.</li>
+<li>각 리전에서 계속 생성할 수 있는 것이 더 중요하다면, 비동기 복제를 받아들이고 충돌 시 동작을 정합니다.</li>
+<li>기존 매핑은 거의 바뀌지 않으므로 리디렉션은 대체로 가용성을 우선할 수 있습니다. 다만 악용되는 단축 URL을 비활성화할 때는 변경 사항을 전 세계에 더 빠르게 전파해야 할 수 있습니다.</li>
+</ul>
+
+<p>
+여러 리전을 사용하는 아키텍처에서는 일관성과 운영 방식을 결정해야 합니다. 로드 밸런서를 한 계층 더 두는 것만으로는 해결되지 않습니다.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v5.html">URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</a></td><td><a href="v5.html">URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</a></td></tr><tr><td><a href="v7.html">URL 단축 서비스 V7: 리디렉션을 늦추지 않고 클릭 기록하기</a></td><td><a href="v7.html">URL 단축 서비스 V7: 리디렉션을 늦추지 않고 클릭 기록하기</a></td></tr><tr><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

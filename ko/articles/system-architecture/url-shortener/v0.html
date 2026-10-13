@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<!-- 2026-10-13 Tue 23:09 -->
+<!-- 2026-10-13 Tue 23:26 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>URL 단축 서비스: 문제 정의와 설계 로드맵</title>
@@ -233,49 +233,49 @@ Content-Type: application/json
 </thead>
 <tbody>
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v1.html">V1</a></td>
+<td class="org-left"><a href="v1.html">V1</a></td>
 <td class="org-left">많지 않은 요청을 처리하면서 매핑을 영속적으로 저장해야 합니다</td>
 <td class="org-left">재시작하면 메모리에 저장한 데이터가 사라집니다</td>
 <td class="org-left">애플리케이션 서버 한 대와 데이터베이스 하나를 둡니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v2.html">V2</a></td>
+<td class="org-left"><a href="v2.html">V2</a></td>
 <td class="org-left">애플리케이션 서버 한 대에 장애가 발생해도 동작해야 합니다</td>
 <td class="org-left">요청을 처리하는 경로가 프로세스 하나뿐입니다</td>
 <td class="org-left">로드 밸런서와 상태를 저장하지 않는 인스턴스를 둡니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v3.html">V3</a></td>
+<td class="org-left"><a href="v3.html">V3</a></td>
 <td class="org-left">훨씬 많은 리디렉션 요청을 처리해야 합니다</td>
 <td class="org-left">모든 리디렉션 요청이 데이터베이스까지 갑니다</td>
 <td class="org-left">매핑을 저장하는 분산 캐시를 둡니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v4.html">V4</a></td>
+<td class="org-left"><a href="v4.html">V4</a></td>
 <td class="org-left">데이터베이스 서버 한 대에 장애가 발생해도 동작해야 합니다</td>
 <td class="org-left">캐시는 커밋된 데이터를 장애 후에도 보존하는 저장소가 아닙니다</td>
 <td class="org-left">복제와 장애 조치를 도입합니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v5.html">V5</a></td>
+<td class="org-left"><a href="v5.html">V5</a></td>
 <td class="org-left">데이터베이스 하나의 운영 한계를 넘는 규모의 데이터를 처리해야 합니다</td>
 <td class="org-left">복제본은 데이터를 복사할 뿐 나눠 저장하지 않습니다</td>
 <td class="org-left">매핑 저장소를 파티션으로 나눕니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v6.html">V6</a></td>
+<td class="org-left"><a href="v6.html">V6</a></td>
 <td class="org-left">멀리 있는 사용자의 지연 시간과 리전 장애 위험을 줄여야 합니다</td>
 <td class="org-left">한 곳에만 배포하면 먼 사용자는 지연이 크고, 전체가 한 리전의 장애 영향을 받습니다</td>
 <td class="org-left">리전별 읽기와 전역 라우팅을 도입합니다</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="/articles/system-architecture/url-shortener/v7.html">V7</a></td>
+<td class="org-left"><a href="v7.html">V7</a></td>
 <td class="org-left">리디렉션을 늦추지 않고 클릭을 기록해야 합니다</td>
 <td class="org-left">카운터를 동기로 갱신하면 읽기 요청을 처리할 때 쓰기도 해야 합니다</td>
 <td class="org-left">비동기 이벤트 파이프라인을 둡니다</td>
@@ -323,7 +323,7 @@ V1부터 V7까지 설계가 정리되면 각 글의 다이어그램을 하나씩
 </section>
 </article>
 <footer id="postamble" class="status">
-<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="/articles/system-architecture/url-shortener/v4.html">URL Shortener V4: 데이터베이스 장애에도 견디기</a></td><td><a href="/articles/system-architecture/url-shortener/v4.html">URL Shortener V4: 데이터베이스 장애에도 견디기</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v1.html">URL 단축기 V1: 가장 단순한 영속성 보장 단축기</a></td><td><a href="/articles/system-architecture/url-shortener/v1.html">URL 단축기 V1: 가장 단순한 영속성 보장 단축기</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v2.html">URL 단축기 V2: 애플리케이션 머신 장애에도 서비스 유지</a></td><td><a href="/articles/system-architecture/url-shortener/v2.html">URL 단축기 V2: 애플리케이션 머신 장애에도 서비스 유지</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v3.html">URL 단축기 V3: 리디렉션이 데이터베이스를 압도하다</a></td><td><a href="/articles/system-architecture/url-shortener/v3.html">URL 단축기 V3: 리디렉션이 데이터베이스를 압도하다</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v5.html">URL 단축기 V5: 매핑 집합이 수십억 개의 링크에 이르다</a></td><td><a href="/articles/system-architecture/url-shortener/v5.html">URL 단축기 V5: 매핑 집합이 수십억 개의 링크에 이르다</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v6.html">URL 단축기 V6: 여러 지역의 사용자에게 서비스하기</a></td><td><a href="/articles/system-architecture/url-shortener/v6.html">URL 단축기 V6: 여러 지역의 사용자에게 서비스하기</a></td></tr><tr><td><a href="/articles/system-architecture/url-shortener/v7.html">URL 단축기 V7: 리디렉션 속도를 늦추지 않고 클릭 기록하기</a></td><td><a href="/articles/system-architecture/url-shortener/v7.html">URL 단축기 V7: 리디렉션 속도를 늦추지 않고 클릭 기록하기</a></td></tr></tbody></table></details>
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v1.html">URL 단축 서비스 V1: 장애 후에도 데이터를 보존하는 최소 설계</a></td><td><a href="v1.html">URL 단축 서비스 V1: 장애 후에도 데이터를 보존하는 최소 설계</a></td></tr><tr><td><a href="v2.html">URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</a></td><td><a href="v2.html">URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</a></td></tr><tr><td><a href="v3.html">URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</a></td><td><a href="v3.html">URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</a></td></tr><tr><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td></tr><tr><td><a href="v5.html">URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</a></td><td><a href="v5.html">URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</a></td></tr><tr><td><a href="v6.html">URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</a></td><td><a href="v6.html">URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</a></td></tr><tr><td><a href="v7.html">URL 단축 서비스 V7: 리디렉션을 늦추지 않고 클릭 기록하기</a></td><td><a href="v7.html">URL 단축 서비스 V7: 리디렉션을 늦추지 않고 클릭 기록하기</a></td></tr></tbody></table></details>
 </footer>
 </body>
 </html>

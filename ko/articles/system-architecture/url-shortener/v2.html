@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-13 Tue 23:26 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/articles/system-architecture/url-shortener/v2.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/articles/system-architecture/url-shortener/v2.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">시리즈 안내</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+이 글은 <a href="v0.html">URL 단축 서비스 아키텍처 시리즈</a>의 V2입니다.
+</p>
+
+<ul class="org-ul">
+<li>이전: <a href="v1.html">V1</a></li>
+<li>다음: <a href="v3.html">V3</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">새로운 요구사항</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+애플리케이션 서버 한 대에 장애가 생겨도 서비스가 잠시 중단되는 일은 더 이상 허용하지 않습니다. 새 애플리케이션 버전을 배포할 때도 리디렉션이 끊기지 않아야 합니다. 트래픽과 저장 규모는 V1 수준을 유지합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">V1의 한계</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+V1에서는 요청을 받는 프로세스를 거쳐야만 데이터베이스에 접근할 수 있습니다. 데이터가 온전히 남아 있어도 프로세스의 비정상 종료, 서버 장애, 배포로 인해 서비스 전체에 접근할 수 없게 됩니다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgee35afe" class="outline-2">
+<h2 id="orgee35afe">최소한의 설계 변경</h2>
+<div class="outline-text-2" id="text-orgee35afe">
+<p>
+로드 밸런서 뒤에서 애플리케이션 인스턴스를 여러 개 실행하도록 바꿉니다.
+</p>
+
+<pre class="example" id="org7925b9e">
+                         +----------------+
+                     +--&gt;| application 1  |--+
+client -&gt; load balancer  +----------------+  |
+                     |                       +--&gt; database
+                     +--&gt;| application 2  |--+
+                         +----------------+
+</pre>
+
+<p>
+각 인스턴스는 기준 데이터를 로컬에 보관하지 않습니다. 요청은 정상 동작하는 어느 인스턴스로든 전달할 수 있으며, 데이터베이스를 최종 기준으로 삼습니다. 로드 밸런서는 상태 확인에 실패한 인스턴스로 요청을 보내지 않습니다.
+</p>
+
+<p>
+무작위 단축 코드 생성 방식은 이미 여러 인스턴스가 동시에 데이터를 쓰는 경우를 지원합니다. 각 인스턴스는 독립적으로 후보 코드를 생성합니다. 드물게 두 인스턴스가 같은 코드를 제안하면 데이터베이스의 기본 키 제약으로 충돌을 처리합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">얻는 것과 감수할 비용</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+남은 인스턴스에 충분한 처리 용량이 있다면 인스턴스 하나에 장애가 생겨도 애플리케이션 계층은 계속 동작할 수 있습니다. 배포할 때는 인스턴스를 점진적으로 교체할 수 있습니다. 대신 로드 밸런서 자체도 이중화해야 하며, 데이터베이스는 여전히 단일 장애점입니다.
+</p>
+
+<p>
+V2에는 캐시를 추가하지 않았습니다. 애플리케이션 계층의 이중화와 데이터베이스의 읽기 처리 용량은 서로 다른 요구사항입니다.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v1.html">URL 단축 서비스 V1: 장애 후에도 데이터를 보존하는 최소 설계</a></td><td><a href="v1.html">URL 단축 서비스 V1: 장애 후에도 데이터를 보존하는 최소 설계</a></td></tr><tr><td><a href="v3.html">URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</a></td><td><a href="v3.html">URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</a></td></tr><tr><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

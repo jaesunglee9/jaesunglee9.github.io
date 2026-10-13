@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-13 Tue 23:26 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/articles/system-architecture/url-shortener/v5.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/articles/system-architecture/url-shortener/v5.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL 단축 서비스 V5: 매핑이 수십억 개로 늘어날 때</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">시리즈 안내</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+이 글은 <a href="v0.html">URL 단축 서비스 아키텍처 시리즈</a>의 V5입니다.
+</p>
+
+<ul class="org-ul">
+<li>이전: <a href="v4.html">V4</a></li>
+<li>다음: <a href="v6.html">V6</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">새로운 요구사항</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+V3의 생성 속도가 5년 동안 이어진다고 가정합니다. 단축 URL은 여전히 만료되지 않습니다.
+</p>
+
+<pre class="example" id="org99c01cb">
+100,000,000 links/month * 60 months = 6,000,000,000 mappings
+6,000,000,000 * 500 bytes          = 3 TB logical data
+</pre>
+
+<p>
+복사본을 세 개 유지하면 매핑 저장소에만 약 9 TB가 필요합니다. 백업과 운영에 필요한 추가 여유 공간은 별도입니다. 디스크 공간이 다 차기 전에 인덱스 유지 작업, 백업과 복원에 걸리는 시간, 복제본을 다시 만드는 작업이 운영상 감당하기 어려워질 수 있습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">V4의 한계</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+프라이머리 서버의 용량과 성능을 높여 문제를 늦출 수 있고, 이것이 적절한 대응일 수도 있습니다. 하지만 결국 데이터베이스 하나의 저장 용량, 쓰기 처리량, 복구 시간 중 하나가 운영 한계를 넘어섭니다. 읽기 복제본은 전체 데이터를 복사할 뿐, 데이터를 나누어 저장하지는 않습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">최소한의 변경</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+단축 코드의 해시를 기준으로 매핑을 나누어 저장합니다.
+</p>
+
+<pre class="example" id="orgee35afe">
+                          +-&gt; shard 1 -&gt; replicas
+application -&gt; router ---+-&gt; shard 2 -&gt; replicas
+                          +-&gt; shard 3 -&gt; replicas
+                          +-&gt; ...
+</pre>
+
+<p>
+각 단축 코드는 정확히 하나의 프라이머리 샤드에 배정되며, 해당 샤드의 복제본도 같은 데이터를 보관합니다. 매핑을 조회하거나 삽입할 때는 같은 라우팅 규칙을 사용합니다. 단축 코드를 무작위로 생성하므로 적절한 분할 함수를 쓰면 새 매핑이 계속 증가하는 하나의 키 범위에 몰리지 않고 여러 샤드에 고르게 분산됩니다.
+</p>
+
+<p>
+프라이머리 샤드마다 논리 데이터 크기를 300 GB 이하로 유지하는 것이 운영 목표라면, 3 TB를 저장하는 데 최소 열 개의 샤드가 필요합니다.
+</p>
+
+<pre class="example" id="org0ce0959">
+3 TB / 300 GB = 10 primary shards
+</pre>
+
+<p>
+열두 개를 마련하면 데이터 증가와 재분배에 필요한 여유를 어느 정도 확보할 수 있습니다. 다만 실제 샤드 수를 정할 때는 요청 처리량과 서버 한 대를 사용할 수 없는 동안 필요한 용량도 고려해야 합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">데이터 재분배</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+<code>hash(code) mod shard_count</code> 같은 규칙은 샤드 수가 고정되어 있을 때 키를 고르게 배정합니다. 샤드 수를 늘리면 기존 키 상당수의 계산 결과가 달라져 대규모 데이터 이동이 필요합니다.
+</p>
+
+<p>
+라우팅 테이블, 가상 파티션, 일관 해싱을 사용하면 논리 파티션과 물리 서버를 분리해 용량을 변경할 때 옮겨야 하는 데이터를 줄일 수 있습니다. 대신 라우터와 그 설정이 핵심 인프라가 됩니다. 이전 버전과 새 버전의 애플리케이션 인스턴스가 매핑의 위치를 서로 다르게 판단하지 않도록 설정 버전을 안전하게 배포해야 합니다.
+</p>
+
+<p>
+분할은 용량을 늘리고, 복제는 같은 데이터를 여러 곳에 보관합니다. 복제본이 없는 샤드는 서버에 장애가 나면 여전히 사용할 수 없습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">이 버전의 비용</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+여러 샤드에 걸친 백업, 데이터 재분배, 스키마 변경, 복구는 데이터베이스 하나에서 같은 작업을 할 때보다 어렵습니다. 서버의 용량과 성능을 높이고 캐시와 복제를 사용해도 저장 용량, 처리량, 복구 요구사항을 더 이상 충족할 수 없다는 측정 결과가 나올 때만 V5를 도입해야 합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">참고 자료</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<ul class="org-ul">
+<li><a href="https://dl.acm.org/doi/10.1145/258533.258660">일관 해싱과 무작위 트리</a></li>
+</ul>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td></tr><tr><td><a href="v6.html">URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</a></td><td><a href="v6.html">URL 단축 서비스 V6: 여러 리전에서 사용자 요청 처리하기</a></td></tr><tr><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

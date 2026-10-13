@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-13 Tue 23:26 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/articles/system-architecture/url-shortener/v3.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/articles/system-architecture/url-shortener/v3.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">URL 단축 서비스 V3: 리디렉션 요청이 데이터베이스의 처리 한계를 넘을 때</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">시리즈 안내</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+이 글은 <a href="v0.html">URL 단축 서비스 아키텍처 시리즈</a>의 V3입니다.
+</p>
+
+<ul class="org-ul">
+<li>이전: <a href="v2.html">V2</a></li>
+<li>다음: <a href="v4.html">V4</a></li>
+</ul>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">새로운 요구사항</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+사용량이 다음 규모로 늘어납니다.
+</p>
+
+<ul class="org-ul">
+<li>한 달에 새 단축 URL 1억 개를 생성합니다.</li>
+<li>평상시 트래픽에서는 생성 요청 1건당 리디렉션 요청이 약 100건 들어옵니다.</li>
+<li>트래픽이 몰리는 시간대에는 요청량이 평균의 10배에 이를 수 있습니다.</li>
+<li>이 최대 요청량에서도 리디렉션 응답은 빨라야 합니다.</li>
+</ul>
+
+<p>
+평균 요청량은 다음과 같습니다.
+</p>
+
+<pre class="example" id="org99c01cb">
+100,000,000 / (30 * 24 * 60 * 60) = 38.6 creations/second
+38.6 * 100                          = 3,860 redirects/second
+</pre>
+
+<p>
+트래픽이 몰리는 시간대에는 초당 생성 요청 약 400건과 리디렉션 요청 약 40,000건을 처리해야 합니다. 이제 읽기가 전체 작업의 대부분을 차지합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">V2의 한계</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+애플리케이션 인스턴스를 늘려도 데이터베이스 읽기는 줄어들지 않습니다. 사용자가 단축 URL에 접속할 때마다 애플리케이션은 데이터베이스를 조회합니다. 인기 있는 링크로 요청이 들어오면 같은 행을 반복해서 읽습니다. 결국 데이터베이스의 응답 시간이나 읽기 처리량이 목표를 충족하지 못합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">최소한의 설계 변경</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+매핑 데이터베이스 앞에 분산 캐시를 둡니다.
+</p>
+
+<pre class="example" id="orgee35afe">
+client -&gt; load balancer -&gt; application -&gt; mapping cache
+                                      |
+                                      +----------&gt; database
+</pre>
+
+<p>
+애플리케이션은 cache-aside 패턴으로 요청을 처리합니다.
+</p>
+
+<ol class="org-ol">
+<li>캐시에서 단축 코드를 조회합니다.</li>
+<li>매핑이 있으면 리디렉션 응답을 반환합니다.</li>
+<li>없으면 데이터베이스에서 매핑을 읽습니다.</li>
+<li>읽은 매핑을 캐시에 넣고 리디렉션 응답을 반환합니다.</li>
+</ol>
+
+<p>
+최대 요청량인 초당 리디렉션 40,000건에서 캐시 적중률이 95퍼센트라면, 데이터베이스 읽기는 다음과 같이 줄어듭니다.
+</p>
+
+<pre class="example" id="org0ce0959">
+40,000 * (1 - 0.95) = 2,000 database reads/second
+</pre>
+
+<p>
+다이어그램에 캐시 상자를 추가하는 것만으로는 드러나지 않는 효과를 이 계산으로 확인할 수 있습니다. 다만 적중률 가정은 실제 트래픽으로 검증해야 합니다.
+</p>
+
+<p>
+자주 조회되는 매핑이 2,000만 개이고 캐시 항목 하나에 약 300바이트가 필요하다면, 항목 자체의 크기는 약 6GB입니다. 실제로 용량을 확보할 때는 캐시 메타데이터, 메모리 할당 오버헤드, 복제, 향후 증가분도 고려해야 합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">새로 고려해야 할 장애와 문제</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+캐시는 성능을 개선하는 수단이며, 매핑의 최종 기준은 데이터베이스입니다. 캐시가 사라져도 매핑을 잃어서는 안 되고, 데이터베이스 부하만 늘어나야 합니다. 캐시 미스가 갑자기 몰릴 때 데이터베이스가 이를 감당하지 못한다면, 요청을 데이터베이스로 넘기는 방식은 위험합니다. 따라서 타임아웃, 요청 유입 제어, 캐시를 점진적으로 채우는 전략도 필요합니다.
+</p>
+
+<p>
+다음 경우도 고려해야 합니다.
+</p>
+
+<ul class="org-ul">
+<li>어떤 매핑을 캐시에 남길지는 퇴출 정책으로 결정합니다.</li>
+<li>존재하지 않는 단축 코드의 조회 결과를 짧은 시간 동안 캐시하면 같은 코드를 반복해서 조회하는 일을 줄일 수 있습니다.</li>
+<li>링크를 비활성화하거나 변경하면 캐시를 무효화하거나 캐시 유효 기간에 상한을 두어야 합니다.</li>
+<li>인기 있는 단축 코드 하나에 캐시 미스가 동시에 발생하면 조회 요청을 하나로 합쳐 처리해야 합니다.</li>
+<li>특정 단축 코드에 요청이 매우 많이 몰리면 여러 캐시 노드에 복제하거나 인스턴스마다 작은 캐시를 두어야 할 수 있습니다.</li>
+</ul>
+
+<p>
+V3는 리디렉션 처리량과 응답 시간을 개선합니다. 기준 데이터를 보관하는 데이터베이스의 고가용성까지 확보하지는 않습니다.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="v2.html">URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</a></td><td><a href="v2.html">URL 단축 서비스 V2: 애플리케이션 서버 장애에도 서비스 유지하기</a></td></tr><tr><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td><td><a href="v4.html">URL 단축 서비스 V4: 데이터베이스 장애에도 리디렉션 이어가기</a></td></tr><tr><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td><td><a href="v0.html">URL 단축 서비스: 문제 정의와 설계 로드맵</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
