@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 11286 — 절댓값 힙</title>
@@ -33,10 +33,10 @@
 절댓값 힙은 다음과 같은 연산을 지원하는 자료구조이다.
 </p>
 
-<p>
-배열에 정수 x (x ≠ 0)를 넣는다.
-배열에서 절댓값이 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다. 절댓값이 가장 작은 값이 여러개일 때는, 가장 작은 수를 출력하고, 그 값을 배열에서 제거한다.
-</p>
+<ul class="org-ul">
+<li>배열에 정수 x (x ≠ 0)를 넣는다.</li>
+<li>배열에서 절댓값이 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다. 절댓값이 가장 작은 값이 여러개일 때는, 가장 작은 수를 출력하고, 그 값을 배열에서 제거한다.</li>
+</ul>
 
 <p>
 프로그램은 처음에 비어있는 배열에서 시작하게 된다.
@@ -58,14 +58,14 @@
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Test Case</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 18
 1
 -1
@@ -85,13 +85,14 @@
 0
 0
 0
-</p>
+</pre>
+</div>
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Solution</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Solution</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -159,38 +160,39 @@
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Approach</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Approach</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
 <p>
 Push and pop the smallest element in the queue, the "smallest" being some custom definition. This calls for priority queue. But how to implement it?
 </p>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Remarks</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Remarks</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
 </div>
-<div id="outline-container-org2dc1f56" class="outline-3">
-<h3 id="org2dc1f56">priority<sub>queues</sub> take elements, vector of elements, and functors(function objects)</h3>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">priority<sub>queues</sub> take elements, vector of elements, and functors(function objects)</h3>
 </div>
 
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">For custom comparison, use operator  wrapped in struct</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">For custom comparison, use operator  wrapped in struct</h3>
+<div class="outline-text-3" id="text-org0043671">
 <p>
-See How to use custom comparison in priority queue(C++)
-Do note syntax:
-```c++
-struct AbsCmp {
-	bool operator()(int a, int b) const {
-		int aa = abs(a), ab = abs(b);
-		if (aa != ab) return aa &gt; ab;
-		return a &gt; b;
-	}
-};
-```
+See How to use custom comparison in priority queue(C++) Do note syntax:
 </p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">struct</span> <span style="font-weight: bold; text-decoration: underline;">AbsCmp</span> {
+        <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">operator</span><span style="font-weight: bold;">()</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span>) <span style="font-weight: bold;">const</span> {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">aa</span> = abs(a), <span style="font-weight: bold; font-style: italic;">ab</span> = abs(b);
+                <span style="font-weight: bold;">if</span> (aa != ab) <span style="font-weight: bold;">return</span> aa &gt; ab;
+                <span style="font-weight: bold;">return</span> a &gt; b;
+        }
+};
+</code></pre>
+</div>
 </div>
 </div>
 </section>

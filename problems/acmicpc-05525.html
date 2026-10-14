@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 5525 — IOIOI</title>
@@ -26,111 +26,138 @@
 </p>
 </div>
 </section>
-<section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Problem</h2>
-<div class="outline-text-2" id="text-orgd98eb26">
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Problem</h2>
+<div class="outline-text-2" id="text-org7925b9e">
 <p>
 N+1개의 I와 N개의 O로 이루어져 있으면, I와 O이 교대로 나오는 문자열을 PN이라고 한다.
 </p>
 
-<p>
+<pre class="example" id="orgd98eb26">
 P1 IOI
 P2 IOIOI
 P3 IOIOIOI
-PN IOIOI&hellip;OI (O가 N개)
-</p>
+PN IOIOI...OI (O가 N개)
+</pre>
 
 <p>
 I와 O로만 이루어진 문자열 S와 정수 N이 주어졌을 때, S안에 PN이 몇 군데 포함되어 있는지 구하는 프로그램을 작성하시오.
 </p>
 </div>
-<div id="outline-container-org7925b9e" class="outline-3">
-<h3 id="org7925b9e">입력</h3>
-<div class="outline-text-3" id="text-org7925b9e">
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">입력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
 <p>
 첫째 줄에 N이 주어진다. 둘째 줄에는 S의 길이 M이 주어지며, 셋째 줄에 S가 주어진다.
 </p>
 </div>
 </div>
-<div id="outline-container-orgee35afe" class="outline-3">
-<h3 id="orgee35afe">출력</h3>
-<div class="outline-text-3" id="text-orgee35afe">
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">출력</h3>
+<div class="outline-text-3" id="text-org0ce0959">
 <p>
 S에 PN이 몇 군데 포함되어 있는지 출력한다.
-제한
 </p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">제한</h3>
+<div class="outline-text-3" id="text-org9639605">
+<ul class="org-ul">
+<li>1 ≤ N ≤ 1,000,000</li>
+<li>2N+1 ≤ M ≤ 1,000,000</li>
+<li>S는 I와 O로만 이루어져 있다.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">서브태스크</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<table>
 
-<p>
-1 ≤ N ≤ 1,000,000
-2N+1 ≤ M ≤ 1,000,000
-S는 I와 O로만 이루어져 있다.
-</p>
 
-<p>
-서브태스크
-번호	배점	제한
-1	50	
-</p>
+<colgroup>
+<col  class="org-right">
 
-<p>
-N ≤ 100, M ≤ 10 000.
-2	50	
-</p>
+<col  class="org-right">
 
-<p>
-추가적인 제약 조건이 없다.
-예제 입력 1
-</p>
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">번호</th>
+<th scope="col" class="org-right">배점</th>
+<th scope="col" class="org-left">제한</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">50</td>
+<td class="org-left">N ≤ 100, M ≤ 10 000.</td>
+</tr>
 
-<p>
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">50</td>
+<td class="org-left">추가적인 제약 조건이 없다.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<pre class="example" id="orgb948b55">
 1
 13
 OOIOIOIOIIOII
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">예제 출력 1</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<pre class="example" id="org2dc1f56">
 4
-</p>
+</pre>
 
-<p>
+<pre class="example" id="orgde0f8b8">
 OOIOIOIOIIOII
 OOIOIOIOIIOII
 OOIOIOIOIIOII
 OOIOIOIOIIOII
-</p>
-
-<p>
-예제 입력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">예제 입력 2</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<pre class="example" id="org7161a33">
 2
 13
 OOIOIOIOIIOII
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">예제 출력 2</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
+<pre class="example" id="org0043671">
 2
-</p>
+</pre>
 
-<p>
+<pre class="example" id="org0c8fbd7">
 OOIOIOIOIIOII
 OOIOIOIOIIOII
-</p>
+</pre>
 </div>
 </div>
 </section>
-<section id="outline-container-org7f6f53b" class="outline-2">
-<h2 id="org7f6f53b">Solution</h2>
-<div class="outline-text-2" id="text-org7f6f53b">
+<section id="outline-container-org79c4fb7" class="outline-2">
+<h2 id="org79c4fb7">Solution</h2>
+<div class="outline-text-2" id="text-org79c4fb7">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
@@ -264,42 +291,42 @@ OOIOIOIOIIOII
 </div>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Approach</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-org0c2fec5" class="outline-2">
+<h2 id="org0c2fec5">Approach</h2>
+<div class="outline-text-2" id="text-org0c2fec5">
 </div>
-<div id="outline-container-orgb948b55" class="outline-3">
-<h3 id="orgb948b55">sol0</h3>
-<div class="outline-text-3" id="text-orgb948b55">
+<div id="outline-container-orgf718da5" class="outline-3">
+<h3 id="orgf718da5">sol0</h3>
+<div class="outline-text-3" id="text-orgf718da5">
 <p>
 Since I can count how many substring is in a given IOI, just find how long the said string is, and return the value.
 </p>
 </div>
 </div>
-<div id="outline-container-org9beed48" class="outline-3">
-<h3 id="org9beed48">sol1</h3>
-<div class="outline-text-3" id="text-org9beed48">
+<div id="outline-container-org0b22235" class="outline-3">
+<h3 id="org0b22235">sol1</h3>
+<div class="outline-text-3" id="text-org0b22235">
 <p>
 KMP algorithm
 </p>
 </div>
 </div>
 </section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">Remarks</h2>
-<div class="outline-text-2" id="text-org7161a33">
+<section id="outline-container-org72a3840" class="outline-2">
+<h2 id="org72a3840">Remarks</h2>
+<div class="outline-text-2" id="text-org72a3840">
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">I still barely understand what KMP algorithm is.</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org8a1512e" class="outline-3">
+<h3 id="org8a1512e">I still barely understand what KMP algorithm is.</h3>
+<div class="outline-text-3" id="text-org8a1512e">
 <p>
 No table, No backtracking. quite efficient. as evidenced by nearly 20 % speedup compared to kmp solution. but not
 </p>
 </div>
 </div>
-<div id="outline-container-orgfa898cb" class="outline-3">
-<h3 id="orgfa898cb">Backlinks</h3>
-<div class="outline-text-3" id="text-orgfa898cb">
+<div id="outline-container-orgf42ba8d" class="outline-3">
+<h3 id="orgf42ba8d">Backlinks</h3>
+<div class="outline-text-3" id="text-orgf42ba8d">
 <p>
 Knuth-Morris-Pratt Algorithm
 </p>

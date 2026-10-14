@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 10026 — 적록색약</title>
@@ -26,9 +26,9 @@
 </p>
 </div>
 </section>
-<section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Problem</h2>
-<div class="outline-text-2" id="text-orgd98eb26">
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Problem</h2>
+<div class="outline-text-2" id="text-org7925b9e">
 <p>
 문제
 </p>
@@ -41,63 +41,64 @@ A little known fact about cows is the fact that they are red-green colorblind, m
 Consider a square painting that is described by an N x N grid of characters (1 &lt;= N &lt;= 100), each one either R (red), G (green), or B (blue).  A painting is interesting if it has many colored "regions" that can be distinguished from each-other.  Two characters belong to the same region if they are directly adjacent (east, west, north, or south), and if they are indistinguishable in color.  For example, the painting
 </p>
 
-<p>
+<pre class="example" id="orgd98eb26">
 RRRBB
 GGBBB
 BBBRR
 BBRRR
 RRRRR
-</p>
+</pre>
 
 <p>
-has 4 regions (2 red, 1 blue, and 1 green) if viewed by a human, but only 3regions (2 red-green, 1 blue) if viewed by a cow.  
+has 4 regions (2 red, 1 blue, and 1 green) if viewed by a human, but only 3regions (2 red-green, 1 blue) if viewed by a cow.
 </p>
 
 <p>
 Given a painting as input, please help compute the number of regions in the painting when viewed by a human and by a cow.
-입력
 </p>
-</div>
-<div id="outline-container-org7925b9e" class="outline-3">
-<h3 id="org7925b9e">Line 1: The integer N.</h3>
 </div>
 <div id="outline-container-orgee35afe" class="outline-3">
-<h3 id="orgee35afe">Lines 2..1+N: Each line contains a string with N characters, describing one row of a painting.</h3>
+<h3 id="orgee35afe">입력</h3>
 <div class="outline-text-3" id="text-orgee35afe">
-<p>
-출력
-</p>
+<ul class="org-ul">
+<li>Line 1: The integer N.</li>
+<li>Lines 2..1+N: Each line contains a string with N characters, describing one row of a painting.</li>
+</ul>
 </div>
 </div>
 <div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Line 1: Two space-separated integers, telling the number of regions in the painting when viewed by a human and by a cow.</h3>
+<h3 id="org0ce0959">출력</h3>
 <div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<ul class="org-ul">
+<li>Line 1: Two space-separated integers, telling the number of regions in the painting when viewed by a human and by a cow.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<pre class="example" id="org9639605">
 5
 RRRBB
 GGBBB
 BBBRR
 BBRRR
 RRRRR
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">예제 출력 1</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<pre class="example" id="orgb948b55">
 4 3
-</p>
+</pre>
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Solution</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Solution</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -220,9 +221,9 @@ RRRRR
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Remarks</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
 <p>
 A standard Breadth First Search problem, but I believe that I became more adept at its application. In this problem I used string argument to differentiate logic.
 </p>

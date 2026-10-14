@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 3425 — 고스택</title>
@@ -37,18 +37,18 @@ Many ciphers can be computed much faster using various machines and automata. In
 Our stack machine is relatively simple: It works with integer numbers only, it has no storage beside the stack (no registers etc.) and no special input or output devices. The set of instructions is as follows:
 </p>
 
-<p>
-NUM X, where X is a non-negative integer number, 0 ≤ X ≤ 109. The NUM instruction stores the number X on top of the stack. It is the only parametrized instruction.
-POP: removes the top number from the stack.
-INV: changes the sign of the top-most number. (42 → −42)
-DUP: duplicates the top-most number on the stack.
-SWP: swaps (exchanges) the position of two top-most numbers.
-ADD: adds two numbers on the top of the stack.
-SUB: subtracts the top-most number from the “second one” (the one below).
-MUL: multiplies two numbers on the top of the stack.
-DIV: integer divison of two numbers on the top. The top-most number becomes divisor, the one below dividend. The quotient will be stored as the result.
-MOD: modulo operation. The operands are the same as for the division but the remainder is stored as the result.
-</p>
+<ul class="org-ul">
+<li>NUM X, where X is a non-negative integer number, 0 ≤ X ≤ 109. The NUM instruction stores the number X on top of the stack. It is the only parametrized instruction.</li>
+<li>POP: removes the top number from the stack.</li>
+<li>INV: changes the sign of the top-most number. (42 → −42)</li>
+<li>DUP: duplicates the top-most number on the stack.</li>
+<li>SWP: swaps (exchanges) the position of two top-most numbers.</li>
+<li>ADD: adds two numbers on the top of the stack.</li>
+<li>SUB: subtracts the top-most number from the “second one” (the one below).</li>
+<li>MUL: multiplies two numbers on the top of the stack.</li>
+<li>DIV: integer divison of two numbers on the top. The top-most number becomes divisor, the one below dividend. The quotient will be stored as the result.</li>
+<li>MOD: modulo operation. The operands are the same as for the division but the remainder is stored as the result.</li>
+</ul>
 
 <p>
 All binary operations consider the top-most number to be the “right” operand, the second number the “left” one. All of them remove both operands from the stack and place the result on top in place of the original numbers.
@@ -272,8 +272,7 @@ I believe this is the first time I used enums. Essentially, they appear to be fl
 <h3 id="org9beed48">Also, like, range based filter,</h3>
 <div class="outline-text-3" id="text-org9beed48">
 <p>
-so that I don't need to insert error checkers into each condition.
-based on the fact that cpu evaluates things sequentially.
+so that I don't need to insert error checkers into each condition. based on the fact that cpu evaluates things sequentially.
 </p>
 </div>
 </div>

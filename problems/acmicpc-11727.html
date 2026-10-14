@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 11727 — 2×n 타일링 2</title>
@@ -53,75 +53,75 @@
 </p>
 </div>
 </div>
-<div id="outline-container-orgb948b55" class="outline-3">
-<h3 id="orgb948b55">Test Case</h3>
-<div class="outline-text-3" id="text-orgb948b55">
+<div id="outline-container-org79c4fb7" class="outline-3">
+<h3 id="org79c4fb7">Test Case</h3>
+<div class="outline-text-3" id="text-org79c4fb7">
 </div>
 <div id="outline-container-org0ce0959" class="outline-4">
 <h4 id="org0ce0959">1</h4>
-<div class="outline-text-4" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
-2
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
-3
-</p>
 </div>
-</div>
-<div id="outline-container-org9639605" class="outline-4">
-<h4 id="org9639605">2</h4>
-<div class="outline-text-4" id="text-org9639605">
-<p>
-예제 입력 2
-</p>
 
-<p>
-8
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
-171
-</p>
-</div>
-</div>
 <div id="outline-container-org7f6f53b" class="outline-4">
-<h4 id="org7f6f53b">3</h4>
+<h4 id="org7f6f53b">예제 입력 1</h4>
 <div class="outline-text-4" id="text-org7f6f53b">
-<p>
-예제 입력 3
-</p>
+<pre class="example" id="org9639605">
+2
+</pre>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-4">
+<h4 id="org9beed48">예제 출력 1</h4>
+<div class="outline-text-4" id="text-org9beed48">
+<pre class="example" id="orgb948b55">
+3
+</pre>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-4">
+<h4 id="org2dc1f56">2</h4>
+</div>
 
-<p>
+<div id="outline-container-orgfa898cb" class="outline-4">
+<h4 id="orgfa898cb">예제 입력 2</h4>
+<div class="outline-text-4" id="text-orgfa898cb">
+<pre class="example" id="orgde0f8b8">
+8
+</pre>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-4">
+<h4 id="org194cf40">예제 출력 2</h4>
+<div class="outline-text-4" id="text-org194cf40">
+<pre class="example" id="org7161a33">
+171
+</pre>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-4">
+<h4 id="org0043671">3</h4>
+</div>
+
+<div id="outline-container-orga55bdd4" class="outline-4">
+<h4 id="orga55bdd4">예제 입력 3</h4>
+<div class="outline-text-4" id="text-orga55bdd4">
+<pre class="example" id="org0c8fbd7">
 12
-</p>
-
-<p>
-예제 출력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgff52af2" class="outline-4">
+<h4 id="orgff52af2">예제 출력 3</h4>
+<div class="outline-text-4" id="text-orgff52af2">
+<pre class="example" id="org1520f12">
 2731
-</p>
+</pre>
 </div>
 </div>
 </div>
 </section>
-<section id="outline-container-orgde0f8b8" class="outline-2">
-<h2 id="orgde0f8b8">Solution</h2>
-<div class="outline-text-2" id="text-orgde0f8b8">
+<section id="outline-container-org0c2fec5" class="outline-2">
+<h2 id="org0c2fec5">Solution</h2>
+<div class="outline-text-2" id="text-org0c2fec5">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -160,16 +160,16 @@
 </div>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Remarks</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org8a1512e" class="outline-2">
+<h2 id="org8a1512e">Remarks</h2>
+<div class="outline-text-2" id="text-org8a1512e">
 <p>
 A relatively simple DP problem, yet I failed it on the first try. The reason for this was because I did not partition the cases correctly. note that the case of two vertical bars case is included in memo[i-1] . therefore, it should be excluded from memo[i-2]
 </p>
 </div>
-<div id="outline-container-org7161a33" class="outline-3">
-<h3 id="org7161a33">Algorithm connections</h3>
-<div class="outline-text-3" id="text-org7161a33">
+<div id="outline-container-orgf42ba8d" class="outline-3">
+<h3 id="orgf42ba8d">Algorithm connections</h3>
+<div class="outline-text-3" id="text-orgf42ba8d">
 <ul class="org-ul">
 <li>Dynamic Programming — The reflection focuses on partitioning tiling cases without counting a case twice.</li>
 </ul>

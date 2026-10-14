@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Programmers 131702 — 고고학 최고의 발견</title>
@@ -52,13 +52,13 @@
 <div id="outline-container-org7925b9e" class="outline-3">
 <h3 id="org7925b9e">Input</h3>
 <div class="outline-text-3" id="text-org7925b9e">
-<p>
-2 ≤ clockHands의 길이 ≤ 8
-clockHands는 2차원 배열이며 행과 열의 크기가 동일합니다.
-0 ≤ clockHands의 원소 ≤ 3
-clockHands[i]의 원소들은 시곗바늘의 방향을 나타내며 0은 12시 방향, 1은 3시 방향, 2는 6시 방향, 3은 9시 방향을 나타냅니다.
-해결 가능한 퍼즐만 주어집니다.
-</p>
+<ul class="org-ul">
+<li>2 ≤ clockHands의 길이 ≤ 8</li>
+<li>clockHands는 2차원 배열이며 행과 열의 크기가 동일합니다.</li>
+<li>0 ≤ clockHands의 원소 ≤ 3</li>
+<li>clockHands[i]의 원소들은 시곗바늘의 방향을 나타내며 0은 12시 방향, 1은 3시 방향, 2는 6시 방향, 3은 9시 방향을 나타냅니다.</li>
+<li>해결 가능한 퍼즐만 주어집니다.</li>
+</ul>
 </div>
 </div>
 </section>
@@ -153,8 +153,7 @@ clockHands[i]의 원소들은 시곗바늘의 방향을 나타내며 0은 12시 
 <h3 id="org7f6f53b">General</h3>
 <div class="outline-text-3" id="text-org7f6f53b">
 <p>
-Quick glance shows that the search space is 2<sup>128</sup>. Obviously not feasible to perform full search. Since all spins are additive, and modular( I don't know what the math word for this property is)
-We can simply specify initial configuration of the top row(full search), and do greedy row-by-row search. This reduces search space to 4<sup>8</sup> configurations, which is quite feasible.
+Quick glance shows that the search space is 2<sup>128</sup>. Obviously not feasible to perform full search. Since all spins are additive, and modular( I don't know what the math word for this property is) We can simply specify initial configuration of the top row(full search), and do greedy row-by-row search. This reduces search space to 4<sup>8</sup> configurations, which is quite feasible.
 </p>
 </div>
 </div>

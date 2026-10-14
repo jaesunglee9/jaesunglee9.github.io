@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 1654 — 랜선 자르기</title>
@@ -57,34 +57,35 @@
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Test Case</h3>
+<div class="outline-text-3" id="text-org9beed48">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 4 11
 802
 743
 457
 539
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 200
-</p>
+</pre>
+</div>
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Solution</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Solution</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -148,48 +149,45 @@
 </div>
 </div>
 </section>
-<section id="outline-container-org0043671" class="outline-2">
-<h2 id="org0043671">Remarks</h2>
-<div class="outline-text-2" id="text-org0043671">
+<section id="outline-container-orgff52af2" class="outline-2">
+<h2 id="orgff52af2">Remarks</h2>
+<div class="outline-text-2" id="text-orgff52af2">
 </div>
-<div id="outline-container-org9beed48" class="outline-3">
-<h3 id="org9beed48">From K discrete values, produce n or more homogeneous integer by cutting.</h3>
-<div class="outline-text-3" id="text-org9beed48">
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">From K discrete values, produce n or more homogeneous integer by cutting.</h3>
+<div class="outline-text-3" id="text-org7161a33">
 <p>
 This problem is reminiscent of the Tree cutting problem, which lead me to the binary search algorithm.
 </p>
 </div>
 </div>
-<div id="outline-container-org2dc1f56" class="outline-3">
-<h3 id="org2dc1f56">But we are not looking for the key as in binary search.</h3>
-<div class="outline-text-3" id="text-org2dc1f56">
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">But we are not looking for the key as in binary search.</h3>
+<div class="outline-text-3" id="text-org194cf40">
 <p>
 We are looking for the highest possible value that still satisfies given condition.
 </p>
 </div>
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">invariant-based binary search ([low, high) half-open interval method).</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">invariant-based binary search ([low, high) half-open interval method).</h3>
+<div class="outline-text-3" id="text-org0043671">
 <p>
-Set h to max<sub>lan</sub> + 1. (The impossible value) and terminate when l + 1 &gt;= h.
-The reason I explicitly set high to max + 1 was since l and h (in my code) signify possible boundaries of possible and impossible. l is always possible, h is always impossible. In this mindset, I think my approach is more intuitive.
+Set h to max<sub>lan</sub> + 1. (The impossible value) and terminate when l + 1 &gt;= h. The reason I explicitly set high to max + 1 was since l and h (in my code) signify possible boundaries of possible and impossible. l is always possible, h is always impossible. In this mindset, I think my approach is more intuitive.
 </p>
 </div>
-<div id="outline-container-orgfa898cb" class="outline-4">
-<h4 id="orgfa898cb">The Logic: Maintaining Invariants</h4>
-<div class="outline-text-4" id="text-orgfa898cb">
+<div id="outline-container-org0c8fbd7" class="outline-4">
+<h4 id="org0c8fbd7">The Logic: Maintaining Invariants</h4>
+<div class="outline-text-4" id="text-org0c8fbd7">
 <p>
 In your code:
 </p>
 
-<p>
-Invariant 1: l (low) is always a value that works (Possible).
-</p>
+<ul class="org-ul">
+<li>Invariant 1: l (low) is always a value that works (Possible).</li>
 
-<p>
-Invariant 2: h (high) is always a value that fails (Impossible).
-</p>
+<li>Invariant 2: h (high) is always a value that fails (Impossible).</li>
+</ul>
 
 <p>
 Because you initialized h = max + 1 (definitely impossible) and l = 1 (definitely possible), these invariants hold true at the start.
@@ -199,39 +197,31 @@ Because you initialized h = max + 1 (definitely impossible) and l = 1 (definitel
 In the loop while (l + 1 != h):
 </p>
 
-<p>
-You pick mid.
-</p>
+<ul class="org-ul">
+<li>You pick mid.</li>
 
-<p>
-If check(mid) is True: mid is possible. So, update l = mid. (Now l is still the largest known possible value).
-</p>
+<li>If check(mid) is True: mid is possible. So, update l = mid. (Now l is still the largest known possible value).</li>
 
-<p>
-If check(mid) is False: mid is impossible. So, update h = mid. (Now h is still the smallest known impossible value).
-</p>
+<li>If check(mid) is False: mid is impossible. So, update h = mid. (Now h is still the smallest known impossible value).</li>
+</ul>
 </div>
 </div>
-<div id="outline-container-org7161a33" class="outline-4">
-<h4 id="org7161a33">Why this is mathematically cleaner</h4>
-<div class="outline-text-4" id="text-org7161a33">
-<p>
-No Off-by-One Errors: You don't need mid + 1 or mid - 1. You simply move the boundaries to mid. The gap between l and h shrinks until they are neighbors.
-</p>
+<div id="outline-container-orga55bdd4" class="outline-4">
+<h4 id="orga55bdd4">Why this is mathematically cleaner</h4>
+<div class="outline-text-4" id="text-orga55bdd4">
+<ul class="org-ul">
+<li>No Off-by-One Errors: You don't need mid + 1 or mid - 1. You simply move the boundaries to mid. The gap between l and h shrinks until they are neighbors.</li>
 
-<p>
-Clear Termination: The loop ends when l and h are adjacent (l + 1 == h). At this point, l is the exact answer (the largest possible value), and h is the first impossible value. No need to guess "is the answer low or high?". It is always l.
-</p>
+<li>Clear Termination: The loop ends when l and h are adjacent (l + 1 == h). At this point, l is the exact answer (the largest possible value), and h is the first impossible value. No need to guess "is the answer low or high?". It is always l.</li>
 
-<p>
-Universal Applicability: This logic works identically for "Maximize X" and "Minimize X" problems. You just swap which variable holds the "Possible" invariant.
-</p>
+<li>Universal Applicability: This logic works identically for "Maximize X" and "Minimize X" problems. You just swap which variable holds the "Possible" invariant.</li>
+</ul>
 </div>
 </div>
 </div>
-<div id="outline-container-org194cf40" class="outline-3">
-<h3 id="org194cf40">Algorithm connections</h3>
-<div class="outline-text-3" id="text-org194cf40">
+<div id="outline-container-org1520f12" class="outline-3">
+<h3 id="org1520f12">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org1520f12">
 <ul class="org-ul">
 <li>Binary Search — The remarks search for the largest feasible cable length using feasible/infeasible boundaries.</li>
 </ul>

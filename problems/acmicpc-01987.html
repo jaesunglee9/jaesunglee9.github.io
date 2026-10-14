@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 1987 — 알파벳</title>
@@ -30,26 +30,26 @@
 <h2 id="orgd98eb26">Problem</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-A single-player game is played on a rectangular board divided in R rows and C columns. There is a single uppercase letter (A-Z) written in every position in the board. 
+A single-player game is played on a rectangular board divided in R rows and C columns. There is a single uppercase letter (A-Z) written in every position in the board.
 </p>
 
 <p>
-Before the begging of the game there is a figure in the upper-left corner of the board (first row, first column). In every move, a player can move the figure to the one of the adjacent positions (up, down, left or right). Only constraint is that a figure cannot visit a position marked with the same letter twice. The goal of the game is to play as many moves as possible. 
+Before the begging of the game there is a figure in the upper-left corner of the board (first row, first column). In every move, a player can move the figure to the one of the adjacent positions (up, down, left or right). Only constraint is that a figure cannot visit a position marked with the same letter twice. The goal of the game is to play as many moves as possible.
 </p>
 
 <p>
-Write a program that will calculate the maximal number of positions in the board the figure can visit in a single game. 
+Write a program that will calculate the maximal number of positions in the board the figure can visit in a single game.
 </p>
 </div>
 <div id="outline-container-org7925b9e" class="outline-3">
 <h3 id="org7925b9e">입력</h3>
 <div class="outline-text-3" id="text-org7925b9e">
 <p>
-The first line of the input file contains two integers R and C, separated by a single blank character, 1 ≤ R, S ≤ 20. 
+The first line of the input file contains two integers R and C, separated by a single blank character, 1 ≤ R, S ≤ 20.
 </p>
 
 <p>
-The following R lines contain S characters each. Each line represents one row in the board. 
+The following R lines contain S characters each. Each line represents one row in the board.
 </p>
 </div>
 </div>
@@ -200,12 +200,11 @@ Looking at faster submissions reveals a clever optimization: replacing the stand
 </p>
 
 <p>
-Instead of just tracking <b>where</b> you are, the integer array tracks <b>where you are AND what alphabets you've collected</b>. 
-If you reach coordinate `(y, x)` with the exact same set of collected alphabets (represented as an integer bitmask) as a previous path, the DFS immediately returns, pruning a massive branch of redundant calculations. 
+Instead of just tracking <b>where</b> you are, the integer array tracks <b>where you are AND what alphabets you've collected</b>. If you reach coordinate <code>(y, x)</code> with the exact same set of collected alphabets (represented as an integer bitmask) as a previous path, the DFS immediately returns, pruning a massive branch of redundant calculations.
 </p>
 
 <p>
-The clever part about this is that the `visited` array acts as a "leaky" cache of size 1. If a wildly different path arrives at `(y, x)`, it overwrites the cache. But why is it still so fast? Because in a 2D grid DFS, the vast majority of duplicate states occur <b><b>locally and almost immediately</b></b> (e.g., going Down-Right vs. Right-Down). The cache perfectly remembers the <b>most recent</b> state, allowing it to instantly catch and destroy the most common form of grid-search explosion without requiring gigabytes of RAM for a perfect 3D memoization array.
+The clever part about this is that the <code>visited</code> array acts as a "leaky" cache of size 1. If a wildly different path arrives at <code>(y, x)</code>, it overwrites the cache. But why is it still so fast? Because in a 2D grid DFS, the vast majority of duplicate states occur <b>locally and almost immediately</b> (e.g., going Down-Right vs. Right-Down). The cache perfectly remembers the <b>most recent</b> state, allowing it to instantly catch and destroy the most common form of grid-search explosion without requiring gigabytes of RAM for a perfect 3D memoization array.
 </p>
 </div>
 </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 30804 — 과일 탕후루</title>
@@ -62,21 +62,11 @@
 <h2 id="orgd98eb26">Problem</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-Eunha made a Tanghulu (a Chinese snack made from sugar-coated fruits) with
-\(N\) fruits on a long stick. Each fruit is of a type numbered from \(1\) to \(9\), and starting from the front, fruits of types
+Eunha made a Tanghulu (a Chinese snack made from sugar-coated fruits) with \(N\) fruits on a long stick. Each fruit is of a type numbered from \(1\) to \(9\), and starting from the front, fruits of types \(S_1,S_2,\cdots ,S_N\) are pierced in order. Upon rechecking the order after making the fruit Tanghulu, she realized that she forgot the request to use only a maximum of two types of fruits.
 </p>
 
 <p>
-\(S_1,S_2,\cdots ,S_N\) are pierced in order. Upon rechecking the order after making the fruit Tanghulu, she realized that she forgot the request to use only a maximum of two types of fruits.
-</p>
-
-<p>
-Eunha, with no time to make another Tanghulu, decided to remove a number of fruits from the ends of the stick, leaving only a maximum of two types. After removing
-\(a\) fruits from the front and \(b\) fruits from the back, there are now \(N-(a+b)\) fruits of types \(S_{a+1},S_{a+2},\cdots ,S_{N-b-1},S_{N-b}\) on the tanghulu. \((0\le a,b;\)
-</p>
-
-<p>
-\(a+b<N)\) 
+Eunha, with no time to make another Tanghulu, decided to remove a number of fruits from the ends of the stick, leaving only a maximum of two types. After removing \(a\) fruits from the front and \(b\) fruits from the back, there are now \(N-(a+b)\) fruits of types \(S_{a+1},S_{a+2},\cdots ,S_{N-b-1},S_{N-b}\) on the tanghulu. \((0\le a,b;\) \(a+b<N)\)
 </p>
 
 <p>
@@ -87,21 +77,19 @@ Find the maximum number of fruits on the Tanghulu with a maximum of two types of
 <h3 id="org7925b9e">입력</h3>
 <div class="outline-text-3" id="text-org7925b9e">
 <p>
-The first line of input contains a single integer
-\(N\), denoting the number of fruits.
+The first line of input contains a single integer \(N\), denoting the number of fruits.
 </p>
 
 <p>
-\((1\le N\le 200\, 000)\) 
+\((1\le N\le 200\, 000)\)
 </p>
 
 <p>
-The second line of input contains
-\(N\) space-separated integers \(S_1,\cdots ,S_N\).
+The second line of input contains \(N\) space-separated integers \(S_1,\cdots ,S_N\).
 </p>
 
 <p>
-\((1\le S_i\le 9)\) 
+\((1\le S_i\le 9)\)
 </p>
 </div>
 </div>
@@ -113,85 +101,86 @@ The first line of output should contain the maximum number of fruits on a Tanghu
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">Test Case</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 5
 5 1 1 2 1
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 4
-</p>
+</pre>
 
 <p>
-If we remove
-\(1\) fruit from the front and \(0\) from the back, we have a Tanghulu of the form \(1, 1, 2, 1\). The number of fruits is
+If we remove \(1\) fruit from the front and \(0\) from the back, we have a Tanghulu of the form \(1, 1, 2, 1\). The number of fruits is \(4\).
 </p>
-
-<p>
-\(4\).
-예제 입력 2
-</p>
-
-<p>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-4">
+<h4 id="org2dc1f56">예제 입력 2</h4>
+<div class="outline-text-4" id="text-org2dc1f56">
+<pre class="example" id="org9beed48">
 3
 1 1 1
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-4">
+<h4 id="orgfa898cb">예제 출력 2</h4>
+<div class="outline-text-4" id="text-orgfa898cb">
+<pre class="example" id="orgde0f8b8">
 3
-</p>
+</pre>
 
 <p>
 There is already only one type of fruit in the Tanghulu.
-예제 입력 3
 </p>
-
-<p>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-4">
+<h4 id="org194cf40">예제 입력 3</h4>
+<div class="outline-text-4" id="text-org194cf40">
+<pre class="example" id="org7161a33">
 9
 1 2 3 4 5 6 7 8 9
-</p>
-
-<p>
-예제 출력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-4">
+<h4 id="org0c8fbd7">예제 출력 3</h4>
+<div class="outline-text-4" id="text-org0c8fbd7">
+<pre class="example" id="org0043671">
 2
-</p>
+</pre>
 
 <p>
-If we remove
-\(3\) fruits from the front and \(4\) fruits from the back, we have a Tanghulu of the form \(4, 5\). The number of fruits is \(2\).
+If we remove \(3\) fruits from the front and \(4\) fruits from the back, we have a Tanghulu of the form \(4, 5\). The number of fruits is \(2\).
 </p>
 </div>
 </div>
-<div id="outline-container-org7f6f53b" class="outline-3">
-<h3 id="org7f6f53b">Remark.</h3>
-<div class="outline-text-3" id="text-org7f6f53b">
 </div>
-<div id="outline-container-org9639605" class="outline-4">
-<h4 id="org9639605">I initially tried greedy approach. It does not cover all possible states, and so is not correct.</h4>
+<div id="outline-container-orgff52af2" class="outline-3">
+<h3 id="orgff52af2">Remark.</h3>
+<div class="outline-text-3" id="text-orgff52af2">
+</div>
+<div id="outline-container-org1520f12" class="outline-4">
+<h4 id="org1520f12">I initially tried greedy approach. It does not cover all possible states, and so is not correct.</h4>
 </div>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Solution</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-org0b22235" class="outline-2">
+<h2 id="org0b22235">Solution</h2>
+<div class="outline-text-2" id="text-org0b22235">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -249,22 +238,21 @@ If we remove
 </div>
 </div>
 </section>
-<section id="outline-container-orgde0f8b8" class="outline-2">
-<h2 id="orgde0f8b8">Approach</h2>
-<div class="outline-text-2" id="text-orgde0f8b8">
+<section id="outline-container-org0c2fec5" class="outline-2">
+<h2 id="org0c2fec5">Approach</h2>
+<div class="outline-text-2" id="text-org0c2fec5">
 <p>
-At any possible state of tanghulu(subsequence), it can be represented with two indices pointing to the start and end of the subsequence. This observation leads naturally to the two-pointer approach.
-two-pointer approach iterates over the sequence once, hence is O(N). It is probably one of the optimal solutions.
+At any possible state of tanghulu(subsequence), it can be represented with two indices pointing to the start and end of the subsequence. This observation leads naturally to the two-pointer approach. two-pointer approach iterates over the sequence once, hence is O(N). It is probably one of the optimal solutions.
 </p>
 </div>
 </section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">Remarks</h2>
-<div class="outline-text-2" id="text-org7161a33">
+<section id="outline-container-orgf42ba8d" class="outline-2">
+<h2 id="orgf42ba8d">Remarks</h2>
+<div class="outline-text-2" id="text-orgf42ba8d">
 </div>
-<div id="outline-container-orgfa898cb" class="outline-3">
-<h3 id="orgfa898cb">Algorithm connections</h3>
-<div class="outline-text-3" id="text-orgfa898cb">
+<div id="outline-container-org8a1512e" class="outline-3">
+<h3 id="org8a1512e">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org8a1512e">
 <ul class="org-ul">
 <li>Two Pointers — The approach represents a contiguous remaining segment by its two endpoints.</li>
 </ul>

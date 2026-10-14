@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:03 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 1541 — 잃어버린 괄호</title>
@@ -57,70 +57,71 @@
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">Test Case</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 55-50+40
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 -35
-</p>
-
-<p>
-예제 입력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-4">
+<h4 id="org2dc1f56">예제 입력 2</h4>
+<div class="outline-text-4" id="text-org2dc1f56">
+<pre class="example" id="org9beed48">
 10+20+30+40
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-4">
+<h4 id="orgfa898cb">예제 출력 2</h4>
+<div class="outline-text-4" id="text-orgfa898cb">
+<pre class="example" id="orgde0f8b8">
 100
-</p>
-
-<p>
-예제 입력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org194cf40" class="outline-4">
+<h4 id="org194cf40">예제 입력 3</h4>
+<div class="outline-text-4" id="text-org194cf40">
+<pre class="example" id="org7161a33">
 00009-00009
-</p>
-
-<p>
-예제 출력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org0c8fbd7" class="outline-4">
+<h4 id="org0c8fbd7">예제 출력 3</h4>
+<div class="outline-text-4" id="text-org0c8fbd7">
+<pre class="example" id="org0043671">
 0
-</p>
+</pre>
 </div>
 </div>
-<div id="outline-container-org9639605" class="outline-3">
-<h3 id="org9639605">Backlink</h3>
-<div class="outline-text-3" id="text-org9639605">
+</div>
+<div id="outline-container-org1520f12" class="outline-3">
+<h3 id="org1520f12">Backlink</h3>
+<div class="outline-text-3" id="text-org1520f12">
 <p>
 Greedy
 </p>
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Solution</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-orgf718da5" class="outline-2">
+<h2 id="orgf718da5">Solution</h2>
+<div class="outline-text-2" id="text-orgf718da5">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -182,23 +183,21 @@ Greedy
 </div>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Remarks</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org8a1512e" class="outline-2">
+<h2 id="org8a1512e">Remarks</h2>
+<div class="outline-text-2" id="text-org8a1512e">
 </div>
-<div id="outline-container-org2dc1f56" class="outline-3">
-<h3 id="org2dc1f56">Parsing in C++</h3>
-<div class="outline-text-3" id="text-org2dc1f56">
+<div id="outline-container-org0b22235" class="outline-3">
+<h3 id="org0b22235">Parsing in C++</h3>
+<div class="outline-text-3" id="text-org0b22235">
 <p>
-If we need to parse the string, than we can either go over char by char, or, we can use sstream library to make string behave as stream. It would serve well to remember the
-stringstream ss(str);
-syntax.
+If we need to parse the string, than we can either go over char by char, or, we can use sstream library to make string behave as stream. It would serve well to remember the <code>stringstream ss(str);</code> syntax.
 </p>
 </div>
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">Should have read the problem more carefully.</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org0c2fec5" class="outline-3">
+<h3 id="org0c2fec5">Should have read the problem more carefully.</h3>
+<div class="outline-text-3" id="text-org0c2fec5">
 <p>
 The problem asks us to find the smallest possible result with arbitrary parentheses, not closest to 0. In such case, It can be seen that finding the minimum result is local, and greedy task.
 </p>

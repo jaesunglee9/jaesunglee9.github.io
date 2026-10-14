@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Programmers 92343 — 양과 늑대</title>
@@ -47,34 +47,70 @@
 
 <p>
 각 노드에 있는 양 또는 늑대에 대한 정보가 담긴 배열 info, 2진 트리의 각 노드들의 연결 관계를 담은 2차원 배열 edges가 매개변수로 주어질 때, 문제에 제시된 조건에 따라 각 노드를 방문하면서 모을 수 있는 양은 최대 몇 마리인지 return 하도록 solution 함수를 완성해주세요.
-제한사항
-</p>
-
-<p>
-2 ≤ info의 길이 ≤ 17
-    info의 원소는 0 또는 1 입니다.
-    info[i]는 i번 노드에 있는 양 또는 늑대를 나타냅니다.
-    0은 양, 1은 늑대를 의미합니다.
-    info[0]의 값은 항상 0입니다. 즉, 0번 노드(루트 노드)에는 항상 양이 있습니다.
-edges의 세로(행) 길이 = info의 길이 - 1
-    edges의 가로(열) 길이 = 2
-    edges의 각 행은 [부모 노드 번호, 자식 노드 번호] 형태로, 서로 연결된 두 노드를 나타냅니다.
-    동일한 간선에 대한 정보가 중복해서 주어지지 않습니다.
-    항상 하나의 이진 트리 형태로 입력이 주어지며, 잘못된 데이터가 주어지는 경우는 없습니다.
-    0번 노드는 항상 루트 노드입니다.
-</p>
-
-<p>
-입출력 예
-info 	edges 	result
-[0,0,1,1,1,0,1,0,1,0,1,1] 	[[0,1],[1,2],[1,4],[0,8],[8,7],[9,10],[9,11],[4,3],[6,5],[4,6],[8,9]] 	5
-[0,1,0,1,1,0,1,0,0,1,0] 	[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[3,7],[4,8],[6,9],[9,10]] 	5	
 </p>
 </div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">제한사항</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>2 ≤ info의 길이 ≤ 17
+<ul class="org-ul">
+<li>info의 원소는 0 또는 1 입니다.</li>
+<li>info[i]는 i번 노드에 있는 양 또는 늑대를 나타냅니다.</li>
+<li>0은 양, 1은 늑대를 의미합니다.</li>
+<li>info[0]의 값은 항상 0입니다. 즉, 0번 노드(루트 노드)에는 항상 양이 있습니다.</li>
+</ul></li>
+<li>edges의 세로(행) 길이 = info의 길이 - 1
+<ul class="org-ul">
+<li>edges의 가로(열) 길이 = 2</li>
+<li>edges의 각 행은 [부모 노드 번호, 자식 노드 번호] 형태로, 서로 연결된 두 노드를 나타냅니다.</li>
+<li>동일한 간선에 대한 정보가 중복해서 주어지지 않습니다.</li>
+<li>항상 하나의 이진 트리 형태로 입력이 주어지며, 잘못된 데이터가 주어지는 경우는 없습니다.</li>
+<li>0번 노드는 항상 루트 노드입니다.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입출력 예</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">info</th>
+<th scope="col" class="org-left">edges</th>
+<th scope="col" class="org-right">result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">[0,0,1,1,1,0,1,0,1,0,1,1]</td>
+<td class="org-left">[[0,1],[1,2],[1,4],[0,8],[8,7],[9,10],[9,11],[4,3],[6,5],[4,6],[8,9]]</td>
+<td class="org-right">5</td>
+</tr>
+
+<tr>
+<td class="org-left">[0,1,0,1,1,0,1,0,0,1,0]</td>
+<td class="org-left">[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[3,7],[4,8],[6,9],[9,10]]</td>
+<td class="org-right">5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
-<section id="outline-container-orgee35afe" class="outline-2">
-<h2 id="orgee35afe">Solution</h2>
-<div class="outline-text-2" id="text-orgee35afe">
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
 <div class="org-src-container">
 <pre class="src src-cpp"><code>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
@@ -122,9 +158,9 @@ info 	edges 	result
 </div>
 </div>
 </section>
-<section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">Approach</h2>
-<div class="outline-text-2" id="text-org0ce0959">
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Approach</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
 <p>
 The solution uses Depth First Search over collection states. Each state records the sheep count, wolf count, and frontier of nodes available to collect next. Choosing a node updates the counts, removes it from the frontier, and adds its children. The search considers choices across the whole frontier, not only the children of the most recently collected node.
 </p>
@@ -134,9 +170,9 @@ This is a Backtracking search with a copied frontier for each branch. A choice i
 </p>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Remarks</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Remarks</h2>
+<div class="outline-text-2" id="text-orgb948b55">
 <p>
 When future choices depend on what earlier choices made available, but not on their exact order, the search state can retain a frontier instead of the full visit sequence.
 </p>

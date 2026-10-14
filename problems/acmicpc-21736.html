@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 21736 — 헌내기는 친구가 필요해</title>
@@ -62,16 +62,11 @@
 <h2 id="orgd98eb26">Problem</h2>
 <div class="outline-text-2" id="text-orgd98eb26">
 <p>
-2020년에 입학한 헌내기 도연이가 있다. 도연이는 비대면 수업 때문에 학교에 가지 못해 학교에 아는 친구가 없었다. 드디어 대면 수업을 하게 된 도연이는 어서 캠퍼스 내의 사람들과 친해지고 싶다. 
+2020년에 입학한 헌내기 도연이가 있다. 도연이는 비대면 수업 때문에 학교에 가지 못해 학교에 아는 친구가 없었다. 드디어 대면 수업을 하게 된 도연이는 어서 캠퍼스 내의 사람들과 친해지고 싶다.
 </p>
 
 <p>
-도연이가 다니는 대학의 캠퍼스는
-\(N \times M\) 크기이며 캠퍼스에서 이동하는 방법은 벽이 아닌 상하좌우로 이동하는 것이다. 예를 들어, 도연이가 (\(x\), \(y\))에 있다면 이동할 수 있는 곳은 (\(x+1\), \(y\)), (\(x\), \(y+1\)), (\(x-1\), \(y\)), (\(x\),
-</p>
-
-<p>
-\(y-1\))이다. 단, 캠퍼스의 밖으로 이동할 수는 없다.
+도연이가 다니는 대학의 캠퍼스는 \(N \times M\) 크기이며 캠퍼스에서 이동하는 방법은 벽이 아닌 상하좌우로 이동하는 것이다. 예를 들어, 도연이가 (\(x\), \(y\))에 있다면 이동할 수 있는 곳은 (\(x+1\), \(y\)), (\(x\), \(y+1\)), (\(x-1\), \(y\)), (\(x\), \(y-1\))이다. 단, 캠퍼스의 밖으로 이동할 수는 없다.
 </p>
 
 <p>
@@ -82,20 +77,11 @@
 <h3 id="org7925b9e">입력</h3>
 <div class="outline-text-3" id="text-org7925b9e">
 <p>
-첫째 줄에는 캠퍼스의 크기를 나타내는 두 정수
-\(N\) ($ 1 &le; N &le; 600$), \(M\) (
+첫째 줄에는 캠퍼스의 크기를 나타내는 두 정수 \(N\) ($ 1 &le; N &le; 600$), \(M\) ($ 1 &le; M &le; 600$)이 주어진다.
 </p>
 
 <p>
-$ 1 &le; M &le; 600$)이 주어진다.
-</p>
-
-<p>
-둘째 줄부터
-</p>
-
-<p>
-$N$개의 줄에는 캠퍼스의 정보들이 주어진다. O는 빈 공간, X는 벽, I는 도연이, P는 사람이다. I가 한 번만 주어짐이 보장된다.
+둘째 줄부터 $N$개의 줄에는 캠퍼스의 정보들이 주어진다. O는 빈 공간, X는 벽, I는 도연이, P는 사람이다. I가 한 번만 주어짐이 보장된다.
 </p>
 </div>
 </div>
@@ -107,61 +93,62 @@ $N$개의 줄에는 캠퍼스의 정보들이 주어진다. O는 빈 공간, X�
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Test Case</h3>
+<div class="outline-text-3" id="text-org7161a33">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 3 5
 OOOPO
 OIOOX
 OOOXP
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 1
-</p>
-
-<p>
-예제 입력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-4">
+<h4 id="org2dc1f56">예제 입력 2</h4>
+<div class="outline-text-4" id="text-org2dc1f56">
+<pre class="example" id="org9beed48">
 3 3
 IOX
 OXP
 XPP
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-4">
+<h4 id="orgfa898cb">예제 출력 2</h4>
+<div class="outline-text-4" id="text-orgfa898cb">
+<pre class="example" id="orgde0f8b8">
 TT
-</p>
+</pre>
 </div>
 </div>
-<div id="outline-container-org9639605" class="outline-3">
-<h3 id="org9639605">Backlink</h3>
-<div class="outline-text-3" id="text-org9639605">
-<p>
-Depth First Search
-Breadth First Search
-</p>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Backlink</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<ul class="org-ul">
+<li>Depth First Search</li>
+<li>Breadth First Search</li>
+</ul>
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Solution</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-orga55bdd4" class="outline-2">
+<h2 id="orga55bdd4">Solution</h2>
+<div class="outline-text-2" id="text-orga55bdd4">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -230,40 +217,42 @@ Breadth First Search
 </div>
 </div>
 </section>
-<section id="outline-container-orgde0f8b8" class="outline-2">
-<h2 id="orgde0f8b8">Remarks</h2>
-<div class="outline-text-2" id="text-orgde0f8b8">
+<section id="outline-container-orgf718da5" class="outline-2">
+<h2 id="orgf718da5">Remarks</h2>
+<div class="outline-text-2" id="text-orgf718da5">
 </div>
-<div id="outline-container-org2dc1f56" class="outline-3">
-<h3 id="org2dc1f56">Stack based implementation on a (slightly) more complex application of DFS</h3>
-<div class="outline-text-3" id="text-org2dc1f56">
+<div id="outline-container-org79c4fb7" class="outline-3">
+<h3 id="org79c4fb7">Stack based implementation on a (slightly) more complex application of DFS</h3>
+<div class="outline-text-3" id="text-org79c4fb7">
 <p>
 I revised my understanding of dfs and bfs. On a stack(or queue) based approach, while my previous implementation was sound, it was not as efficient as it could have been. Always check if The next node is viable and mark it as visited before pushing. This makes it so that redundant nodes are not pushed. Will be meaningful on dense graphs.
 </p>
 
 <p>
 revised code:
-	stack&lt;pair&lt;int, int&gt;&gt; s;
-	vector&lt;vector&lt;int&gt;&gt; vis(n, vector&lt;int&gt;(m));
-	int cnt = 0;
 </p>
 
-<p>
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold; text-decoration: underline;">stack</span>&lt;<span style="font-weight: bold; text-decoration: underline;">pair</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">s</span>;
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold;">vis</span>(n, vector&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;(<span style="font-weight: bold; font-style: italic;">m</span>));
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">cnt</span> = 0;
+
 s.push({sr, sc});
-while (!s.empty())
+<span style="font-weight: bold;">while</span> (!s.empty())
 {
-	auto [ur, uc] = s.top(); s.pop();
-	if (campus[ur][uc] <code>= 'P') cnt++;
-		for (int i = 0; i &lt; 4; i++)
-		{
-			int nr = ur + dr[i], nc = uc + dc[i];
-			if (nr &lt; 0 || nr &gt;</code> n || nc &lt; 0 || nc &gt;= m) continue;
-		if (vis[nr][nc] <code>= 1 || campus[nr][nc] =</code> 'X') continue;
-		vis[nr][nc] = 1;
-		s.push({nr, nc});
-	}
+        <span style="font-weight: bold;">auto</span> [ur, uc] = s.top(); s.pop();
+        <span style="font-weight: bold;">if</span> (campus[ur][uc] == <span style="font-style: italic;">'P'</span>) cnt++;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; 4; i++)
+        {
+                <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">nr</span> = ur + dr[i], <span style="font-weight: bold; font-style: italic;">nc</span> = uc + dc[i];
+                <span style="font-weight: bold;">if</span> (nr &lt; 0 || nr &gt;= n || nc &lt; 0 || nc &gt;= m) <span style="font-weight: bold;">continue</span>;
+                <span style="font-weight: bold;">if</span> (vis[nr][nc] == 1 || campus[nr][nc] == <span style="font-style: italic;">'X'</span>) <span style="font-weight: bold;">continue</span>;
+                vis[nr][nc] = 1;
+                s.push({nr, nc});
+        }
 }
-</p>
+</code></pre>
+</div>
 </div>
 </div>
 </section>

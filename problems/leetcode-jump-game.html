@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>LeetCode 55 — Jump Game</title>
@@ -46,44 +46,46 @@ You are given an integer array nums. You are initially positioned at the array's
 <p>
 Return true if you can reach the last index, or false otherwise.
 </p>
-
-
-
-<p>
-Example 1:
-</p>
-
-<p>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Example 1:</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<pre class="example" id="org7925b9e">
 Input: nums = [2,3,1,1,4]
 Output: true
+</pre>
+
+<p>
 Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
 </p>
-
-<p>
-Example 2:
-</p>
-
-<p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">Example 2:</h3>
+<div class="outline-text-3" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 Input: nums = [3,2,1,0,4]
 Output: false
+</pre>
+
+<p>
 Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
 </p>
-
-
-
-<p>
-Constraints:
-</p>
-
-<p>
-1 &lt;= nums.length &lt;= 104
-0 &lt;= nums[i] &lt;= 105
-</p>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Constraints:</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
+<ul class="org-ul">
+<li>1 &lt;= nums.length &lt;= 104</li>
+<li>0 &lt;= nums[i] &lt;= 105</li>
+</ul>
+</div>
 </div>
 </section>
-<section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">Solution</h2>
-<div class="outline-text-2" id="text-org0ce0959">
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Solution</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">Solution</span> {
 <span style="font-weight: bold;">public</span>:
@@ -101,16 +103,16 @@ Constraints:
 </div>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Remarks</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Remarks</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
 <p>
 Inittial solution : dfs. but the nodes all share a search space, with an interesting property: that a node, or a position, if it can be reached, means that all previous positions can be reached. also, all nodes before pos + nums[pos] can be reached as well. so we have a linear and shared search space. We can use this to create a much more efficient algorithm.
 </p>
 </div>
-<div id="outline-container-org7f6f53b" class="outline-3">
-<h3 id="org7f6f53b">Algorithm connections</h3>
-<div class="outline-text-3" id="text-org7f6f53b">
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">Algorithm connections</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
 <ul class="org-ul">
 <li>Greedy — The supplied solution maintains the farthest reachable position while scanning; the remarks explain the shared reachable prefix.</li>
 </ul>

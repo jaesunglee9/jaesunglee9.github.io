@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 2667 — 단지번호붙이기</title>
@@ -32,22 +32,27 @@
 <p>
 &lt;그림 1&gt;과 같이 정사각형 모양의 지도가 있다. 1은 집이 있는 곳을, 0은 집이 없는 곳을 나타낸다. 철수는 이 지도를 가지고 연결된 집의 모임인 단지를 정의하고, 단지에 번호를 붙이려 한다. 여기서 연결되었다는 것은 어떤 집이 좌우, 혹은 아래위로 다른 집이 있는 경우를 말한다. 대각선상에 집이 있는 경우는 연결된 것이 아니다. &lt;그림 2&gt;는 &lt;그림 1&gt;을 단지별로 번호를 붙인 것이다. 지도를 입력하여 단지수를 출력하고, 각 단지에 속하는 집의 수를 오름차순으로 정렬하여 출력하는 프로그램을 작성하시오.
 </p>
-
-<p>
-입력
-</p>
-
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력</h3>
+<div class="outline-text-3" id="text-org7925b9e">
 <p>
 첫 번째 줄에는 지도의 크기 N(정사각형이므로 가로와 세로의 크기는 같으며 5≤N≤25)이 입력되고, 그 다음 N줄에는 각각 N개의 자료(0혹은 1)가 입력된다.
-출력
 </p>
-
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
 <p>
 첫 번째 줄에는 총 단지수를 출력하시오. 그리고 각 단지내 집의 수를 오름차순으로 정렬하여 한 줄에 하나씩 출력하시오.
-예제 입력 1
 </p>
-
-<p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 7
 0110100
 0110101
@@ -56,23 +61,24 @@
 0100000
 0111110
 0111000
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">예제 출력 1</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 3
 7
 8
 9
-</p>
+</pre>
+</div>
 </div>
 </section>
-<section id="outline-container-org0ce0959" class="outline-2">
-<h2 id="org0ce0959">Solution</h2>
-<div class="outline-text-2" id="text-org0ce0959">
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -169,37 +175,37 @@
 </div>
 </div>
 </section>
-<section id="outline-container-org9639605" class="outline-2">
-<h2 id="org9639605">Approach</h2>
-<div class="outline-text-2" id="text-org9639605">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Approach</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <p>
 For each node in map, if is apartment, and unexplored, make new cluster and explore. push result to vector. print when done. is O(n<sup>2</sup>).
 </p>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Remarks</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Remarks</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
 </div>
-<div id="outline-container-org7f6f53b" class="outline-3">
-<h3 id="org7f6f53b">Choice of Braces</h3>
-<div class="outline-text-3" id="text-org7f6f53b">
+<div id="outline-container-org7161a33" class="outline-3">
+<h3 id="org7161a33">Choice of Braces</h3>
+<div class="outline-text-3" id="text-org7161a33">
 <p>
 This choice of setting braces on another line significantly reduces visual clutter, at the cost of making code a bit longer. An acceptable tradeoff, in my opinion.
 </p>
 </div>
 </div>
-<div id="outline-container-orgb948b55" class="outline-3">
-<h3 id="orgb948b55">Solidifying my knowledge of BFS and DFS helped immensely</h3>
-<div class="outline-text-3" id="text-orgb948b55">
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Solidifying my knowledge of BFS and DFS helped immensely</h3>
+<div class="outline-text-3" id="text-org194cf40">
 <p>
 Choosing implementation that pushed to queue/stack only once has made it so that implementing certain logic(here, counting number of house clusters) quite simple. Do note that there may be cases where I may need to explore all discovered nodes more than once.
 </p>
 </div>
 </div>
-<div id="outline-container-org9beed48" class="outline-3">
-<h3 id="org9beed48">Algorithm connections</h3>
-<div class="outline-text-3" id="text-org9beed48">
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org0043671">
 <ul class="org-ul">
 <li>Breadth First Search — The reflection connects the grid-component problem to BFS.</li>
 <li>Depth First Search — The same reflection also identifies DFS as relevant traversal practice.</li>

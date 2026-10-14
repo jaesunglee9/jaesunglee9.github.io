@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 10828 — 스택</title>
@@ -37,13 +37,13 @@
 명령은 총 다섯 가지이다.
 </p>
 
-<p>
-push X: 정수 X를 스택에 넣는 연산이다.
-pop: 스택에서 가장 위에 있는 정수를 빼고, 그 수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.
-size: 스택에 들어있는 정수의 개수를 출력한다.
-empty: 스택이 비어있으면 1, 아니면 0을 출력한다.
-top: 스택의 가장 위에 있는 정수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.
-</p>
+<ul class="org-ul">
+<li>push X: 정수 X를 스택에 넣는 연산이다.</li>
+<li>pop: 스택에서 가장 위에 있는 정수를 빼고, 그 수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.</li>
+<li>size: 스택에 들어있는 정수의 개수를 출력한다.</li>
+<li>empty: 스택이 비어있으면 1, 아니면 0을 출력한다.</li>
+<li>top: 스택의 가장 위에 있는 정수를 출력한다. 만약 스택에 들어있는 정수가 없는 경우에는 -1을 출력한다.</li>
+</ul>
 </div>
 <div id="outline-container-org7925b9e" class="outline-3">
 <h3 id="org7925b9e">Input</h3>
@@ -149,12 +149,15 @@ top: 스택의 가장 위에 있는 정수를 출력한다. 만약 스택에 들
 <div id="outline-container-orgb948b55" class="outline-4">
 <h4 id="orgb948b55">Done in relatively same manner as acmicpc-03425.</h4>
 </div>
+
 <div id="outline-container-org9beed48" class="outline-4">
 <h4 id="org9beed48">Using enums and vector as stacks are more familiar now.</h4>
 </div>
+
 <div id="outline-container-org2dc1f56" class="outline-4">
 <h4 id="org2dc1f56">Was done in an offline manner, since I like the format, but can be done online as well. Perhaps I should embrace taking in inputs at solution level.</h4>
 </div>
+
 <div id="outline-container-orgde0f8b8" class="outline-4">
 <h4 id="orgde0f8b8">mixing couts and ternary operators resulted in concise code.</h4>
 </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 2448 — 별 찍기 - 11</title>
@@ -49,104 +49,49 @@
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">예제 입력 1</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-24
-</p>
-</div>
-</div>
 <div id="outline-container-org9639605" class="outline-3">
-<h3 id="org9639605">예제 출력 1</h3>
+<h3 id="org9639605">예제 입력 1</h3>
 <div class="outline-text-3" id="text-org9639605">
-<p>
-```
-</p>
-<ul class="org-ul">
-<li></li>
-</ul>
-<ul class="org-ul">
-<li>*</li>
-</ul>
-<p>
-<b><b>*</b></b>                      
-</p>
-<ul class="org-ul">
-<li>*</li>
-</ul>
-<ul class="org-ul">
-<li>*   * *</li>
-</ul>
-<p>
-<b><b>*</b></b> <b><b>*</b></b>                   
-</p>
-<ul class="org-ul">
-<li>*</li>
-</ul>
-<ul class="org-ul">
-<li>*         * *</li>
-</ul>
-<p>
-<b><b>*</b></b>       <b><b>*</b></b>                
-</p>
-<ul class="org-ul">
-<li>*     *     *</li>
-</ul>
-<ul class="org-ul">
-<li>*   * *   * *   * *</li>
-</ul>
-<p>
-<b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b>             
-</p>
-<ul class="org-ul">
-<li>*</li>
-</ul>
-<ul class="org-ul">
-<li>*                     * *</li>
-</ul>
-<p>
-<b><b>*</b></b>                   <b><b>*</b></b>          
-</p>
-<ul class="org-ul">
-<li>*                 *     *</li>
-</ul>
-<ul class="org-ul">
-<li>*   * *               * *   * *</li>
-</ul>
-<p>
-<b><b>*</b></b> <b><b>*</b></b>             <b><b>*</b></b> <b><b>*</b></b>       
-</p>
-<ul class="org-ul">
-<li>*           *           *</li>
-</ul>
-<ul class="org-ul">
-<li>*         * *         * *         * *</li>
-</ul>
-<p>
-<b><b>*</b></b>       <b><b>*</b></b>       <b><b>*</b></b>       <b><b>*</b></b>    
-</p>
-<ul class="org-ul">
-<li>*     *     *     *     *     *     *</li>
-</ul>
-<ul class="org-ul">
-<li>*   * *   * *   * *   * *   * *   * *   * *</li>
-</ul>
+<pre class="example" id="org0ce0959">
+24
+</pre>
 </div>
-<ul class="org-ul">
-<li><a id="org7f6f53b"></a><b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b> <b><b>*</b></b><br>
-<div class="outline-text-6" id="text-org7f6f53b">
-<p>
-```
-</p>
 </div>
-</li>
-</ul>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">예제 출력 1</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
+                       *                        
+                      * *                       
+                     *****                      
+                    *     *                     
+                   * *   * *                    
+                  ***** *****                   
+                 *           *                  
+                * *         * *                 
+               *****       *****                
+              *     *     *     *               
+             * *   * *   * *   * *              
+            ***** ***** ***** *****             
+           *                       *            
+          * *                     * *           
+         *****                   *****          
+        *     *                 *     *         
+       * *   * *               * *   * *        
+      ***** *****             ***** *****       
+     *           *           *           *      
+    * *         * *         * *         * *     
+   *****       *****       *****       *****    
+  *     *     *     *     *     *     *     *   
+ * *   * *   * *   * *   * *   * *   * *   * *  
+***** ***** ***** ***** ***** ***** ***** *****
+</pre>
+</div>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Solution</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Solution</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -263,13 +208,13 @@
 </div>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Remarks</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">sol0, sol1</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">sol0, sol1</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
 <p>
 There are not much to say on this one except that it is done recursively. Either do it subtractively (sol0), or do it additively, dividing with each half length.
 </p>

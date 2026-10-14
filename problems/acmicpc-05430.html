@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 5430 — AC</title>
@@ -52,12 +52,11 @@ Given a BAPC program and its input, return its output or “error” in case ‘
 On the first line one positive number: the number of test cases, at most 100. After that per test case:
 </p>
 
-<p>
-one line with a string p (1 ≤ length(p) ≤ 100 000): a BAPC program, consisting of the
-characters ‘R’ and ‘D’.
-one line with an integer n (0 ≤ n ≤ 100 000): the number of elements in the input.
-one line with a list of n integers in the form [x1, &hellip;, xn] (1 ≤ xi ≤ 100): the input list
-</p>
+<ul class="org-ul">
+<li>one line with a string p (1 ≤ length(p) ≤ 100 000): a BAPC program, consisting of the characters ‘R’ and ‘D’.</li>
+<li>one line with an integer n (0 ≤ n ≤ 100 000): the number of elements in the input.</li>
+<li>one line with a list of n integers in the form [x1, &hellip;, xn] (1 ≤ xi ≤ 100): the input list</li>
+</ul>
 </div>
 </div>
 <div id="outline-container-orgee35afe" class="outline-3">
@@ -67,19 +66,19 @@ one line with a list of n integers in the form [x1, &hellip;, xn] (1 ≤ xi ≤
 Per test case:
 </p>
 
-<p>
-one line with the resulting integer list or “error” in case of an error.
-</p>
+<ul class="org-ul">
+<li>one line with the resulting integer list or “error” in case of an error.</li>
+</ul>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Test Case</h3>
+<div class="outline-text-3" id="text-org9beed48">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 4
 RDD
 4
@@ -93,24 +92,25 @@ RRD
 D
 0
 []
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 [2,1]
 error
 [1,2,3,5,8]
 error
-</p>
+</pre>
+</div>
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Solution</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Solution</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -313,45 +313,49 @@ error
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Approach</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Approach</h2>
+<div class="outline-text-2" id="text-org7161a33">
 <p>
 Both sol0 and sol1 takes advantage of the fact that you don't actually need to reverse the list to access the elements. sol0 uses custom structs, while sol1 uses Deque .
 </p>
 </div>
 </section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">Remarks</h2>
-<div class="outline-text-2" id="text-org7161a33">
+<section id="outline-container-org79c4fb7" class="outline-2">
+<h2 id="org79c4fb7">Remarks</h2>
+<div class="outline-text-2" id="text-org79c4fb7">
 </div>
-<div id="outline-container-org2dc1f56" class="outline-3">
-<h3 id="org2dc1f56">sol0</h3>
-<div class="outline-text-3" id="text-org2dc1f56">
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">sol0</h3>
+<div class="outline-text-3" id="text-org194cf40">
 <p>
 Not bad, but for I should have noticed that empty lists have reversed pointers.
 </p>
 </div>
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">Printing commas</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">Printing commas</h3>
+<div class="outline-text-3" id="text-org0043671">
 <p>
-No particular magic in mine, but how people typically print commas first and number later.
-Following code will reveal why.
-Printing Commas Cleanly
-```
-for (int i = 0; i &lt; (int)dq.size(); i++)
-			{
-				if (i) cout &lt;&lt; ',';
-				cout &lt;&lt; dq[i];
-			}
-  ```
+No particular magic in mine, but how people typically print commas first and number later. Following code will reveal why.
 </p>
 </div>
+<div id="outline-container-org1520f12" class="outline-4">
+<h4 id="org1520f12">Printing Commas Cleanly</h4>
+<div class="outline-text-4" id="text-org1520f12">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0; i &lt; (<span style="font-weight: bold; text-decoration: underline;">int</span>)dq.size(); i++)
+                        {
+                                <span style="font-weight: bold;">if</span> (i) cout &lt;&lt; <span style="font-style: italic;">','</span>;
+                                cout &lt;&lt; dq[i];
+                        }
+</code></pre>
 </div>
-<div id="outline-container-orgfa898cb" class="outline-3">
-<h3 id="orgfa898cb">stringstream is said to be slow</h3>
+</div>
+</div>
+</div>
+<div id="outline-container-orgff52af2" class="outline-3">
+<h3 id="orgff52af2">stringstream is said to be slow</h3>
 </div>
 </section>
 </article>

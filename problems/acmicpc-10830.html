@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 10830 — 행렬 제곱</title>
@@ -174,7 +174,7 @@
 <h2 id="orgb948b55">Remarks</h2>
 <div class="outline-text-2" id="text-orgb948b55">
 <p>
-A variation of the well known exponentiation implementation. I wonder how modern optimized programs handle large expoenents. That said, the solution did not arrive without its quirks. In the ```matmul``` function, matmul expects references, which must be named, apparently. This was solvable by pulling out the intermediary value as 'half', which admittedly made the code better structured. Same issue arose for the 'reduce' function, but in this case the solution was a bit more cumbersome. Apparently I need to utilize move semantics(C++11) and change function signature of 'reduce' so that it can take unnamed variables. I still don't think I like it very much. Why try to be something you can't be? I mean, I would rather use rust. Nevertheless, after the fix, the code runs smoothly.
+A variation of the well known exponentiation implementation. I wonder how modern optimized programs handle large expoenents. That said, the solution did not arrive without its quirks. In the <code>matmul</code> function, matmul expects references, which must be named, apparently. This was solvable by pulling out the intermediary value as 'half', which admittedly made the code better structured. Same issue arose for the 'reduce' function, but in this case the solution was a bit more cumbersome. Apparently I need to utilize move semantics(C++11) and change function signature of 'reduce' so that it can take unnamed variables. I still don't think I like it very much. Why try to be something you can't be? I mean, I would rather use rust. Nevertheless, after the fix, the code runs smoothly.
 </p>
 </div>
 <div id="outline-container-org9beed48" class="outline-3">

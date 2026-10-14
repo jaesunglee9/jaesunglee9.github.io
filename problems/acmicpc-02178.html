@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 2178 — 미로 탐색</title>
@@ -26,16 +26,19 @@
 </p>
 </div>
 </section>
-<section id="outline-container-orgd98eb26" class="outline-2">
-<h2 id="orgd98eb26">Problem</h2>
-<div class="outline-text-2" id="text-orgd98eb26">
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Problem</h2>
+<div class="outline-text-2" id="text-org7925b9e">
 <p>
 N×M크기의 배열로 표현되는 미로가 있다.
+</p>
+
+<pre class="example" id="orgd98eb26">
 1 	0 	1 	1 	1 	1
 1 	0 	1 	0 	1 	0
 1 	0 	1 	0 	1 	1
 1 	1 	1 	0 	1 	1
-</p>
+</pre>
 
 <p>
 미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다. 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오. 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.
@@ -45,88 +48,88 @@ N×M크기의 배열로 표현되는 미로가 있다.
 위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.
 </p>
 </div>
-<div id="outline-container-org7925b9e" class="outline-3">
-<h3 id="org7925b9e">입력</h3>
-<div class="outline-text-3" id="text-org7925b9e">
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">입력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
 <p>
 첫째 줄에 두 정수 N, M(2 ≤ N, M ≤ 100)이 주어진다. 다음 N개의 줄에는 M개의 정수로 미로가 주어진다. 각각의 수들은 붙어서 입력으로 주어진다.
 </p>
 </div>
 </div>
-<div id="outline-container-orgee35afe" class="outline-3">
-<h3 id="orgee35afe">출력</h3>
-<div class="outline-text-3" id="text-orgee35afe">
+<div id="outline-container-org0ce0959" class="outline-3">
+<h3 id="org0ce0959">출력</h3>
+<div class="outline-text-3" id="text-org0ce0959">
 <p>
 첫째 줄에 지나야 하는 최소의 칸 수를 출력한다. 항상 도착위치로 이동할 수 있는 경우만 입력으로 주어진다.
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Test Case</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org0b22235" class="outline-3">
+<h3 id="org0b22235">Test Case</h3>
+<div class="outline-text-3" id="text-org0b22235">
+</div>
+<div id="outline-container-org7f6f53b" class="outline-4">
+<h4 id="org7f6f53b">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org7f6f53b">
+<pre class="example" id="org9639605">
 4 6
 101111
 101010
 101011
 111011
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-4">
+<h4 id="org9beed48">예제 출력 1</h4>
+<div class="outline-text-4" id="text-org9beed48">
+<pre class="example" id="orgb948b55">
 15
-</p>
-
-<p>
-예제 입력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgde0f8b8" class="outline-4">
+<h4 id="orgde0f8b8">예제 입력 2</h4>
+<div class="outline-text-4" id="text-orgde0f8b8">
+<pre class="example" id="org2dc1f56">
 4 6
 110110
 110110
 111111
 111101
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org7161a33" class="outline-4">
+<h4 id="org7161a33">예제 출력 2</h4>
+<div class="outline-text-4" id="text-org7161a33">
+<pre class="example" id="orgfa898cb">
 9
-</p>
-
-<p>
-예제 입력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-org0043671" class="outline-4">
+<h4 id="org0043671">예제 입력 3</h4>
+<div class="outline-text-4" id="text-org0043671">
+<pre class="example" id="org194cf40">
 2 25
 1011101110111011101110111
 1110111011101110111011101
-</p>
-
-<p>
-예제 출력 3
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orga55bdd4" class="outline-4">
+<h4 id="orga55bdd4">예제 출력 3</h4>
+<div class="outline-text-4" id="text-orga55bdd4">
+<pre class="example" id="org0c8fbd7">
 38
-</p>
-
-<p>
-예제 입력 4
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgff52af2" class="outline-4">
+<h4 id="orgff52af2">예제 입력 4</h4>
+<div class="outline-text-4" id="text-orgff52af2">
+<pre class="example" id="org1520f12">
 7 7
 1011111
 1110001
@@ -135,30 +138,31 @@ N×M크기의 배열로 표현되는 미로가 있다.
 1000001
 1000001
 1111111
-</p>
-
-<p>
-예제 출력 4
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgf718da5" class="outline-4">
+<h4 id="orgf718da5">예제 출력 4</h4>
+<div class="outline-text-4" id="text-orgf718da5">
+<pre class="example" id="org79c4fb7">
 13
-</p>
+</pre>
 </div>
 </div>
-<div id="outline-container-org9639605" class="outline-3">
-<h3 id="org9639605">Backlink</h3>
-<div class="outline-text-3" id="text-org9639605">
-<p>
-Breadth First Search
-Dijkstra's Algorithm
-</p>
+</div>
+<div id="outline-container-org0c2fec5" class="outline-3">
+<h3 id="org0c2fec5">Backlink</h3>
+<div class="outline-text-3" id="text-org0c2fec5">
+<ul class="org-ul">
+<li>Breadth First Search</li>
+<li>Dijkstra's Algorithm</li>
+</ul>
 </div>
 </div>
 </section>
-<section id="outline-container-org9beed48" class="outline-2">
-<h2 id="org9beed48">Solution</h2>
-<div class="outline-text-2" id="text-org9beed48">
+<section id="outline-container-org72a3840" class="outline-2">
+<h2 id="org72a3840">Solution</h2>
+<div class="outline-text-2" id="text-org72a3840">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -227,24 +231,24 @@ Dijkstra's Algorithm
 </div>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Approach</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-org5c0e423" class="outline-2">
+<h2 id="org5c0e423">Approach</h2>
+<div class="outline-text-2" id="text-org5c0e423">
 <p>
 The problem asks us, what is the cost of going from a to b in a unweighted, 2d grid graph? This restriction enables further simplification from a simple dijkstra. In BFS, paths of same depths are searched before searching for deeper depths, hence the first path to find destination is the fastest path to the destination.
 </p>
 </div>
 </section>
-<section id="outline-container-org7161a33" class="outline-2">
-<h2 id="org7161a33">Remarks</h2>
-<div class="outline-text-2" id="text-org7161a33">
+<section id="outline-container-orge63ca02" class="outline-2">
+<h2 id="orge63ca02">Remarks</h2>
+<div class="outline-text-2" id="text-orge63ca02">
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">Is there really no way to conveniently fill 2d array?</h3>
+<div id="outline-container-orgaf542ca" class="outline-3">
+<h3 id="orgaf542ca">Is there really no way to conveniently fill 2d array?</h3>
 </div>
 
-<div id="outline-container-orgfa898cb" class="outline-3">
-<h3 id="orgfa898cb">Here I employ using vector&lt;string&gt; itself to store the maze. somewhat shorter, but the fact that I had to compare with chars here and int there made it more annoying. Will not use this approach in the future.</h3>
+<div id="outline-container-orgc025086" class="outline-3">
+<h3 id="orgc025086">Here I employ using vector&lt;string&gt; itself to store the maze. somewhat shorter, but the fact that I had to compare with chars here and int there made it more annoying. Will not use this approach in the future.</h3>
 </div>
 </section>
 </article>

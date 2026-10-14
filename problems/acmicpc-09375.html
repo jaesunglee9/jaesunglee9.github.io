@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 9375 — 패션왕 신해빈</title>
@@ -40,10 +40,10 @@ Spies use attributes to disguise themselves to make sure that they are not recog
 On the ﬁrst line one positive number: the number of test cases, at most 100. After that per test case:
 </p>
 
-<p>
-one line with an integer n (0 ≤ n ≤ 30): the number of available attributes.
-n lines with two space-separated strings: the name and the category of the attribute.
-</p>
+<ul class="org-ul">
+<li>one line with an integer n (0 ≤ n ≤ 30): the number of available attributes.</li>
+<li>n lines with two space-separated strings: the name and the category of the attribute.</li>
+</ul>
 
 <p>
 All strings consist of at least 1 and at most 20 lowercase letters. Within a test case all names are distinct.
@@ -57,19 +57,19 @@ All strings consist of at least 1 and at most 20 lowercase letters. Within a tes
 Per test case:
 </p>
 
-<p>
-one line with an integer: the number of possible distinct disguises that can be made with the given attributes, such that at most one attribute from each category is used.
-</p>
+<ul class="org-ul">
+<li>one line with an integer: the number of possible distinct disguises that can be made with the given attributes, such that at most one attribute from each category is used.</li>
+</ul>
 </div>
 </div>
-<div id="outline-container-org9639605" class="outline-3">
-<h3 id="org9639605">Test Case</h3>
-<div class="outline-text-3" id="text-org9639605">
+<div id="outline-container-org7f6f53b" class="outline-3">
+<h3 id="org7f6f53b">Test Case</h3>
+<div class="outline-text-3" id="text-org7f6f53b">
 </div>
-<div id="outline-container-org0ce0959" class="outline-4">
-<h4 id="org0ce0959">case 1</h4>
-<div class="outline-text-4" id="text-org0ce0959">
-<p>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">case 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 2
 3
 hat headgear
@@ -79,25 +79,26 @@ turban headgear
 mask face
 sunglasses face
 makeup face
-</p>
+</pre>
 </div>
 </div>
-</div>
-<div id="outline-container-org7f6f53b" class="outline-3">
-<h3 id="org7f6f53b">Problem</h3>
 </div>
 <div id="outline-container-orgb948b55" class="outline-3">
-<h3 id="orgb948b55">Reference</h3>
-<div class="outline-text-3" id="text-orgb948b55">
+<h3 id="orgb948b55">Problem</h3>
+</div>
+
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Reference</h3>
+<div class="outline-text-3" id="text-org9beed48">
 <p>
 <a href="https://www.acmicpc.net/problem/9375">https://www.acmicpc.net/problem/9375</a>
 </p>
 </div>
 </div>
 </section>
-<section id="outline-container-orgde0f8b8" class="outline-2">
-<h2 id="orgde0f8b8">Solution</h2>
-<div class="outline-text-2" id="text-orgde0f8b8">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Solution</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -148,26 +149,34 @@ makeup face
 </div>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Remarks</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Remarks</h2>
+<div class="outline-text-2" id="text-org7161a33">
 <p>
 Not much
 </p>
 </div>
-<div id="outline-container-org7161a33" class="outline-3">
-<h3 id="org7161a33">Iterating over an unordered<sub>map</sub>:</h3>
-<div class="outline-text-3" id="text-org7161a33">
+<div id="outline-container-org1520f12" class="outline-3">
+<h3 id="org1520f12">Iterating over an unordered<sub>map</sub>:</h3>
+<div class="outline-text-3" id="text-org1520f12">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold;">const</span>&amp; [<span style="font-weight: bold; text-decoration: underline;">k</span>, <span style="font-weight: bold; text-decoration: underline;">v</span>]: um)
+</code></pre>
+</div>
+
 <p>
-for (auto const&amp; [k, v]: um)
 of
-for (auto const&amp; pair: um) {
-pair.first =&hellip;..
 </p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold;">const</span>&amp; <span style="font-weight: bold; font-style: italic;">pair</span>: um) {
+pair.first =.....
+</code></pre>
 </div>
 </div>
-<div id="outline-container-org194cf40" class="outline-3">
-<h3 id="org194cf40">Backlinks</h3>
+</div>
+<div id="outline-container-orgff52af2" class="outline-3">
+<h3 id="orgff52af2">Backlinks</h3>
 </div>
 </section>
 </article>

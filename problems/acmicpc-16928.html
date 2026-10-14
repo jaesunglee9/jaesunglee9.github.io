@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 16928 — 뱀과 사다리 게임</title>
@@ -33,9 +33,9 @@
 뱀과 사다리 게임을 즐겨 하는 큐브러버는 어느 날 궁금한 점이 생겼다.
 </p>
 
-<p>
-주사위를 조작해 내가 원하는 수가 나오게 만들 수 있다면, 최소 몇 번만에 도착점에 도착할 수 있을까?
-</p>
+<ul class="org-ul">
+<li>주사위를 조작해 내가 원하는 수가 나오게 만들 수 있다면, 최소 몇 번만에 도착점에 도착할 수 있을까?</li>
+</ul>
 
 <p>
 게임은 정육면체 주사위를 사용하며, 주사위의 각 면에는 1부터 6까지 수가 하나씩 적혀있다. 게임은 크기가 10×10이고, 총 100개의 칸으로 나누어져 있는 보드판에서 진행된다. 보드판에는 1부터 100까지 수가 하나씩 순서대로 적혀져 있다.
@@ -78,10 +78,13 @@
 <div class="outline-text-3" id="text-orgee35afe">
 <p>
 100번 칸에 도착하기 위해 주사위를 최소 몇 번 굴려야 하는지 출력한다.
-예제 입력 1
 </p>
-
-<p>
+</div>
+</div>
+<div id="outline-container-org9639605" class="outline-3">
+<h3 id="org9639605">예제 입력 1</h3>
+<div class="outline-text-3" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 3 7
 32 62
 42 68
@@ -93,27 +96,27 @@
 75 19
 49 47
 67 17
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">예제 출력 1</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 3
-</p>
+</pre>
 
-<p>
-5를 굴려 6으로 이동한다.
-6을 굴려 12로 이동한다. 이 곳은 98로 이동하는 사다리가 있기 때문에, 98로 이동한다.
-2를 굴려 100으로 이동한다.
-</p>
-
-<p>
-예제 입력 2
-</p>
-
-<p>
+<ul class="org-ul">
+<li>5를 굴려 6으로 이동한다.</li>
+<li>6을 굴려 12로 이동한다. 이 곳은 98로 이동하는 사다리가 있기 때문에, 98로 이동한다.</li>
+<li>2를 굴려 100으로 이동한다.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">예제 입력 2</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<pre class="example" id="org9beed48">
 4 9
 8 52
 6 80
@@ -128,29 +131,29 @@
 53 7
 43 33
 77 21
-</p>
-
-<p>
-예제 출력 2
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgfa898cb" class="outline-3">
+<h3 id="orgfa898cb">예제 출력 2</h3>
+<div class="outline-text-3" id="text-orgfa898cb">
+<pre class="example" id="orgde0f8b8">
 5
-</p>
+</pre>
 
-<p>
-5를 굴려 6으로 이동하고, 사다리를 이용해 80으로 이동한다. 
-6을 굴려 86으로
-6을 또 굴려 92로
-6을 또 굴려 98로 이동하고
-2를 굴려 100으로 이동한다.
-</p>
+<ul class="org-ul">
+<li>5를 굴려 6으로 이동하고, 사다리를 이용해 80으로 이동한다.</li>
+<li>6을 굴려 86으로</li>
+<li>6을 또 굴려 92로</li>
+<li>6을 또 굴려 98로 이동하고</li>
+<li>2를 굴려 100으로 이동한다.</li>
+</ul>
 </div>
 </div>
 </section>
-<section id="outline-container-org7f6f53b" class="outline-2">
-<h2 id="org7f6f53b">Solution</h2>
-<div class="outline-text-2" id="text-org7f6f53b">
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">Solution</h2>
+<div class="outline-text-2" id="text-org0043671">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;queue&gt;</span>
@@ -230,21 +233,21 @@
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Approach</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Approach</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
 <p>
 It is a BFS, but how will you perform it? Use memory for O(1) Lookup.
 </p>
 </div>
 </section>
-<section id="outline-container-org2dc1f56" class="outline-2">
-<h2 id="org2dc1f56">Remarks</h2>
-<div class="outline-text-2" id="text-org2dc1f56">
+<section id="outline-container-org1520f12" class="outline-2">
+<h2 id="org1520f12">Remarks</h2>
+<div class="outline-text-2" id="text-org1520f12">
 </div>
-<div id="outline-container-org9beed48" class="outline-3">
-<h3 id="org9beed48">No need to separate ladder and snake</h3>
-<div class="outline-text-3" id="text-org9beed48">
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">No need to separate ladder and snake</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
 <p>
 I separated ladder and snake and stored them separately, but since they are mutually exclusive, there is no need for this.
 </p>

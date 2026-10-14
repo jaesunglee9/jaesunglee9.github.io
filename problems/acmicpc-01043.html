@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 1043 — 거짓말</title>
@@ -405,7 +405,7 @@ Naturally, this propagation is describable by search, namely DFS, as used in the
 <h4 id="org9beed48">Potential Improvement:</h4>
 <div class="outline-text-4" id="text-org9beed48">
 <ul class="org-ul">
-<li>I used adjacency matrix for initial implementation. Adjacency list should be used for larger graphs, albeit with some caveat: It is possible to create redundant edges when doing so, as in the case where two people attending same parties more than once. This calls for ```vector&lt;unordered<sub>set</sub>&gt;```.</li>
+<li>I used adjacency matrix for initial implementation. Adjacency list should be used for larger graphs, albeit with some caveat: It is possible to create redundant edges when doing so, as in the case where two people attending same parties more than once. This calls for <code>vector&lt;unordered_set&gt;</code>.</li>
 <li>Also, for modeling parties, I created a clique, or a fully connected subgraph. This is unnecessary. Just connect the first person to everyone else.</li>
 <li>Parameters are passed blindly, resulting in ugly function arguments. They should be put inside a class or a struct.</li>
 <li>Finally, the solution can be further abstracted away as a Union-Find to find reachable and unreachable parties.</li>

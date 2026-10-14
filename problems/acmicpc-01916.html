@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:02 -->
+<!-- 2026-10-14 Wed 12:48 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Baekjoon 1916 — 최소비용 구하기</title>
@@ -53,14 +53,14 @@ N개의 도시가 있다. 그리고 한 도시에서 출발하여 다른 도시�
 </p>
 </div>
 </div>
-<div id="outline-container-org0ce0959" class="outline-3">
-<h3 id="org0ce0959">Example</h3>
-<div class="outline-text-3" id="text-org0ce0959">
-<p>
-예제 입력 1
-</p>
-
-<p>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Example</h3>
+<div class="outline-text-3" id="text-org9beed48">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">예제 입력 1</h4>
+<div class="outline-text-4" id="text-org9639605">
+<pre class="example" id="org0ce0959">
 5
 8
 1 2 2
@@ -72,21 +72,22 @@ N개의 도시가 있다. 그리고 한 도시에서 출발하여 다른 도시�
 3 5 1
 4 5 3
 1 5
-</p>
-
-<p>
-예제 출력 1
-</p>
-
-<p>
+</pre>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">예제 출력 1</h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<pre class="example" id="org7f6f53b">
 4
-</p>
+</pre>
+</div>
 </div>
 </div>
 </section>
-<section id="outline-container-orgb948b55" class="outline-2">
-<h2 id="orgb948b55">Solution</h2>
-<div class="outline-text-2" id="text-orgb948b55">
+<section id="outline-container-orgfa898cb" class="outline-2">
+<h2 id="orgfa898cb">Solution</h2>
+<div class="outline-text-2" id="text-orgfa898cb">
 <div class="org-src-container">
 <pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;iostream&gt;</span>
 <span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
@@ -151,32 +152,34 @@ N개의 도시가 있다. 그리고 한 도시에서 출발하여 다른 도시�
 </div>
 </div>
 </section>
-<section id="outline-container-orgfa898cb" class="outline-2">
-<h2 id="orgfa898cb">Approach</h2>
-<div class="outline-text-2" id="text-orgfa898cb">
+<section id="outline-container-org0c8fbd7" class="outline-2">
+<h2 id="org0c8fbd7">Approach</h2>
+<div class="outline-text-2" id="text-org0c8fbd7">
 </div>
-<div id="outline-container-orgde0f8b8" class="outline-3">
-<h3 id="orgde0f8b8">sol0</h3>
-<div class="outline-text-3" id="text-orgde0f8b8">
+<div id="outline-container-org0043671" class="outline-3">
+<h3 id="org0043671">sol0</h3>
+<div class="outline-text-3" id="text-org0043671">
 </div>
-<div id="outline-container-org9beed48" class="outline-4">
-<h4 id="org9beed48">Minimum cost when SRC and DST nodes are known, graph is fully known, positive costs</h4>
+<div id="outline-container-org7161a33" class="outline-4">
+<h4 id="org7161a33">Minimum cost when SRC and DST nodes are known, graph is fully known, positive costs</h4>
 </div>
-<div id="outline-container-org2dc1f56" class="outline-4">
-<h4 id="org2dc1f56">Use Dijkstra's algorithm</h4>
+
+<div id="outline-container-org194cf40" class="outline-4">
+<h4 id="org194cf40">Use Dijkstra's algorithm</h4>
 </div>
 </div>
 </section>
-<section id="outline-container-org0043671" class="outline-2">
-<h2 id="org0043671">Remarks</h2>
-<div class="outline-text-2" id="text-org0043671">
+<section id="outline-container-orgff52af2" class="outline-2">
+<h2 id="orgff52af2">Remarks</h2>
+<div class="outline-text-2" id="text-orgff52af2">
 </div>
-<div id="outline-container-org7161a33" class="outline-3">
-<h3 id="org7161a33">Forgot to do skip when the popped node is stale. See code for detail.</h3>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">Forgot to do skip when the popped node is stale. See code for detail.</h3>
 </div>
-<div id="outline-container-org194cf40" class="outline-3">
-<h3 id="org194cf40">Algorithm connections</h3>
-<div class="outline-text-3" id="text-org194cf40">
+
+<div id="outline-container-org1520f12" class="outline-3">
+<h3 id="org1520f12">Algorithm connections</h3>
+<div class="outline-text-3" id="text-org1520f12">
 <ul class="org-ul">
 <li>Dijkstra's Algorithm — The approach explicitly uses Dijkstra and remarks on skipping stale priority-queue entries.</li>
 </ul>
