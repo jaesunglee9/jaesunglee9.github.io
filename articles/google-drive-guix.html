@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-14 Wed 14:41 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mounting Google Drive on Linux</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Mounting Google Drive on Linux</h1>
+</header><p>
+I hope this article can help people who want to mount Google Drive as a folder on Linux, There are mcp for remote access I believe, but they are clunky and slow. On the other hand, this way is much more dangerous, and automatic, daily(maybe even hourly) backup is highly recommended.
+</p>
+
+<p>
+Note that I am using Guix System Distribution, but the below method should be applicable to most linuxes. 
+</p>
+
+<p>
+The setup has two parts: authorize rclone to access Drive, then mount a folder. Authorization alone does not create a local directory.
+</p>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Install and verify</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+Install rclone using your distribution's package manager or follow the <a href="https://rclone.org/install/">upstream installation instructions</a>. Check that the installed build supports <code>rclone mount</code> and that FUSE is available. 
+</p>
+
+<p>
+On Guix, I initially installed the packages with:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>guix install rclone restic
+rclone version
+restic version
+</code></pre>
+</div>
+
+<p>
+Guix users should consider putting the packages inside Guix home configuration.
+</p>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Use my own Google OAuth client</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<p>
+Following <a href="https://rclone.org/drive/#making-your-own-client-id">rclone's client-ID guide</a>:
+</p>
+
+<ol class="org-ol">
+<li>Create or select a Google Cloud project and enable Google Drive API.</li>
+<li>Configure OAuth branding, contact email, audience, and data access.</li>
+<li>For a personal external app in Testing, add my account as a test user.</li>
+<li>Create an OAuth client of type Desktop app; retain its ID and secret.</li>
+<li>Follow the guide's production-status requirements before unattended use.</li>
+</ol>
+
+<p>
+Google says external apps in Testing receive refresh tokens that expire after
+seven days when requesting Drive scopes. Production status does not prevent
+all other causes of token expiry. See <a href="https://developers.google.com/identity/protocols/oauth2#expiration">Google's token-expiration documentation</a>.
+</p>
+
+<p>
+Run the wizard:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>rclone config
+</code></pre>
+</div>
+
+<p>
+Create <code>gdrive</code> with storage type <code>drive</code>, enter the custom client credentials,
+and authorize in the browser. For an existing remote, edit its credentials and
+replace the token through the wizard. Preserve the existing remote name.
+See <a href="https://rclone.org/drive/#configuration">rclone's configuration instructions</a>.
+</p>
+
+<p>
+For reading existing files, choose <code>drive.readonly</code>. Choose <code>drive</code> when writes are needed; <code>drive.file</code> does not grant access to every existing file. These are permissions granted to rclone by Google, separate from the mount's <code>--read-only</code> flag. See <a href="https://developers.google.com/workspace/drive/api/guides/api-specific-auth">Google's scope definitions</a>.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Access from a terminal</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+These commands address the remote directly, without a mount:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>rclone listremotes
+rclone lsf gdrive: --max-depth 1
+rclone lsf <span style="font-style: italic;">'gdrive:some-folder'</span> --max-depth 1
+</code></pre>
+</div>
+
+<p>
+Paths containing spaces need shell quotes. To inspect one plain-text file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>rclone cat <span style="font-style: italic;">'gdrive:some-folder/example.txt'</span>
+</code></pre>
+</div>
+
+<p>
+Any terminal on this configured machine can use the remote. Another machine needs rclone and its own configuration/authorization. On a headless host,
+answer no to browser authentication and follow the wizard's instructions on abrowser-equipped machine. See <a href="https://rclone.org/remote_setup/">rclone's remote setup guide</a>.
+</p>
+
+<p>
+<code>rclone config file</code> shows the configuration location. Treat it as sensitive
+because it holds tokens. Do not paste it into a blog or commit it to Git.
+Avoid placing credentials in examples, screenshots, or command history.
+</p>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Mount for tools that expect file paths</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<p>
+I use <code>~/gdrive</code> as the mount point. Start with read-only access:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>mkdir -p ~/gdrive
+rclone mount gdrive: ~/gdrive --read-only --vfs-cache-mode full
+</code></pre>
+</div>
+
+<p>
+This command stays in the foreground. Keep the terminal open while using the mount.
+</p>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">Read-only access for AI agents</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+If an agent only needs to read documents, <code>--read-only</code> is a useful guardrail: it cannot overwrite or delete files through this mount. It can still read and copy their contents, so this does not protect against disclosure.
+</p>
+
+<p>
+The important catch: a read-only mount is not a sandbox. An agent with access to writable rclone credentials can bypass it by calling rclone directly. For stronger separation, give the agent only read-only credentials and isolate it from the full-access configuration, for example under a separate OS user. Naming another remote "readonly" is not enough.
+</p>
+</div>
+</div>
+<div id="outline-container-orga55bdd4" class="outline-3">
+<h3 id="orga55bdd4">A writable background mount</h3>
+<div class="outline-text-3" id="text-orga55bdd4">
+<p>
+For my own work, I want to edit files too. Unmount any existing mount first, then omit <code>--read-only</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>mkdir -p ~/gdrive ~/.local/state/rclone
+rclone mount gdrive: ~/gdrive <span style="font-style: italic;">\</span>
+  --vfs-cache-mode full <span style="font-style: italic;">\</span>
+  --daemon <span style="font-style: italic;">\</span>
+  --log-file ~/.local/state/rclone/gdrive.log <span style="font-style: italic;">\</span>
+  --log-level INFO
+</code></pre>
+</div>
+
+<p>
+If <code>gdrive</code> was authorized with <code>drive.readonly</code>, edit it with <code>rclone config</code>, choose the <code>drive</code> scope, and authorize it again. Removing a mount flag cannot expand Google's granted permissions or make someone else's read-only shared file writable.
+</p>
+
+<p>
+Writable access means edits, renames, and deletions can affect the real Drive files. That includes actions taken by an agent using this directory. Keep versioned backups before handing it that access.
+</p>
+
+<p>
+<code>--daemon</code> runs the mount in the background; it does not arrange startup after reboot or restart after a crash. Logs go to <code>~/.local/state/rclone/gdrive.log</code>. To use the same background setup read-only, add <code>--read-only</code> back.
+</p>
+
+<p>
+With the VFS cache, saving locally is not immediate confirmation of an upload. Files must close and the write-back delay must pass; check the log before shutting down. See <a href="https://rclone.org/commands/rclone_mount/">rclone's mount documentation</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-org0b22235" class="outline-3">
+<h3 id="org0b22235">Unmounting and recovering a disconnected mount</h3>
+<div class="outline-text-3" id="text-org0b22235">
+<p>
+For a healthy mount, finish writes and unmount normally:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>fusermount -u ~/gdrive
+</code></pre>
+</div>
+
+<p>
+If accessing the directory reports <code>Transport endpoint is not connected</code> and the mount process has died, detach the stale mount before running the mount command again:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>fusermount -uz ~/gdrive
+</code></pre>
+</div>
+
+<p>
+This detaches the mount; it does not delete Drive files. It is not a way to flush pending uploads. Some distributions call the command <code>fusermount3</code> instead.
+</p>
+</div>
+</div>
+<div id="outline-container-org0c2fec5" class="outline-3">
+<h3 id="org0c2fec5">Google-native documents</h3>
+<div class="outline-text-3" id="text-org0c2fec5">
+<p>
+Google-native documents are exported representations. An exported document
+is not a live Google Docs editing session. See <a href="https://developers.google.com/workspace/drive/api/guides/manage-downloads">Google's export documentation</a>.
+Rclone notes that native Docs can appear as zero bytes through a mount;
+use explicit downloads when mount access fails. See <a href="https://rclone.org/drive/#limitations-of-google-docs">rclone's Docs limitations</a>.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org72a3840" class="outline-2">
+<h2 id="org72a3840">Mounting, copying, and syncing</h2>
+<div class="outline-text-2" id="text-org72a3840">
+<p>
+I wanted mounted access. A mount retrieves remote content as applications use
+it; its cache is not a complete offline replica or a backup.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Operation</th>
+<th scope="col" class="org-left">Purpose</th>
+<th scope="col" class="org-left">Deletions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">mount</td>
+<td class="org-left">Expose remote files through a directory</td>
+<td class="org-left">Writable operations affect Drive</td>
+</tr>
+
+<tr>
+<td class="org-left">copy</td>
+<td class="org-left">Transfer new or changed files</td>
+<td class="org-left">Does not remove extra destination files</td>
+</tr>
+
+<tr>
+<td class="org-left">sync</td>
+<td class="org-left">Make destination match source</td>
+<td class="org-left">Can delete destination-only files</td>
+</tr>
+
+<tr>
+<td class="org-left">bisync</td>
+<td class="org-left">Reconcile changes in both directions</td>
+<td class="org-left">Can propagate deletions both ways</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To download a folder, first inspect a dry run:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><code>rclone copy <span style="font-style: italic;">'gdrive:some-folder'</span> ~/DriveDownloads/some-folder --dry-run
+</code></pre>
+</div>
+
+<p>
+Remove <code>--dry-run</code> when the source and destination are intended. Copy can
+overwrite changed destination files; retaining extra files is not versioning.
+See <a href="https://rclone.org/commands/rclone_copy/">copy</a>, <a href="https://rclone.org/commands/rclone_sync/">sync</a>, and <a href="https://rclone.org/commands/rclone_bisync/">bisync</a>.
+</p>
+</div>
+</section>
+<section id="outline-container-org5c0e423" class="outline-2">
+<h2 id="org5c0e423">Done</h2>
+<div class="outline-text-2" id="text-org5c0e423">
+<p>
+But I strongly recommend having automatic backups. I am going to build one right now.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
