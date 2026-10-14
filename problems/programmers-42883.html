@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-14 Wed 12:55 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42883 — Make the Largest Number</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42883 — Make the Largest Number</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42883?language=cpp">Programmers 42883 — Make the Largest Number (C++)</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+This is a summary of the original problem. See the source link for the full statement.
+</p>
+
+<p>
+Remove exactly <code>k</code> digits from the numeric string <code>number</code> while preserving the relative order of the remaining digits. Return the largest possible number as a string.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Interface and constraints</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>Function: <code>string solution(string number, int k)</code></li>
+<li><code>number</code> contains between 2 and 1,000,000 digits.</li>
+<li><code>k</code> is at least 1 and less than the length of <code>number</code>.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Examples</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">number</th>
+<th scope="col" class="org-right">k</th>
+<th scope="col" class="org-left">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>"1924"</code></td>
+<td class="org-right">2</td>
+<td class="org-left"><code>"94"</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>"1231234"</code></td>
+<td class="org-right">3</td>
+<td class="org-left"><code>"3234"</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>"4177252841"</code></td>
+<td class="org-right">4</td>
+<td class="org-left"><code>"775841"</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">number</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">string</span> <span style="font-weight: bold; font-style: italic;">answer</span> = <span style="font-style: italic;">""</span>;        
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">ch</span> : number) {
+        <span style="font-weight: bold;">while</span> (answer != <span style="font-style: italic;">""</span> &amp;&amp; k &gt; 0 &amp;&amp; answer.back() &lt; ch) {
+            answer.pop_back();
+            k--;
+        }
+        answer += ch;
+    }
+
+    <span style="font-weight: bold;">while</span> (k &gt; 0) {
+        answer.pop_back();
+        k--;
+    }
+
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Approach</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+This problem took me some time.
+</p>
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Positional weight</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+For two \(L\)-digit numbers, the first differing digit from the left determines which number is larger.
+</p>
+
+<p>
+\[
+A = \overline{a_1 a_2 \dots a_L}, \qquad
+B = \overline{b_1 b_2 \dots b_L}
+\]
+</p>
+
+<p>
+If the first differing position is \(i\) and \(a_i > b_i\), then \(A > B\), regardless of the remaining digits. The smallest difference at that position exceeds the largest possible difference across all later positions.
+</p>
+
+<p>
+\[
+(a_i - b_i) \cdot 10^{L-i}
+\ge 10^{L-i}
+> \sum_{j=i+1}^{L} 9 \cdot 10^{L-j}
+= 10^{L-i} - 1
+\]
+</p>
+
+<p>
+With a fixed number of digits to retain, making an earlier digit larger takes priority over improving later digits.
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Removing the smaller preceding digit (Exchange argument)</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Consider adjacent digits \(x, y\) with \(x < y\), while we still have deletions available. Removing \(x\) moves the larger digit \(y\) into its position.
+</p>
+
+<p>
+\[
+\dots x y \dots \;\longrightarrow\; \dots y \dots
+\]
+</p>
+
+<p>
+The positional-weight observation motivates this greedy choice. This solution uses <code>answer</code> as a stack, popping trailing digits smaller than the incoming digit while deletions remain.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Positional weight and the exchange argument support greedy reasoning here. Invariants are useful beyond greedy algorithms too: when reasoning about another algorithm, ask what must remain true after each step.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

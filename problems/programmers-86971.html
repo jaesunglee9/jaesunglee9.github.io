@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-14 Wed 12:55 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Programmers 86971 — 전력망을 둘로 나누기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Programmers 86971 — 전력망을 둘로 나누기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/86971">https://school.programmers.co.kr/learn/courses/30/lessons/86971</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+n개의 송전탑이 전선을 통해 하나의 트리 형태로 연결되어 있습니다. 당신은 이 전선들 중 하나를 끊어서 현재의 전력망 네트워크를 2개로 분할하려고 합니다. 이때, 두 전력망이 갖게 되는 송전탑의 개수를 최대한 비슷하게 맞추고자 합니다.
+</p>
+
+<p>
+송전탑의 개수 n, 그리고 전선 정보 wires가 매개변수로 주어집니다. 전선들 중 하나를 끊어서 송전탑 개수가 가능한 비슷하도록 두 전력망으로 나누었을 때, 두 전력망이 가지고 있는 송전탑 개수의 차이(절대값)를 return 하도록 solution 함수를 완성해주세요.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">제한사항</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>n은 2 이상 100 이하인 자연수입니다.</li>
+<li>wires는 길이가 n-1인 정수형 2차원 배열입니다.
+<ul class="org-ul">
+<li>wires의 각 원소는 [v1, v2] 2개의 자연수로 이루어져 있으며, 이는 전력망의 v1번 송전탑과 v2번 송전탑이 전선으로 연결되어 있다는 것을 의미합니다.</li>
+<li>1 ≤ v1 &lt; v2 ≤ n 입니다.</li>
+<li>전력망 네트워크가 하나의 트리 형태가 아닌 경우는 입력으로 주어지지 않습니다.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="outline-container-org0ce0959" class="outline-2">
+<h2 id="org0ce0959">Solution</h2>
+<div class="outline-text-2" id="text-org0ce0959">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">G</span>;
+<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">P</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">N</span>;
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">mn_diff</span> = 9999999;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">dfs</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">u</span>) {
+    <span style="font-weight: bold;">if</span> (G[u].size() == 1 &amp;&amp; G[u][0] == P[u]) {
+        <span style="font-weight: bold;">return</span> 1;
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tree_sum</span> = 1;
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">v</span> : G[u]) {
+        <span style="font-weight: bold;">if</span> (v == P[u]) <span style="font-weight: bold;">continue</span>;
+        P[v] = u;
+
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">subtree_sum</span> = dfs(v);
+        mn_diff = min(mn_diff, abs(N - 2 * subtree_sum));
+        tree_sum += subtree_sum;
+    }
+
+    <span style="font-weight: bold;">return</span> tree_sum;
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">wires</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = -1;
+    N = n;
+    G.resize(n+1);
+    P.resize(n+1);
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">e</span> : wires) {
+        G[e[0]].push_back(e[1]);
+        G[e[1]].push_back(e[0]);
+    }
+
+    dfs(1);
+
+    <span style="font-weight: bold;">return</span> mn_diff;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Approach</h2>
+<div class="outline-text-2" id="text-org9639605">
+<p>
+The solution roots the tree at tower 1 and uses a postorder DFS. <code>dfs(u)</code> returns the number of towers in <code>u</code>'s subtree. After a child returns a subtree size <code>s</code>, removing the edge to that child would split the network into components of sizes <code>s</code> and <code>N-s</code>, whose difference is <code>abs(N - 2s)</code>. Taking the minimum over all parent-child edges therefore evaluates every possible wire removal in one traversal.
+</p>
+
+<p>
+This is Depth First Search with postorder subtree-size aggregation.
+</p>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Implementation note</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Browsing other people's code, I found some improvements to be made over original code, which is as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;cmath&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">wires</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">adj</span>(n + 1);
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">w</span> : wires) {
+        adj[w[0]].push_back(w[1]);
+        adj[w[1]].push_back(w[0]);
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">min_diff</span> = n;
+
+    <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">Single-pass DFS: returns subtree size while minimizing difference
+</span>    <span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">dfs</span> = [&amp;](<span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">self</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">u</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">p</span>) -&gt; <span style="font-weight: bold; text-decoration: underline;">int</span> {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">sub_size</span> = 1;
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">v</span> : adj[u]) {
+            <span style="font-weight: bold;">if</span> (v == p) <span style="font-weight: bold;">continue</span>;
+            <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">child_size</span> = self(self, v, u);
+            min_diff = min(min_diff, abs(n - 2 * child_size));
+            sub_size += child_size;
+        }
+        <span style="font-weight: bold;">return</span> sub_size;
+    };
+
+    dfs(dfs, 1, 0);
+
+    <span style="font-weight: bold;">return</span> min_diff;
+}
+</code></pre>
+</div>
+
+<p>
+This is a better, cleaner implementation. Note the use of recursive lambdas, and sending parent with u.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
