@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-16 Fri 02:59 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42885 — Lifeboats (구명보트)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a><a class="site-language-link" href="/ko/" lang="ko" hreflang="ko">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42885 — Lifeboats (구명보트)</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42885">Programmers 42885 — 구명보트</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+This is an English summary of the original problem. See the source link for the full statement.
+</p>
+
+<p>
+Rescue everyone from an island using lifeboats. Each boat carries at most two people, and their combined weight must not exceed <code>limit</code>. Given the individual weights in <code>people</code>, return the minimum number of boats needed to carry everyone.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Interface and constraints</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>C++ interface: <code>int solution(vector&lt;int&gt; people, int limit)</code></li>
+<li>There are between 1 and 50,000 people.</li>
+<li>Each person weighs between 40 and 240 kg, inclusive.</li>
+<li><code>limit</code> is between 40 and 240 kg, inclusive.</li>
+<li>The statement guarantees that <code>limit</code> is greater than the heaviest person's weight, so everyone can be rescued.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Examples</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">people</th>
+<th scope="col" class="org-right">limit</th>
+<th scope="col" class="org-right">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>[70, 50, 80, 50]</code></td>
+<td class="org-right">100</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>[70, 80, 50]</code></td>
+<td class="org-right">100</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">people</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">limit</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0; 
+    sort(people.begin(), people.end());
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = people.size() - 1;
+    <span style="font-weight: bold;">while</span> (i &lt;= j)
+    {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tmp</span> =  limit - people[j];
+        <span style="font-weight: bold;">if</span> (tmp &lt; people[i]) {
+            j--;
+        }
+        <span style="font-weight: bold;">else</span> {
+            j--;
+            i++;
+        }
+        answer++;
+
+    }
+
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Why does greedy work here? Note that boat can carry at most two.  Now. Sort the people by weight. Take the heaviest and lightes person's weight. There can be two cases: 1. the boat can accomdate the heaviest and the lightest person, in which case it is optimal, or 2. weight of them both combined exceeds capacity. In this case, there is no way the heavier person can cross with company, since we used the lightest person's weight. Thus, we can cross him now, without worry(that it might be suboptimal) .
+</p>
+
+<p>
+Note that the cleaned up code is:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">people</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">limit</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0; 
+    sort(people.begin(), people.end());
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 0;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = people.size() - 1;
+    <span style="font-weight: bold;">while</span> (i &lt;= j) {
+        <span style="font-weight: bold;">if</span> (limit &gt;= people[i] + people[j]) {
+            i++;
+        }
+        j--;
+        answer++;   
+    }     
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+
+<p>
+This solution uses greedy pairing: each iteration chooses a boat's occupants from the remaining people. The sorted array and its two endpoint indices represent those remaining people.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+The pattern worth remembering here is two pointers moving inward. A useful pattern is: can the unprocessed elements stay in one range, with each decision handling or ruling out one or both endpoints?
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
