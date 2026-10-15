@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-07 Wed 01:03 -->
+<!-- 2026-10-16 Fri 02:39 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>About</title>
@@ -14,25 +14,49 @@
 </head>
 <body>
 <header id="preamble" class="status">
-<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a><a class="site-language-link" href="/ko/about.html" lang="ko" hreflang="ko">한국어</a></nav>
 </header>
 <article id="content" class="content">
 <header>
 <h1 class="title">About</h1>
 </header><p>
-This site collects my public notes, technical writing, and projects.
+I’m Jaesung Lee. My main interest is system design, and I’m also exploring the operational side of running services. This blog collects my architectural walkthroughs, practical Linux notes, and algorithm problem solving. I use Guix System and keep these notes in Org mode.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Where to start</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+The <a href="/articles/system-architecture/url-shortener/v0.html">URL-shortener series</a> works through a service design one requirement at a time. It covers the request path, storage, failures, and the changes needed as the service grows. Its workloads and guarantees are stated as design assumptions; it is an architectural exercise.
 </p>
 
 <p>
-The notes are written in Org mode and published as a static website.
+<a href="/articles/google-drive-guix.html">Mounting Google Drive on Linux</a> documents a practical setup on Guix, including access permissions and backup choices.
 </p>
 
 <p>
-<a href="portfolio.html">Portfolio</a>
+My <a href="/problems.html">algorithm problem notes</a> record solutions and lessons from individual problems.
 </p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Find me</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<a href="https://github.com/jaesunglee9">GitHub · jaesunglee9</a>
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">Reading in Korean</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+The <a href="/ko/index.html">Korean homepage</a> introduces the available Korean articles and a suggested starting point. English originals remain available from each translated article.
+</p>
+</div>
+</section>
 </article>
 <footer id="postamble" class="status">
-<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td></td><td><a href="portfolio.html">Portfolio</a></td></tr></tbody></table></details>
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="index.html">Solipse</a></td><td><a href="articles/google-drive-guix.html">Mounting Google Drive on Linux</a></td></tr><tr><td></td><td><a href="problems.html">Problems</a></td></tr><tr><td></td><td><a href="ko/index.html">Solipse</a></td></tr><tr><td></td><td><a href="articles/system-architecture/url-shortener/v0.html">URL Shortener: Problem and Architecture Roadmap</a></td></tr></tbody></table></details>
 </footer>
 </body>
 </html>

@@ -78,6 +78,38 @@ body {
     text-underline-offset: 0.18em;
 }
 
+.site-language-link {
+    margin-left: auto;
+}
+
+.language-entry {
+    font-size: 1.25rem;
+}
+
+.language-entry a {
+    display: inline-block;
+    padding: 0.4rem 0;
+}
+
+html[lang="ko"] body {
+    font-family: "Apple SD Gothic Neo", "Noto Sans CJK KR", "Noto Sans KR",
+        "Malgun Gothic", sans-serif;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+}
+
+html[lang="ko"] p,
+html[lang="ko"] li {
+    line-height: 1.8;
+}
+
+html[lang="ko"] h1,
+html[lang="ko"] h2,
+html[lang="ko"] h3 {
+    line-height: 1.4;
+    font-style: normal;
+}
+
 .language-switch {
     margin-top: 0.8rem;
     font-size: 1.1rem;
@@ -239,6 +271,12 @@ th {
 
     .site-nav {
         padding-top: 1.25rem;
+    }
+
+    html[lang="ko"] p,
+    html[lang="ko"] li {
+        font-size: 1.2rem;
+        line-height: 1.75;
     }
 
     article {
