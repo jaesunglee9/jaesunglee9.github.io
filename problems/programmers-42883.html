@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2026-10-14 Wed 12:55 -->
+<!-- 2026-10-16 Fri 03:17 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>programmers-42883 — Make the Largest Number</title>
@@ -45,7 +45,7 @@
 </head>
 <body>
 <header id="preamble" class="status">
-<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a><a class="site-language-link" href="/ko/" lang="ko" hreflang="ko">한국어</a></nav>
 </header>
 <article id="content" class="content">
 <header>
@@ -189,6 +189,10 @@ If the first differing position is \(i\) and \(a_i > b_i\), then \(A > B\), rega
 <p>
 With a fixed number of digits to retain, making an earlier digit larger takes priority over improving later digits.
 </p>
+
+<p>
+The general base-and-length conditions and suffix bound are developed in <a href="/notes/positional_weight_and_lexicographic_order.html">Positional weight and lexicographic order</a>.
+</p>
 </div>
 </div>
 <div id="outline-container-org9beed48" class="outline-3">
@@ -207,6 +211,10 @@ Consider adjacent digits \(x, y\) with \(x < y\), while we still have deletions 
 <p>
 The positional-weight observation motivates this greedy choice. This solution uses <code>answer</code> as a stack, popping trailing digits smaller than the incoming digit while deletions remain.
 </p>
+
+<p>
+<a href="/notes/greedy_digit_deletion.html">Greedy digit deletion with a monotonic stack</a> explains how the deletion budget bounds the next choice, why the earliest maximum is safe, and why remaining deletions are taken from the end. Its monotonicity condition applies while deletions remain; the final output need not be monotone.
+</p>
 </div>
 </div>
 </section>
@@ -220,7 +228,7 @@ Positional weight and the exchange argument support greedy reasoning here. Invar
 </section>
 </article>
 <footer id="postamble" class="status">
-<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="../notes/greedy_digit_deletion.html">Greedy digit deletion with a monotonic stack</a></td><td><a href="../notes/greedy_digit_deletion.html">Greedy digit deletion with a monotonic stack</a></td></tr><tr><td><a href="../notes/positional_weight_and_lexicographic_order.html">Positional weight and lexicographic order</a></td><td><a href="../notes/positional_weight_and_lexicographic_order.html">Positional weight and lexicographic order</a></td></tr></tbody></table></details>
 </footer>
 </body>
 </html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-16 Fri 03:17 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Greedy digit deletion with a monotonic stack</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a><a class="site-language-link" href="/ko/" lang="ko" hreflang="ko">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Greedy digit deletion with a monotonic stack</h1>
+</header><p>
+Given a sequence of \(N\) digits, delete exactly \(k\) of them while preserving order, so the remaining \(L=N-k\) digits form the greatest possible string. Assume \(0\le k<N\). Because every candidate has the same length, <a href="/notes/positional_weight_and_lexicographic_order.html">positional weight</a> makes lexicographic maximization equivalent to numerical maximization.
+</p>
+
+<p>
+The reusable idea is to improve the earliest position that can still change, while preserving enough input to complete the result. The deletion budget determines which choices are feasible.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Choose the largest feasible next digit</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Suppose the remaining input has \(m\) digits, we must keep \(r\), and \(d=m-r\) deletions remain. The next chosen digit must come from the first \(d+1\) positions. Choosing anything later would leave fewer than \(r-1\) digits for the rest of the answer.
+</p>
+
+<p>
+Choose the largest digit in that window, using its earliest occurrence to break ties. If it lies \(t\) positions after the start, skip those \(t\) digits and continue with \(d-t\) deletions available.
+</p>
+
+<p>
+An exchange argument justifies this choice:
+</p>
+
+<ul class="org-ul">
+<li>An alternative beginning with a smaller feasible digit loses at the first position, regardless of its suffix. The chosen digit has a feasible completion because it lies within the window.</li>
+<li>If an alternative chooses the same digit later, replacing its first chosen index with the earlier occurrence preserves its existing suffix. The earlier occurrence leaves at least as many choices for later positions.</li>
+</ul>
+
+<p>
+An optimal result can therefore start with the greedy choice. Apply the same argument to the remaining suffix to establish the whole sequence. Equal digit prefixes need not come from equal input indices; the tie argument is what allows the earlier occurrence to be fixed safely.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Implement the choice with a stack</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+Scan from left to right, storing retained digits in a stack and tracking the remaining deletion budget.
+</p>
+
+<ol class="org-ol">
+<li>While deletions remain and the stack's last digit is smaller than the incoming digit, pop that last digit and spend one deletion.</li>
+<li>Append the incoming digit.</li>
+<li>After the scan, remove any remaining required deletions from the end.</li>
+</ol>
+
+<p>
+For <code>1924</code> with two deletions:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Incoming digit</th>
+<th scope="col" class="org-left">Action</th>
+<th scope="col" class="org-left">Stack</th>
+<th scope="col" class="org-right">Deletions left</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">Append</td>
+<td class="org-left"><code>1</code></td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">9</td>
+<td class="org-left">Remove 1, append 9</td>
+<td class="org-left"><code>9</code></td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">Append</td>
+<td class="org-left"><code>92</code></td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">Remove 2, append 4</td>
+<td class="org-left"><code>94</code></td>
+<td class="org-right">0</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To connect the stack to the window argument, consider the earliest maximum in the first \(d+1\) positions of a remaining suffix. Every earlier digit in that window is smaller, so when this maximum arrives it removes any such digits still on the stack. At most \(d\) deletions are needed. No larger digit within that window can displace it, and promoting a later digit from outside the window to the first position would require more than \(d\) deletions. The same reasoning then applies to the suffix after this chosen digit.
+</p>
+
+<p>
+Equal digits are not popped: an equal replacement gives no improvement at that position, and retaining the earlier occurrence preserves more suffix choices.
+</p>
+</div>
+</section>
+<section id="outline-container-orgd98eb26" class="outline-2">
+<h2 id="orgd98eb26">State the invariant with its condition</h2>
+<div class="outline-text-2" id="text-orgd98eb26">
+<p>
+While deletions remain after a scan step, the stack is non-increasing from bottom to top. After the budget reaches zero, all later digits must be appended, so the final stack need not be monotone. For example, <code>123</code> with one deletion produces <code>23</code>.
+</p>
+
+<p>
+If deletions remain after the entire scan, the stack is still non-increasing. Trimming its end preserves the greatest possible prefix of the required length. For example, <code>54321</code> with two deletions becomes <code>543</code>.
+</p>
+
+<p>
+Each input digit is appended once and removed at most once, so the stack algorithm takes \(O(N)\) time with amortized constant-time stack operations. Its peak buffer size is \(O(N)\), even though the final answer has length \(N-k\): on a non-increasing input, all \(N\) digits are stored before the final trim.
+</p>
+</div>
+</section>
+<section id="outline-container-org7925b9e" class="outline-2">
+<h2 id="org7925b9e">Where this applies</h2>
+<div class="outline-text-2" id="text-org7925b9e">
+<p>
+This argument uses a fixed output length, preserved input order, and a budget that charges one unit per deletion. A local replacement must satisfy those constraints before its larger digit can justify a greedy step. Costs that depend on position or additional restrictions on the result require a new feasibility argument.
+</p>
+
+<p>
+<a href="/problems/programmers-42883.html">Make the Largest Number</a> uses this variation: its <code>answer</code> string stores retained digits, and <code>k</code> tracks the deletions left. The <a href="https://usaco.guide/gold/stacks">USACO Guide's monotonic-stack example</a> illustrates the broader pattern of removing candidates that can no longer help; its nearest-smaller-element task has a different removal condition and no deletion budget.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="positional_weight_and_lexicographic_order.html">Positional weight and lexicographic order</a></td><td><a href="positional_weight_and_lexicographic_order.html">Positional weight and lexicographic order</a></td></tr><tr><td><a href="../problems/programmers-42883.html">programmers-42883 — Make the Largest Number</a></td><td><a href="../problems/programmers-42883.html">programmers-42883 — Make the Largest Number</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
