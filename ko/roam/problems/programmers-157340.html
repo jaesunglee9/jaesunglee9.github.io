@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-18 Sun 02:36 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="주 메뉴"><a href="/ko/">홈</a><a href="/ko/posts.html">글 목록</a><a href="/ko/about.html">소개</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/roam/problems/programmers-157340.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/roam/problems/programmers-157340.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">출처</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/157340">프로그래머스 157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">문제</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+<code>CAR_RENTAL_COMPANY_RENTAL_HISTORY</code> 에서 자동차별 <code>CAR_ID</code> 와 2022-10-16의 대여 가능 여부인 <code>AVAILABILITY</code> 를 반환하는 문제입니다. 해당 날짜에 대여 중이면 <code>대여중</code>, 아니면 <code>대여 가능</code> 으로 표시합니다. 대여 종료일이 2022-10-16인 경우도 대여 중으로 봅니다. 결과는 <code>CAR_ID</code> 내림차순으로 정렬합니다.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">테이블 구조</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">열</th>
+<th scope="col" class="org-left">자료형</th>
+<th scope="col" class="org-left">NULL 허용</th>
+<th scope="col" class="org-left">의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">HISTORY<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">아니요</td>
+<td class="org-left">대여 기록 ID</td>
+</tr>
+
+<tr>
+<td class="org-left">CAR<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">아니요</td>
+<td class="org-left">자동차 ID</td>
+</tr>
+
+<tr>
+<td class="org-left">START<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">아니요</td>
+<td class="org-left">대여 시작일</td>
+</tr>
+
+<tr>
+<td class="org-left">END<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">아니요</td>
+<td class="org-left">대여 종료일</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">입력 예시</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+<code>CAR_RENTAL_COMPANY_RENTAL_HISTORY</code>:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">HISTORY<sub>ID</sub></th>
+<th scope="col" class="org-right">CAR<sub>ID</sub></th>
+<th scope="col" class="org-right">START<sub>DATE</sub></th>
+<th scope="col" class="org-right">END<sub>DATE</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">4</td>
+<td class="org-right">2022-09-27</td>
+<td class="org-right">2022-09-27</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">2022-10-03</td>
+<td class="org-right">2022-10-04</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">2</td>
+<td class="org-right">2022-10-05</td>
+<td class="org-right">2022-10-05</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">1</td>
+<td class="org-right">2022-10-11</td>
+<td class="org-right">2022-10-16</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">3</td>
+<td class="org-right">2022-10-13</td>
+<td class="org-right">2022-10-15</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-right">2</td>
+<td class="org-right">2022-10-15</td>
+<td class="org-right">2022-10-17</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">예상 출력</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">CAR<sub>ID</sub></th>
+<th scope="col" class="org-left">AVAILABILITY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">대여 가능</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">대여 가능</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">대여중</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">대여중</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">풀이</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> CAR_ID,
+    <span style="font-weight: bold;">CASE</span>
+        <span style="font-weight: bold;">WHEN</span> <span style="font-weight: bold;">MAX</span>(<span style="font-weight: bold;">CASE</span> <span style="font-weight: bold;">WHEN</span> START_DATE &lt;= <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">AND</span> <span style="font-style: italic;">'2022-10-16'</span> &lt;= END_DATE <span style="font-weight: bold;">THEN</span> 1 <span style="font-weight: bold;">ELSE</span> 0 <span style="font-weight: bold;">END</span>) = 1
+        <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+        <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+    <span style="font-weight: bold;">END</span> AVAILABILITY
+<span style="font-weight: bold;">FROM</span> CAR_RENTAL_COMPANY_RENTAL_HISTORY
+<span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span> CAR_ID
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span> CAR_ID <span style="font-weight: bold;">DESC</span>
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">접근 방법</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+<code>CAR_ID</code> 로 그룹을 묶어 자동차별 대여 기록을 모두 살펴봅니다. 각 기록에서 2022-10-16이 시작일과 종료일을 포함한 대여 기간 안에 있는지 확인합니다. 조건을 만족하는 기록이 하나라도 있으면 <code>대여중</code>, 없으면 <code>대여 가능</code> 으로 표시합니다.
+</p>
+
+<p>
+아래 쿼리는 서브쿼리로 해당 날짜에 대여 중인 자동차 ID를 구한 뒤, <code>IN</code> 으로 각 자동차가 그 집합에 속하는지 확인하는 방법입니다.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> 
+    CAR_ID,
+    <span style="font-weight: bold;">CASE</span> 
+        <span style="font-weight: bold;">WHEN</span> CAR_ID <span style="font-weight: bold;">IN</span> (
+            <span style="font-weight: bold;">SELECT</span> CAR_ID
+            <span style="font-weight: bold;">FROM</span> CAR_RENTAL_COMPANY_RENTAL_HISTORY
+            <span style="font-weight: bold;">WHERE</span> <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">BETWEEN</span> START_DATE <span style="font-weight: bold;">AND</span> END_DATE
+        ) <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+        <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+    <span style="font-weight: bold;">END</span> <span style="font-weight: bold;">AS</span> AVAILABILITY
+<span style="font-weight: bold;">FROM</span> 
+    CAR_RENTAL_COMPANY_RENTAL_HISTORY
+<span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span> 
+    CAR_ID
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span> 
+    CAR_ID <span style="font-weight: bold;">DESC</span>;
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">정리</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+다른 문제에도 활용할 수 있는 핵심은 조건부 집계입니다. 각 행이 조건을 만족하는지 0 또는 1로 나타낸 뒤, 이 값을 집계해 그룹별로 하나의 답을 구합니다. <code>MAX</code> 는 값이 하나라도 1이면 1을 반환합니다. 자동차 2의 두 기록에서는 각각 0과 1이 나오므로 대여 중으로 표시합니다.
+</p>
+
+<p>
+이는 여러 행에 걸쳐 OR 연산을 하는 셈입니다. 일반적인 <code>OR</code> 는 명시적으로 작성한 표현식을 결합하고, 집계 함수는 그룹에 속한 행들의 값을 모아 계산합니다. <code>CASE WHEN condition THEN value ELSE other_value END</code> 는 조건에 따라 0 또는 1을 만들거나 최종 표시 문구를 선택합니다.
+</p>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">PostgreSQL에서 같은 조건 표현하기</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+PostgreSQL에서는 <code>BOOL_OR</code> 로 그룹 안에 조건을 만족하는 행이 있는지 직접 표현할 수 있습니다. 이 문제의 두 날짜 열에는 NULL이 없으므로 모든 대여 기록에서 조건식은 참이나 거짓을 반환합니다. 바깥쪽 <code>CASE</code> 에서는 이 불리언 집계 결과를 바로 사용할 수 있습니다.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">CASE</span>
+    <span style="font-weight: bold;">WHEN</span> BOOL_OR(<span style="font-weight: bold; text-decoration: underline;">DATE</span> <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">BETWEEN</span> START_DATE <span style="font-weight: bold;">AND</span> END_DATE)
+    <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+    <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+<span style="font-weight: bold;">END</span> <span style="font-weight: bold;">AS</span> AVAILABILITY
+</code></pre>
+</div>
+
+<p>
+이 표현식은 앞서 <code>CAR_ID</code> 로 그룹을 묶은 <code>SELECT</code> 에 넣습니다. MySQL은 <code>BOOL_OR</code> 를 제공하지 않지만, 여기서는 기존의 <code>MAX(CASE ... THEN 1 ELSE 0 END) = 1</code> 로 같은 조건을 표현할 수 있습니다. MySQL에서는 비교 결과가 0 또는 1이므로 <code>MAX(condition)</code> 도 사용할 수 있습니다.
+</p>
+
+<p>
+참고 자료: <a href="https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html">MySQL — 집계 함수</a>; <a href="https://www.postgresql.org/docs/current/functions-aggregate.html">PostgreSQL — 집계 함수</a>.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>연결된 글</summary><table><thead><tr><th scope="col">이 글을 참고하는 글</th><th scope="col">참고한 글</th></tr></thead><tbody><tr><td>연결된 글이 없습니다.</td><td>연결된 글이 없습니다.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-18 Sun 02:36 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/problems/programmers-157340.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/157340">Programmers 157340 — 자동차 대여 기록에서 대여중 / 대여 가능 여부 구분하기</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+English summary of the linked problem: using <code>CAR_RENTAL_COMPANY_RENTAL_HISTORY</code>, return each car's <code>CAR_ID</code> and its availability on 2022-10-16 as <code>AVAILABILITY</code>. Use <code>대여중</code> for cars rented on that date and <code>대여 가능</code> otherwise. A rental ending on 2022-10-16 still counts as rented. Sort by <code>CAR_ID</code> descending.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Schema</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Column</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Nullable</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">HISTORY<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">No</td>
+<td class="org-left">Rental-history ID</td>
+</tr>
+
+<tr>
+<td class="org-left">CAR<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">No</td>
+<td class="org-left">Car ID</td>
+</tr>
+
+<tr>
+<td class="org-left">START<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">No</td>
+<td class="org-left">Rental start date</td>
+</tr>
+
+<tr>
+<td class="org-left">END<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">No</td>
+<td class="org-left">Rental end date</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Example input</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+<code>CAR_RENTAL_COMPANY_RENTAL_HISTORY</code>:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">HISTORY<sub>ID</sub></th>
+<th scope="col" class="org-right">CAR<sub>ID</sub></th>
+<th scope="col" class="org-right">START<sub>DATE</sub></th>
+<th scope="col" class="org-right">END<sub>DATE</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">4</td>
+<td class="org-right">2022-09-27</td>
+<td class="org-right">2022-09-27</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">2022-10-03</td>
+<td class="org-right">2022-10-04</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">2</td>
+<td class="org-right">2022-10-05</td>
+<td class="org-right">2022-10-05</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">1</td>
+<td class="org-right">2022-10-11</td>
+<td class="org-right">2022-10-16</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">3</td>
+<td class="org-right">2022-10-13</td>
+<td class="org-right">2022-10-15</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-right">2</td>
+<td class="org-right">2022-10-15</td>
+<td class="org-right">2022-10-17</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Expected output</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">CAR<sub>ID</sub></th>
+<th scope="col" class="org-left">AVAILABILITY</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">대여 가능</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">대여 가능</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">대여중</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">대여중</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Solution</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> CAR_ID,
+    <span style="font-weight: bold;">CASE</span>
+        <span style="font-weight: bold;">WHEN</span> <span style="font-weight: bold;">MAX</span>(<span style="font-weight: bold;">CASE</span> <span style="font-weight: bold;">WHEN</span> START_DATE &lt;= <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">AND</span> <span style="font-style: italic;">'2022-10-16'</span> &lt;= END_DATE <span style="font-weight: bold;">THEN</span> 1 <span style="font-weight: bold;">ELSE</span> 0 <span style="font-weight: bold;">END</span>) = 1
+        <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+        <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+    <span style="font-weight: bold;">END</span> AVAILABILITY
+<span style="font-weight: bold;">FROM</span> CAR_RENTAL_COMPANY_RENTAL_HISTORY
+<span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span> CAR_ID
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span> CAR_ID <span style="font-weight: bold;">DESC</span>
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Approach</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+Group by <code>CAR_ID</code> to consider all rental records for each car. Check whether 2022-10-16 falls between each record's start and end dates, including both endpoints. If any record matches, label the car <code>대여중</code>; otherwise, label it <code>대여 가능</code>.
+</p>
+
+<p>
+The alternative below uses a subquery to find car IDs rented on that date, then uses <code>IN</code> to check whether each car belongs to that set.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> 
+    CAR_ID,
+    <span style="font-weight: bold;">CASE</span> 
+        <span style="font-weight: bold;">WHEN</span> CAR_ID <span style="font-weight: bold;">IN</span> (
+            <span style="font-weight: bold;">SELECT</span> CAR_ID
+            <span style="font-weight: bold;">FROM</span> CAR_RENTAL_COMPANY_RENTAL_HISTORY
+            <span style="font-weight: bold;">WHERE</span> <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">BETWEEN</span> START_DATE <span style="font-weight: bold;">AND</span> END_DATE
+        ) <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+        <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+    <span style="font-weight: bold;">END</span> <span style="font-weight: bold;">AS</span> AVAILABILITY
+<span style="font-weight: bold;">FROM</span> 
+    CAR_RENTAL_COMPANY_RENTAL_HISTORY
+<span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span> 
+    CAR_ID
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span> 
+    CAR_ID <span style="font-weight: bold;">DESC</span>;
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgde0f8b8" class="outline-2">
+<h2 id="orgde0f8b8">Remarks</h2>
+<div class="outline-text-2" id="text-orgde0f8b8">
+<p>
+The reusable idea is conditional aggregation: turn each row's condition into a 0/1 flag, then reduce the flags to one answer for the group. <code>MAX</code> returns 1 if any flag is 1. For car 2, the two records yield 0 and 1, so the group is marked as rented.
+</p>
+
+<p>
+This is an OR across rows. Ordinary <code>OR</code> combines explicitly written expressions; an aggregate combines values from the group's rows. <code>CASE WHEN condition THEN value ELSE other_value END</code> supplies the flag or selects the final label.
+</p>
+</div>
+<div id="outline-container-org194cf40" class="outline-3">
+<h3 id="org194cf40">PostgreSQL equivalent</h3>
+<div class="outline-text-3" id="text-org194cf40">
+<p>
+PostgreSQL expresses the same group-level question directly with <code>BOOL_OR</code>. In this problem, both date columns are non-null, so the predicate produces true or false for every rental record. The outer <code>CASE</code> can use the Boolean aggregate directly:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">CASE</span>
+    <span style="font-weight: bold;">WHEN</span> BOOL_OR(<span style="font-weight: bold; text-decoration: underline;">DATE</span> <span style="font-style: italic;">'2022-10-16'</span> <span style="font-weight: bold;">BETWEEN</span> START_DATE <span style="font-weight: bold;">AND</span> END_DATE)
+    <span style="font-weight: bold;">THEN</span> <span style="font-style: italic;">'&#45824;&#50668;&#51473;'</span>
+    <span style="font-weight: bold;">ELSE</span> <span style="font-style: italic;">'&#45824;&#50668; &#44032;&#45733;'</span>
+<span style="font-weight: bold;">END</span> <span style="font-weight: bold;">AS</span> AVAILABILITY
+</code></pre>
+</div>
+
+<p>
+This expression belongs in the same <code>SELECT</code> grouped by <code>CAR_ID</code>. MySQL does not provide <code>BOOL_OR</code>; the existing <code>MAX(CASE ... THEN 1 ELSE 0 END) = 1</code> expresses the same question here. MySQL also permits <code>MAX(condition)</code> because comparisons produce 0/1 values.
+</p>
+
+<p>
+References: <a href="https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html">MySQL — Aggregate functions</a>; <a href="https://www.postgresql.org/docs/current/functions-aggregate.html">PostgreSQL — Aggregate functions</a>.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
