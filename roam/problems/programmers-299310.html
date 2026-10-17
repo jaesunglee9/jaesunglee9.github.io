@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-18 Sun 01:57 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-299310 — 연도별 대장균 크기의 편차 구하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/problems/programmers-299310.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-299310 — 연도별 대장균 크기의 편차 구하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/299310">Programmers 299310 — 연도별 대장균 크기의 편차 구하기</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+English summary of the linked problem: for each bacterium in <code>ECOLI_DATA</code>, return its differentiation year as <code>YEAR</code>, the difference between that year's largest colony size and its own size as <code>YEAR_DEV</code>, and its <code>ID</code>. Sort by <code>YEAR</code> ascending, then <code>YEAR_DEV</code> ascending.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Schema</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Column</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Nullable</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">ID</td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">No</td>
+<td class="org-left">Individual ID</td>
+</tr>
+
+<tr>
+<td class="org-left">PARENT<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Yes</td>
+<td class="org-left">Parent ID</td>
+</tr>
+
+<tr>
+<td class="org-left">SIZE<sub>OF</sub><sub>COLONY</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">No</td>
+<td class="org-left">Colony size</td>
+</tr>
+
+<tr>
+<td class="org-left">DIFFERENTIATION<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">No</td>
+<td class="org-left">Differentiation date</td>
+</tr>
+
+<tr>
+<td class="org-left">GENOTYPE</td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">No</td>
+<td class="org-left">Genotype</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Founding individuals have <code>NULL</code> parent IDs.
+</p>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Example input</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<p>
+<code>ECOLI_DATA</code>:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">ID</th>
+<th scope="col" class="org-right">PARENT<sub>ID</sub></th>
+<th scope="col" class="org-right">SIZE<sub>OF</sub><sub>COLONY</sub></th>
+<th scope="col" class="org-left">DIFFERENTIATION<sub>DATE</sub></th>
+<th scope="col" class="org-right">GENOTYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">NULL</td>
+<td class="org-right">10</td>
+<td class="org-left">2019/01/01</td>
+<td class="org-right">5</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">NULL</td>
+<td class="org-right">2</td>
+<td class="org-left">2019/01/01</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">1</td>
+<td class="org-right">100</td>
+<td class="org-left">2020/01/01</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">2</td>
+<td class="org-right">10</td>
+<td class="org-left">2020/01/01</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">2</td>
+<td class="org-right">17</td>
+<td class="org-left">2020/01/01</td>
+<td class="org-right">6</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-right">4</td>
+<td class="org-right">101</td>
+<td class="org-left">2021/01/01</td>
+<td class="org-right">22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-3">
+<h3 id="orgee35afe">Expected output</h3>
+<div class="outline-text-3" id="text-orgee35afe">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">YEAR</th>
+<th scope="col" class="org-right">YEAR<sub>DEV</sub></th>
+<th scope="col" class="org-right">ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">2019</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2019</td>
+<td class="org-right">8</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">2020</td>
+<td class="org-right">0</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">2020</td>
+<td class="org-right">83</td>
+<td class="org-right">5</td>
+</tr>
+
+<tr>
+<td class="org-right">2020</td>
+<td class="org-right">90</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">2021</td>
+<td class="org-right">0</td>
+<td class="org-right">6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Solution</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold;">SELECT</span> <span style="font-weight: bold;">YEAR</span>(DIFFERENTIATION_DATE) <span style="font-weight: bold;">AS</span> <span style="font-weight: bold;">YEAR</span>,
+    (<span style="font-weight: bold;">MAX</span>(SIZE_OF_COLONY) OVER (PARTITION <span style="font-weight: bold;">BY</span> <span style="font-weight: bold;">YEAR</span>(DIFFERENTIATION_DATE)) - SIZE_OF_COLONY) <span style="font-weight: bold;">AS</span> YEAR_DEV,
+    ID
+<span style="font-weight: bold;">FROM</span> ECOLI_DATA 
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span> <span style="font-weight: bold;">YEAR</span> <span style="font-weight: bold;">ASC</span>, YEAR_DEV <span style="font-weight: bold;">ASC</span>
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgb948b55" class="outline-2">
+<h2 id="orgb948b55">Approach</h2>
+<div class="outline-text-2" id="text-orgb948b55">
+<p>
+I didn't know the difference between GROUP BY and PARTITION BY, or what invoking MAX over such a partition meant.
+</p>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Remarks</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<p>
+Use a window aggregate when each result row needs its own values alongside a statistic for its group. Here, every bacterium keeps its ID and size while receiving the maximum colony size for its year. The difference can then be calculated on each row.
+</p>
+
+<p>
+GROUP BY instead produces one row per group. Selecting an ungrouped size is ambiguous when a year contains several sizes; an aggregate chooses a summary, while adding size to the grouping keys changes what constitutes a group.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
