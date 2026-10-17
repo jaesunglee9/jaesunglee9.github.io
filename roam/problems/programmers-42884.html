@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-18 Sun 01:11 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42884 — Speed Cameras (단속카메라)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/problems/programmers-42884.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42884 — Speed Cameras (단속카메라)</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42884">Programmers 42884 — 단속카메라</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+English summary of the linked problem: each vehicle travels along a highway from its entry position to its exit position. Given these routes, return the minimum number of cameras needed so that every vehicle encounters at least one camera along its route.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Constraints</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>There are between 1 and 10,000 vehicles.</li>
+<li><code>routes[i][0]</code> is vehicle <code>i</code>'s entry position; <code>routes[i][1]</code> is its exit position.</li>
+<li>A camera at either endpoint counts as an encounter.</li>
+<li>Entry and exit positions range from -30,000 to 30,000, inclusive.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Example</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">routes</th>
+<th scope="col" class="org-right">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">[[-20,-15], [-14,-5], [-18,-13], [-5,-3]]</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Cameras at -15 and -5 cover all four vehicles: the first covers the first and third routes, and the second covers the second and fourth routes.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">routes</span>) {
+    sort(routes.begin(), routes.end(), [](<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">b</span>) {
+        <span style="font-weight: bold;">return</span> a[0] &lt; b[0];
+    });
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 1;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">limit</span> = routes[0][1]; 
+
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">r</span> : routes) {
+        <span style="font-weight: bold;">if</span> (r[0] &gt; limit) {
+            answer++;
+            limit = r[1]; 
+        } <span style="font-weight: bold;">else</span> {
+            limit = min(limit, r[1]);
+        }
+    }
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">Approach</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">check_overlap</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">range1</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">range2</span>) {
+    <span style="font-weight: bold;">if</span> (range1[1] &lt; range2[0]) {
+        range1 = range2;
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">false</span>;
+    }
+    <span style="font-weight: bold;">else</span> {
+        range1 = {range2[0], range1[1]};
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">true</span>;
+    }
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">routes</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+    sort(routes.begin(), routes.end(), [](<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">b</span>) {
+        <span style="font-weight: bold;">return</span> a[0] &lt; b[0];
+    });
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">range</span> = {-90000, -60000};
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">r</span> : routes) {
+        <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">overlap</span> = check_overlap(range, r);
+        <span style="font-weight: bold;">if</span> (overlap == <span style="font-weight: bold; text-decoration: underline;">false</span>) answer++; 
+    }
+    <span style="font-weight: bold;">return</span> answer;
+} 
+</code></pre>
+</div>
+
+<p>
+This was my original solution. Note that the entire range is being carried around, along with some redundant state.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+I couldn't state a convincing argument why I should sort beforehand, other than that it works. My intuition is that it allows for invariance, but I don't know what that is.
+</p>
+
+<p>
+After some thinking, I can state the reason. Let us consider the common intersection of current routes as range R and the next route A. Let us compare two cases: one where the routes are sorted by entry position, and one where they are not. In the sorted case, if A does not overlap with R, then we can deduce that no remaining route can overlap with R, since all remaining routes have entry positions greater than or equal to A's. So we can stop, set A as the new R, and begin again. In the unsorted case, after comparing with A, we cannot make the same deduction about the rest of the routes.
+</p>
+
+<p>
+To sum up, sorting allows us to consider the set of routes as three partitions: processed, currently being processed, and unprocessed. Processing the current route allows us to infer properties about the unprocessed partition.
+</p>
+
+<p>
+Other than that, I know that the optimized version is shorter, but I dislike the formulation of the problem as a whole. For example, when we solve this problem, we are generally expected to find the range where we should install cameras, as well as the number of cameras. I find the detachment of real use cases from algorithmic problem solving somewhat not to my taste.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
