@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-18 Sun 01:11 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42884 — 단속카메라</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="주 메뉴"><a href="/ko/">홈</a><a href="/ko/posts.html">글 목록</a><a href="/ko/about.html">소개</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/problems/programmers-42884.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/problems/programmers-42884.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42884 — 단속카메라</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">출처</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42884">프로그래머스 42884 — 단속카메라</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">문제</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+링크된 문제의 요약입니다. 각 차량은 고속도로의 진입 지점부터 진출 지점까지 이동합니다. 차량별 이동 경로가 주어지면 모든 차량이 경로에서 카메라를 적어도 한 번 만나도록 하는 데 필요한 최소 카메라 수를 반환합니다.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">제약 조건</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>차량은 1대 이상 10,000대 이하입니다.</li>
+<li><code>routes[i][0]</code> 은 차량 <code>i</code> 의 진입 지점이고, <code>routes[i][1]</code> 은 진출 지점입니다.</li>
+<li>진입 지점이나 진출 지점에 카메라가 있어도 만난 것으로 봅니다.</li>
+<li>진입 지점과 진출 지점은 모두 -30,000 이상 30,000 이하입니다.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">예시</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">routes</th>
+<th scope="col" class="org-right">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">[[-20,-15], [-14,-5], [-18,-13], [-5,-3]]</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+-15와 -5에 카메라를 설치하면 네 차량을 모두 단속할 수 있습니다. -15의 카메라는 첫 번째와 세 번째 경로를 지나는 차량을, -5의 카메라는 두 번째와 네 번째 경로를 지나는 차량을 단속합니다.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">풀이</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">routes</span>) {
+    sort(routes.begin(), routes.end(), [](<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">b</span>) {
+        <span style="font-weight: bold;">return</span> a[0] &lt; b[0];
+    });
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 1;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">limit</span> = routes[0][1]; 
+
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">r</span> : routes) {
+        <span style="font-weight: bold;">if</span> (r[0] &gt; limit) {
+            answer++;
+            limit = r[1]; 
+        } <span style="font-weight: bold;">else</span> {
+            limit = min(limit, r[1]);
+        }
+    }
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org9beed48" class="outline-2">
+<h2 id="org9beed48">처음 접근</h2>
+<div class="outline-text-2" id="text-org9beed48">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">check_overlap</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">range1</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">range2</span>) {
+    <span style="font-weight: bold;">if</span> (range1[1] &lt; range2[0]) {
+        range1 = range2;
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">false</span>;
+    }
+    <span style="font-weight: bold;">else</span> {
+        range1 = {range2[0], range1[1]};
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">true</span>;
+    }
+}
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">routes</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+    sort(routes.begin(), routes.end(), [](<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">b</span>) {
+        <span style="font-weight: bold;">return</span> a[0] &lt; b[0];
+    });
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">range</span> = {-90000, -60000};
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold;">auto</span>&amp; <span style="font-weight: bold; font-style: italic;">r</span> : routes) {
+        <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold; font-style: italic;">overlap</span> = check_overlap(range, r);
+        <span style="font-weight: bold;">if</span> (overlap == <span style="font-weight: bold; text-decoration: underline;">false</span>) answer++; 
+    }
+    <span style="font-weight: bold;">return</span> answer;
+} 
+</code></pre>
+</div>
+
+<p>
+처음에는 이렇게 풀었습니다. 구간 전체를 계속 저장하면서 불필요한 상태도 유지하고 있습니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">돌아보며</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+<p>
+정렬하면 풀린다는 것 외에는 왜 먼저 정렬해야 하는지 설득력 있게 설명하지 못했습니다. 어떤 불변식을 유지할 수 있기 때문이라는 직감은 있었지만, 그 불변식이 무엇인지는 알지 못했습니다.
+</p>
+
+<p>
+조금 더 생각해 보니 이유를 설명할 수 있습니다. 현재 묶음에 속한 경로들의 공통 구간을 R, 다음 경로를 A라고 하겠습니다. 진입 지점 순으로 정렬한 경우와 정렬하지 않은 경우를 비교해 봅니다. 정렬했다면 A가 R과 겹치지 않을 때 남은 경로도 모두 R과 겹치지 않는다고 판단할 수 있습니다. 남은 경로의 진입 지점은 모두 A의 진입 지점 이상이기 때문입니다. 따라서 현재 묶음을 마무리하고 A를 새로운 R로 삼아 다시 시작할 수 있습니다. 정렬하지 않았다면 A와 비교한 결과만으로 남은 경로에 대해 같은 판단을 내릴 수 없습니다.
+</p>
+
+<p>
+정렬하면 경로들을 처리가 끝난 부분, 현재 처리 중인 부분, 아직 처리하지 않은 부분으로 나누어 볼 수 있습니다. 현재 경로를 처리한 결과를 바탕으로 아직 처리하지 않은 부분의 성질을 추론할 수 있습니다.
+</p>
+
+<p>
+최적화한 풀이가 더 짧다는 것은 알지만, 문제를 구성한 방식 자체는 마음에 들지 않습니다. 실제로 이런 문제를 해결한다면 보통 카메라 수뿐 아니라 설치할 구간도 찾아야 합니다. 알고리즘 문제 풀이가 실제 쓰임과 동떨어져 있다는 점은 제 취향과 조금 맞지 않습니다.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>연결된 글</summary><table><thead><tr><th scope="col">이 글을 참고하는 글</th><th scope="col">참고한 글</th></tr></thead><tbody><tr><td>연결된 글이 없습니다.</td><td>연결된 글이 없습니다.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
