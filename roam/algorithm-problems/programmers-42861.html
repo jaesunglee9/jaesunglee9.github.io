@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-16 Fri 15:35 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42861 — Connecting Islands (섬 연결하기)</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/algorithm-problems/programmers-42861.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42861 — Connecting Islands (섬 연결하기)</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42861?language=cpp">Programmers 42861 — 섬 연결하기 (C++)</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+This is an English summary of the original problem. See the source link for the full statement and illustration.
+</p>
+
+<p>
+Given <code>n</code> islands and the available bridge-building costs, return the minimum total construction cost that lets someone travel between every pair of islands. A journey may cross multiple bridges.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Interface and constraints</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li>Function: <code>int solution(int n, vector&lt;vector&lt;int&gt;&gt; costs)</code></li>
+<li><code>n</code> is between 1 and 100, inclusive.</li>
+<li><code>costs</code> contains at most <code>n * (n - 1) / 2</code> entries.</li>
+<li>Each entry <code>[a, b, cost]</code> gives the two islands and their bridge's construction cost.</li>
+<li>Connections are undirected, and no pair appears more than once, including reversed pairs.</li>
+<li>A pair absent from <code>costs</code> cannot be connected directly by a bridge.</li>
+<li>The available connections allow all islands to be connected.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Example</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">n</th>
+<th scope="col" class="org-left">costs</th>
+<th scope="col" class="org-right">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left"><code>[[0,1,1],[0,2,2],[1,2,5],[1,3,1],[2,3,8]]</code></td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;numeric&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;algorithm&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">Edge</span> {
+    <span style="font-weight: bold;">public</span>: 
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">u</span>;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">v</span>;
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">w</span>;
+
+    <span style="font-weight: bold;">Edge</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">u</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">v</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">w</span>) : u(u), v(v), w(w) {}
+
+    <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">operator</span> <span style="font-weight: bold;">&lt;</span> (<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">Edge</span>&amp; <span style="font-weight: bold; font-style: italic;">other</span>) {
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">this</span>-&gt;w &lt; other.w;
+    }
+};
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">DS</span> {
+    <span style="font-weight: bold;">private</span>:
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">parent</span>;
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt; <span style="font-weight: bold; font-style: italic;">rank</span>;
+
+    <span style="font-weight: bold;">public</span>:
+    <span style="font-weight: bold;">DS</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">size</span>) {
+        parent.resize(size+1);
+        rank.resize(size+1);
+        iota(parent.begin(), parent.end(), 0);
+        rank.assign(size+1, 0);
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">find</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">x</span>) {
+        <span style="font-weight: bold;">if</span> (parent[x] == x) <span style="font-weight: bold;">return</span> x;
+        <span style="font-weight: bold;">return</span> parent[x] = find(<span style="font-weight: bold; text-decoration: underline;">parent</span>[x]);
+    }
+
+    <span style="font-weight: bold; text-decoration: underline;">bool</span> <span style="font-weight: bold;">unite</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">x</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">y</span>) {
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">rootX</span> = find(x);
+        <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">rootY</span> = find(y);
+
+        <span style="font-weight: bold;">if</span> (rootX == rootY) <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">false</span>;
+
+        <span style="font-weight: bold;">if</span> (rank[rootX] &lt; rank[rootY]) {
+            parent[rootX] = rootY;
+        }
+        <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (rank[rootX] &gt; rank[rootY]) {
+            parent[rootY] = rootX;
+        }
+        <span style="font-weight: bold;">else</span> {
+            parent[rootY] = rootX;
+            rank[rootX] += 1;
+        } 
+
+        <span style="font-weight: bold;">return</span> <span style="font-weight: bold; text-decoration: underline;">true</span>;
+    }
+};
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">costs</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+
+    sort(costs.begin(), costs.end(), [](<span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold;">const</span> <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&amp; <span style="font-weight: bold; font-style: italic;">b</span>) {
+        <span style="font-weight: bold;">return</span> a[2] &lt; b[2];
+    });
+
+    <span style="font-weight: bold; text-decoration: underline;">DS</span> <span style="font-weight: bold; font-style: italic;">ds</span>(n);
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">ec</span> = 0;
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">auto</span> <span style="font-weight: bold; font-style: italic;">e</span> : costs) {
+        <span style="font-weight: bold;">if</span> (ds.unite(e[0], e[1]) == <span style="font-weight: bold; text-decoration: underline;">true</span>) {
+            answer += e[2];
+            ec += 1;
+        }
+
+        <span style="font-weight: bold;">if</span> (ec == n - 1) <span style="font-weight: bold;">break</span>;
+    }
+    <span style="font-weight: bold;">return</span> answer;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Classification</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+This solution uses Kruskal's algorithm to build a minimum spanning tree by considering bridges in increasing cost order. Its Union-Find implementation uses path compression and union by rank to track the connected components.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

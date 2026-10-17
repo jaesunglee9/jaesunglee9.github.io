@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-16 Fri 03:17 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Positional weight and lexicographic order</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a><a class="site-language-link" href="/ko/" lang="ko" hreflang="ko">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">Positional weight and lexicographic order</h1>
+</header><p>
+For digit strings of the same length and base, numerical order agrees with lexicographic order: the first unequal digit from the left decides which value is larger. A one-unit advantage at that position outweighs every possible disadvantage in the suffix.
+</p>
+
+<p>
+For example, <code>4000</code> is greater than <code>3999</code>. Increasing the thousands digit by one adds <code>1000</code>, while changing the entire remaining suffix can contribute at most <code>999</code>.
+</p>
+<section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Why the first difference dominates</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+Let the base be \(b \ge 2\), and let \(A=a_1\dots a_L\) and \(C=c_1\dots c_L\) contain digits from \(0\) to \(b-1\). Their positional values are
+</p>
+
+<p>
+\[
+V(A)=\sum_{j=1}^{L} a_j b^{L-j},
+\qquad
+V(C)=\sum_{j=1}^{L} c_j b^{L-j}.
+\]
+</p>
+
+<p>
+Suppose the first unequal position is \(i\), with \(a_i>c_i\). The equal prefix contributes nothing to \(V(A)-V(C)\). The advantage at position \(i\) is at least \(b^{L-i}\), while the largest possible disadvantage from later digits is
+</p>
+
+<p>
+\[
+\sum_{j=i+1}^{L}(b-1)b^{L-j}=b^{L-i}-1.
+\]
+</p>
+
+<p>
+Therefore,
+</p>
+
+<p>
+\[
+V(A)-V(C)\ge b^{L-i}-(b^{L-i}-1)=1>0.
+\]
+</p>
+
+<p>
+This includes the last-position case: the empty suffix contributes zero. Swapping \(A\) and \(C\) proves the reverse case, and identical strings have identical values. Thus numerical and lexicographic comparisons give the same ordering on these fixed-length digit strings.
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Conditions and use</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+The digit comparison must follow numerical digit order, and all candidates must use the same base and length. Leading zeros are allowed when those conditions hold. Different lengths break the equivalence: <code>"9"</code> follows <code>"10"</code> lexicographically, although \(9<10\).
+</p>
+
+<p>
+When an optimization keeps exactly \(L\) digits, compare candidate strings directly instead of converting them into integers. An improvement at the earliest differing position takes priority over the entire suffix. This identifies the objective; a greedy algorithm must still show that each chosen prefix admits a feasible completion.
+</p>
+
+<p>
+In <a href="/roam/algorithm-problems/programmers-42883.html">Make the Largest Number</a>, deleting exactly \(k\) digits fixes the output length at \(N-k\). The <a href="/roam/main/greedy_digit_deletion.html">greedy digit-deletion argument</a> uses this ordering together with the deletion budget to justify which digit can be chosen next.
+</p>
+
+<p>
+Reference: the <a href="https://eel.is/c++draft/alg.lex.comparison">C++ working draft's lexicographical-comparison definition</a> specifies comparison by the first unequal pair, with a shorter proper prefix preceding the longer sequence. The positional-value argument above explains why that comparison also orders equal-length digit strings numerically.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="/roam/main/greedy_digit_deletion.html">Greedy digit deletion with a monotonic stack</a></td><td><a href="/roam/main/greedy_digit_deletion.html">Greedy digit deletion with a monotonic stack</a></td></tr><tr><td><a href="/roam/algorithm-problems/programmers-42883.html">programmers-42883 — Make the Largest Number</a></td><td><a href="/roam/algorithm-problems/programmers-42883.html">programmers-42883 — Make the Largest Number</a></td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
