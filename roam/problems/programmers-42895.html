@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-18 Sun 21:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42895 — N으로 표현</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/problems/programmers-42895.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42895 — N으로 표현</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42895?language=cpp">Programmers 42895 — N으로 표현</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+English summary of the linked problem: given a digit <code>N</code> and a target <code>number</code>, return the minimum number of occurrences of <code>N</code> needed to express the target. You may concatenate copies of the digit, use parentheses, and apply addition, subtraction, multiplication, and division. Division discards the remainder. If the minimum exceeds eight occurrences, return -1.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Constraints</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li><code>1 &lt;</code> N &lt;= 9=</li>
+<li><code>1 &lt;</code> number &lt;= 32000=</li>
+<li>Expressions may use parentheses and the four arithmetic operations, with repeated copies of <code>N</code> forming numbers such as 55 when <code>N = 5</code>.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">Examples</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">N</th>
+<th scope="col" class="org-right">number</th>
+<th scope="col" class="org-right">Return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">12</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">11</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+For the first example, <code>(55 + 5) / 5</code> expresses 12 using four copies of 5. For the second, <code>22 / 2</code> expresses 11 using three copies of 2.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">Solution</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;unordered_set&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">N</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">number</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">unordered_set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">dp</span>(9);
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tmp</span> = 0;
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; 9; i++) {
+        tmp = tmp * 10 + N;
+        dp[i].insert(tmp);
+    }
+
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 1; k&lt;9;k++){
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; k; i++) {
+            <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = k - i;
+            <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span> : dp[i]) {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span> : dp[j]) {
+                    dp[k].insert(a+b);
+                    dp[k].insert(a-b);
+                    dp[k].insert(a*b);
+                    <span style="font-weight: bold;">if</span> (b != 0) dp[k].insert(a/b);
+                }
+            }
+        }
+
+        <span style="font-weight: bold;">if</span> (dp[k].count(number) != 0) <span style="font-weight: bold;">return</span> k;
+    }
+
+
+    <span style="font-weight: bold;">return</span> -1;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">Approach</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+I originally thought the number of possibilities would grow exponentially and make this approach infeasible. I was thinking of \(9^8=3^{16}\), but that estimate does not count the combinations this implementation actually processes.
+</p>
+
+<p>
+This is dynamic programming over sets of reachable values. <code>dp[k]</code> stores the distinct integers expressible with exactly <code>k</code> copies of <code>N</code>. Repeated-digit numbers such as 55 are inserted first. For every split <code>k = i + j</code>, the code combines values from <code>dp[i]</code> and <code>dp[j]</code> using the four operations, skipping division by zero. Different expressions that produce the same value share one set entry. The target is checked as the number of copies increases.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">Remarks</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">Values, states, and work are different quantities</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+\(N^8\) can be a value in <code>dp[8]</code> because eight copies of <code>N</code> can be multiplied together. It is not the number of elements in that set. For example, a set containing 1 and 1,000,000 still stores only two elements. The digit <code>N</code> is fixed for a run; it is not a branching factor of nine at every step.
+</p>
+
+<p>
+The useful question is how many distinct values each layer stores and how many pairs of those values are combined. Duplicate expressions still cause insertion attempts, but duplicate results do not create extra states for later combinations. A large-looking count of possible expressions is therefore not automatically the program's state count or operation count.
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Time and space in terms of stored states</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+Let \(K\) be the maximum number of copies, here 8, and let \(S_k=|dp[k]|\). For a split \(k=i+(k-i)\), the nested loops visit \(S_iS_{k-i}\) pairs. Each pair attempts at most four insertions. Assuming fixed-width arithmetic and amortized expected constant-time hash operations, the time through layer \(K\) is
+</p>
+
+<p>
+\[
+O\left(K+\sum_{k=2}^{K}\sum_{i=1}^{k-1}S_iS_{k-i}\right).
+\]
+</p>
+
+<p>
+All layers remain stored, so space is
+</p>
+
+<p>
+\[
+O\left(K+\sum_{k=1}^{K}S_k\right).
+\]
+</p>
+
+<p>
+With \(S=\max_{1\le k\le K}S_k\), looser bounds are \(O(K^2S^2)\) time under the same hash assumption and \(O(KS)\) space. These expressions do not establish that the sets grow polynomially with \(K\); they expose the state sizes on which the work depends. An earlier return stops before all eight layers are combined.
+</p>
+
+<p>
+\(3^{16}=43{,}046{,}721\), but this is not a derived operation count for this implementation. Whether millions of operations are practical also depends on what each operation does; hash insertions cost more than simple additions. No set sizes or runtimes were measured here.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>

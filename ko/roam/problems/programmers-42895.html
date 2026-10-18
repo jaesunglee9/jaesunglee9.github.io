@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- 2026-10-18 Sun 21:29 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-42895 — N으로 표현</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="주 메뉴"><a href="/ko/">홈</a><a href="/ko/posts.html">글 목록</a><a href="/ko/about.html">소개</a></nav><nav class="language-switch" aria-label="Language / 언어"><a href="/roam/problems/programmers-42895.html" lang="en" hreflang="en" rel="alternate">English</a><span aria-hidden="true"> / </span><span lang="ko" aria-current="page">한국어</span></nav><aside class="translation-notice" lang="ko" aria-label="번역 안내">영어 원문을 한국어로 번역한 글입니다. <a href="/roam/problems/programmers-42895.html" hreflang="en">영어 원문 보기</a></aside>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-42895 — N으로 표현</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">출처</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/42895?language=cpp">프로그래머스 42895 — N으로 표현</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">문제</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+링크된 문제의 요약입니다. 한 자리 숫자 <code>N</code> 과 목표값 <code>number</code> 가 주어지면, 목표값을 표현하는 데 필요한 <code>N</code> 의 최소 사용 횟수를 반환합니다. 같은 숫자를 이어 붙이거나 괄호와 덧셈, 뺄셈, 곱셈, 나눗셈을 사용할 수 있습니다. 나눗셈에서는 나머지를 버립니다. 최소 사용 횟수가 여덟 번을 넘으면 -1을 반환합니다.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">제약 조건</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<ul class="org-ul">
+<li><code>1 &lt;</code> N &lt;= 9=</li>
+<li><code>1 &lt;</code> number &lt;= 32000=</li>
+<li>수식에 괄호와 사칙연산을 사용할 수 있으며, <code>N = 5</code> 일 때 55처럼 <code>N</code> 을 이어 붙인 수도 사용할 수 있습니다.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7925b9e" class="outline-3">
+<h3 id="org7925b9e">예시</h3>
+<div class="outline-text-3" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">N</th>
+<th scope="col" class="org-right">number</th>
+<th scope="col" class="org-right">반환값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-right">12</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">11</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+첫 번째 예시에서는 <code>(55 + 5) / 5</code> 로 5를 네 번 사용해 12를 표현합니다. 두 번째 예시에서는 <code>22 / 2</code> 로 2를 세 번 사용해 11을 표현합니다.
+</p>
+</div>
+</div>
+</section>
+<section id="outline-container-org9639605" class="outline-2">
+<h2 id="org9639605">풀이</h2>
+<div class="outline-text-2" id="text-org9639605">
+<div class="org-src-container">
+<pre class="src src-cpp"><code><span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;string&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;vector&gt;</span>
+<span style="font-weight: bold;">#include</span> <span style="font-style: italic;">&lt;unordered_set&gt;</span>
+
+<span style="font-weight: bold;">using</span> <span style="font-weight: bold;">namespace</span> <span style="font-weight: bold; text-decoration: underline;">std</span>;
+
+<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">solution</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">N</span>, <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">number</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">answer</span> = 0;
+    <span style="font-weight: bold; text-decoration: underline;">vector</span>&lt;<span style="font-weight: bold; text-decoration: underline;">unordered_set</span>&lt;<span style="font-weight: bold; text-decoration: underline;">int</span>&gt;&gt; <span style="font-weight: bold; font-style: italic;">dp</span>(9);
+
+    <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">tmp</span> = 0;
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; 9; i++) {
+        tmp = tmp * 10 + N;
+        dp[i].insert(tmp);
+    }
+
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">k</span> = 1; k&lt;9;k++){
+        <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span> = 1; i &lt; k; i++) {
+            <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">j</span> = k - i;
+            <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">a</span> : dp[i]) {
+                <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">b</span> : dp[j]) {
+                    dp[k].insert(a+b);
+                    dp[k].insert(a-b);
+                    dp[k].insert(a*b);
+                    <span style="font-weight: bold;">if</span> (b != 0) dp[k].insert(a/b);
+                }
+            }
+        }
+
+        <span style="font-weight: bold;">if</span> (dp[k].count(number) != 0) <span style="font-weight: bold;">return</span> k;
+    }
+
+
+    <span style="font-weight: bold;">return</span> -1;
+}
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org7f6f53b" class="outline-2">
+<h2 id="org7f6f53b">접근 방법</h2>
+<div class="outline-text-2" id="text-org7f6f53b">
+<p>
+처음에는 경우의 수가 지수적으로 늘어나 이 방식으로는 풀기 어렵다고 생각했습니다. \(9^8=3^{16}\) 을 떠올렸지만, 이 추정은 실제 구현에서 처리하는 조합을 센 것이 아닙니다.
+</p>
+
+<p>
+이 풀이는 만들 수 있는 값들을 집합에 저장하는 동적 계획법입니다. <code>dp[k]</code> 에는 <code>N</code> 을 정확히 <code>k</code> 번 사용해 표현할 수 있는 서로 다른 정수를 저장합니다. 먼저 55처럼 같은 숫자를 이어 붙인 수를 넣습니다. 그런 다음 <code>k = i + j</code> 로 나누는 모든 경우에 대해 <code>dp[i]</code> 와 <code>dp[j]</code> 에 저장된 값들을 사칙연산으로 조합합니다. 이때 0으로 나누는 경우는 건너뜁니다. 서로 다른 수식이라도 결과가 같으면 집합에는 값 하나만 남습니다. 사용 횟수를 늘려 가며 목표값이 집합에 있는지 확인합니다.
+</p>
+</div>
+</section>
+<section id="outline-container-org2dc1f56" class="outline-2">
+<h2 id="org2dc1f56">정리</h2>
+<div class="outline-text-2" id="text-org2dc1f56">
+</div>
+<div id="outline-container-orgb948b55" class="outline-3">
+<h3 id="orgb948b55">값의 크기, 상태 수, 연산량의 차이</h3>
+<div class="outline-text-3" id="text-orgb948b55">
+<p>
+\(N^8\) 은 <code>N</code> 여덟 개를 곱해서 만들 수 있으므로 <code>dp[8]</code> 에 들어갈 수 있는 값입니다. 집합의 원소 수를 뜻하지는 않습니다. 예를 들어 1과 1,000,000이 들어 있는 집합의 원소는 두 개뿐입니다. 한 번 실행하는 동안 숫자 <code>N</code> 은 고정되어 있으므로, 매 단계에서 선택지가 아홉 개씩 생기는 것도 아닙니다.
+</p>
+
+<p>
+살펴봐야 할 것은 각 단계에 서로 다른 값이 몇 개 저장되고, 그 값들을 몇 쌍 조합하는지입니다. 중복된 수식을 처리할 때도 삽입은 시도하지만, 결과가 중복되면 이후 조합에 사용할 상태가 늘어나지는 않습니다. 따라서 가능한 수식의 수가 커 보인다고 해서 그 수가 곧 프로그램의 상태 수나 연산 횟수가 되는 것은 아닙니다.
+</p>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">저장된 상태 수로 보는 시간과 공간 복잡도</h3>
+<div class="outline-text-3" id="text-org9beed48">
+<p>
+최대 사용 횟수를 \(K\) 라고 하면 이 문제에서는 8이며, 각 집합의 크기는 \(S_k=|dp[k]|\) 로 둡니다. \(k=i+(k-i)\) 로 나누는 경우마다 중첩 반복문은 \(S_iS_{k-i}\) 개의 값 쌍을 처리합니다. 각 쌍에 대해 최대 네 번 삽입을 시도합니다. 고정 폭 정수 연산을 사용하고 해시 연산의 분할상환 기대 시간이 상수라고 가정하면, \(K\) 단계까지의 시간 복잡도는 다음과 같습니다.
+</p>
+
+<p>
+\[
+O\left(K+\sum_{k=2}^{K}\sum_{i=1}^{k-1}S_iS_{k-i}\right).
+\]
+</p>
+
+<p>
+모든 단계의 집합을 계속 저장하므로 공간 복잡도는 다음과 같습니다.
+</p>
+
+<p>
+\[
+O\left(K+\sum_{k=1}^{K}S_k\right).
+\]
+</p>
+
+<p>
+\(S=\max_{1\le k\le K}S_k\) 로 두면, 더 느슨한 상한으로 시간 복잡도는 같은 해시 연산 가정 아래 \(O(K^2S^2)\), 공간 복잡도는 \(O(KS)\) 로 잡을 수 있습니다. 이 식들이 집합의 크기가 \(K\) 에 대해 다항식으로 증가함을 보장하지는 않습니다. 연산량이 각 집합에 저장된 상태 수에 어떻게 의존하는지 보여 줍니다. 목표값을 일찍 찾으면 여덟 단계의 조합을 모두 처리하기 전에 반환합니다.
+</p>
+
+<p>
+\(3^{16}=43{,}046{,}721\) 이지만, 이 구현의 연산 횟수를 계산해 얻은 수는 아닙니다. 수백만 번의 연산을 감당할 수 있는지는 각 연산이 무엇을 하는지에도 달려 있습니다. 해시 삽입은 단순 덧셈보다 비용이 큽니다. 여기서는 집합의 크기나 실행 시간을 측정하지 않았습니다.
+</p>
+</div>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>연결된 글</summary><table><thead><tr><th scope="col">이 글을 참고하는 글</th><th scope="col">참고한 글</th></tr></thead><tbody><tr><td>연결된 글이 없습니다.</td><td>연결된 글이 없습니다.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
