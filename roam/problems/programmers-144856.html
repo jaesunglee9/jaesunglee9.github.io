@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-10-18 Sun 22:03 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>programmers-144856 — 저자 별 카테고리 별 매출액 집계하기</title>
+<meta name="author" content="user0" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<header id="preamble" class="status">
+<nav class="site-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav><nav class="language-switch" aria-label="Language / 언어"><span lang="en" aria-current="page">English</span><span aria-hidden="true"> / </span><a href="/ko/roam/problems/programmers-144856.html" lang="ko" hreflang="ko" rel="alternate">한국어</a></nav>
+</header>
+<article id="content" class="content">
+<header>
+<h1 class="title">programmers-144856 — 저자 별 카테고리 별 매출액 집계하기</h1>
+</header><section id="outline-container-org7f16d57" class="outline-2">
+<h2 id="org7f16d57">Source</h2>
+<div class="outline-text-2" id="text-org7f16d57">
+<p>
+<a href="https://school.programmers.co.kr/learn/courses/30/lessons/144856">Programmers 144856 — 저자 별 카테고리 별 매출액 집계하기</a>
+</p>
+</div>
+</section>
+<section id="outline-container-org99c01cb" class="outline-2">
+<h2 id="org99c01cb">Problem</h2>
+<div class="outline-text-2" id="text-org99c01cb">
+<p>
+English summary of the linked problem: calculate January 2022 book revenue by author and category. Revenue is sales quantity multiplied by price. Return <code>AUTHOR_ID</code>, <code>AUTHOR_NAME</code>, <code>CATEGORY</code>, and <code>TOTAL_SALES</code> as shown in the expected output. Sort by author ID ascending, then category descending.
+</p>
+</div>
+<div id="outline-container-orgd98eb26" class="outline-3">
+<h3 id="orgd98eb26">Schemas</h3>
+<div class="outline-text-3" id="text-orgd98eb26">
+<p>
+All columns are non-null.
+</p>
+</div>
+<div id="outline-container-org7925b9e" class="outline-4">
+<h4 id="org7925b9e">BOOK</h4>
+<div class="outline-text-4" id="text-org7925b9e">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Column</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">BOOK<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Book ID</td>
+</tr>
+
+<tr>
+<td class="org-left">CATEGORY</td>
+<td class="org-left">VARCHAR(N)</td>
+<td class="org-left">Category</td>
+</tr>
+
+<tr>
+<td class="org-left">AUTHOR<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Author ID</td>
+</tr>
+
+<tr>
+<td class="org-left">PRICE</td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Price in won</td>
+</tr>
+
+<tr>
+<td class="org-left">PUBLISHED<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">Publication date</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Categories: 경제, 인문, 소설, 생활, 기술.
+</p>
+</div>
+</div>
+<div id="outline-container-orgee35afe" class="outline-4">
+<h4 id="orgee35afe">AUTHOR</h4>
+<div class="outline-text-4" id="text-orgee35afe">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Column</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">AUTHOR<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Author ID</td>
+</tr>
+
+<tr>
+<td class="org-left">AUTHOR<sub>NAME</sub></td>
+<td class="org-left">VARCHAR(N)</td>
+<td class="org-left">Author name</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org0ce0959" class="outline-4">
+<h4 id="org0ce0959">BOOK<sub>SALES</sub></h4>
+<div class="outline-text-4" id="text-org0ce0959">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Column</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">BOOK<sub>ID</sub></td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Book ID</td>
+</tr>
+
+<tr>
+<td class="org-left">SALES<sub>DATE</sub></td>
+<td class="org-left">DATE</td>
+<td class="org-left">Sale date</td>
+</tr>
+
+<tr>
+<td class="org-left">SALES</td>
+<td class="org-left">INTEGER</td>
+<td class="org-left">Quantity sold</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-org9beed48" class="outline-3">
+<h3 id="org9beed48">Example input</h3>
+<div class="outline-text-3" id="text-org9beed48">
+</div>
+<div id="outline-container-org9639605" class="outline-4">
+<h4 id="org9639605">BOOK</h4>
+<div class="outline-text-4" id="text-org9639605">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">BOOK<sub>ID</sub></th>
+<th scope="col" class="org-left">CATEGORY</th>
+<th scope="col" class="org-right">AUTHOR<sub>ID</sub></th>
+<th scope="col" class="org-right">PRICE</th>
+<th scope="col" class="org-right">PUBLISHED<sub>DATE</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">인문</td>
+<td class="org-right">1</td>
+<td class="org-right">10000</td>
+<td class="org-right">2020-01-01</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">경제</td>
+<td class="org-right">1</td>
+<td class="org-right">9000</td>
+<td class="org-right">2021-02-05</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">경제</td>
+<td class="org-right">2</td>
+<td class="org-right">9000</td>
+<td class="org-right">2021-03-11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-org7f6f53b" class="outline-4">
+<h4 id="org7f6f53b">AUTHOR</h4>
+<div class="outline-text-4" id="text-org7f6f53b">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">AUTHOR<sub>ID</sub></th>
+<th scope="col" class="org-left">AUTHOR<sub>NAME</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">홍길동</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">김영호</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-orgb948b55" class="outline-4">
+<h4 id="orgb948b55">BOOK<sub>SALES</sub></h4>
+<div class="outline-text-4" id="text-orgb948b55">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">BOOK<sub>ID</sub></th>
+<th scope="col" class="org-right">SALES<sub>DATE</sub></th>
+<th scope="col" class="org-right">SALES</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2022-01-01</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2022-01-02</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2022-01-05</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2022-01-20</td>
+<td class="org-right">5</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2022-01-21</td>
+<td class="org-right">6</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">2022-01-22</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2022-02-11</td>
+<td class="org-right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="outline-container-org2dc1f56" class="outline-3">
+<h3 id="org2dc1f56">Expected output</h3>
+<div class="outline-text-3" id="text-org2dc1f56">
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">AUTHOR<sub>ID</sub></th>
+<th scope="col" class="org-left">AUTHOR<sub>NAME</sub></th>
+<th scope="col" class="org-left">CATEGORY</th>
+<th scope="col" class="org-right">TOTAL<sub>SALES</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">홍길동</td>
+<td class="org-left">인문</td>
+<td class="org-right">30000</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">홍길동</td>
+<td class="org-left">경제</td>
+<td class="org-right">126000</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">김영호</td>
+<td class="org-left">경제</td>
+<td class="org-right">18000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="outline-container-org7161a33" class="outline-2">
+<h2 id="org7161a33">Solution</h2>
+<div class="outline-text-2" id="text-org7161a33">
+<div class="org-src-container">
+<pre class="src src-sql"><code><span style="font-weight: bold; font-style: italic;">-- </span><span style="font-weight: bold; font-style: italic;">&#53076;&#46300;&#47484; &#51077;&#47141;&#54616;&#49464;&#50836;
+</span><span style="font-weight: bold;">SELECT</span> 
+        B.AUTHOR_ID,
+    A.AUTHOR_NAME,
+    B.CATEGORY,
+    <span style="font-weight: bold;">SUM</span>(S.SALES_COUNT * B.PRICE) <span style="font-weight: bold;">AS</span> SALES
+<span style="font-weight: bold;">FROM</span>
+    BOOK B
+<span style="font-weight: bold;">JOIN</span>
+    AUTHOR A <span style="font-weight: bold;">ON</span> B.AUTHOR_ID = A.AUTHOR_ID
+<span style="font-weight: bold;">JOIN</span> (
+    <span style="font-weight: bold;">SELECT</span> 
+        BOOK_ID, <span style="font-weight: bold;">SUM</span>(SALES) SALES_COUNT
+    <span style="font-weight: bold;">FROM</span> 
+        BOOK_SALES
+    <span style="font-weight: bold;">WHERE</span> 
+        SALES_DATE <span style="font-weight: bold;">LIKE</span> <span style="font-style: italic;">'2022-01%'</span>
+    <span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span> 
+        BOOK_ID    
+) S <span style="font-weight: bold;">ON</span> B.BOOK_ID = S.BOOK_ID
+<span style="font-weight: bold;">GROUP</span> <span style="font-weight: bold;">BY</span>
+    B.AUTHOR_ID,
+    A.AUTHOR_NAME,
+    B.CATEGORY
+<span style="font-weight: bold;">ORDER</span> <span style="font-weight: bold;">BY</span>
+A.AUTHOR_ID <span style="font-weight: bold;">ASC</span>,
+B.CATEGORY <span style="font-weight: bold;">DESC</span>
+</code></pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org194cf40" class="outline-2">
+<h2 id="org194cf40">Approach</h2>
+<div class="outline-text-2" id="text-org194cf40">
+<p>
+The subquery filters January sales and totals the quantity for each book. The outer query joins those quantities to book prices and author details, then totals revenue by author and category.
+</p>
+</div>
+</section>
+<section id="outline-container-org0043671" class="outline-2">
+<h2 id="org0043671">Remarks</h2>
+<div class="outline-text-2" id="text-org0043671">
+<p>
+Remember SQL LIKE patterns: <code>%</code> matches zero or more characters, while <code>_</code> matches exactly one. The pattern <code>'2022-01%'</code> means “starts with 2022-01.” These are SQL wildcards, not regular-expression syntax.
+</p>
+
+<p>
+Choose the wildcard position to express the match: <code>'place%'</code> for a prefix, <code>'%place'</code> for a suffix, and <code>'%place%'</code> for a substring. When recalling the syntax, ask which part of the text is fixed and which part may vary.
+</p>
+</div>
+</section>
+</article>
+<footer id="postamble" class="status">
+<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td>No linked notes.</td><td>No linked notes.</td></tr></tbody></table></details>
+</footer>
+</body>
+</html>
