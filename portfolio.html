@@ -1,26 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-<!-- 2026-10-07 Wed 01:03 -->
+<!-- 2026-10-19 Mon 14:24 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Portfolio</title>
-<meta name="author" content="user0" />
+<title>이재성</title>
+<meta name="author" content="Jaesung Lee" />
+<meta name="description" content="이재성 포트폴리오: 백엔드, 인프라, AI 에이전트" />
 <meta name="generator" content="Org Mode" />
-<link rel="stylesheet" type="text/css" href="/css/tufte.css" />
-<link rel="stylesheet" type="text/css" href="/css/ox-tufte.css" />
-<link rel="stylesheet" type="text/css" href="/css/style.css" />
+<link rel="stylesheet" href="/css/tufte.css" />
+<link rel="stylesheet" href="/css/ox-tufte.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<style>   body { word-break: keep-all; }   .project { margin: 0 0 3rem; }   .project .meta { color: #666; font-size: 1.1rem; margin: -0.6rem 0 0.8rem; }   .case { margin: 0 0 1.8rem; }   .case h3 { margin: 1.6rem 0 0.2rem; }   .case dl { width: 100%; margin: 0; padding: 0; }   .case dt { font-weight: bold; font-size: 1.15rem; margin: 0.5rem 0 0; padding: 0; }   .case dd { width: auto; margin: 0.1rem 0 0; padding: 0; font-size: 1.3rem; line-height: 1.6; }   .skills { width: 55%; }   .skills th { white-space: nowrap; vertical-align: top; }   .skills td { font-size: 1.2rem; }   @media (max-width: 760px) { .case dl, .skills { width: 100%; } }</style>
 </head>
 <body>
 <header id="preamble" class="status">
-<nav class="site-nav"><a href="/">Home</a><a href="/posts.html">Posts</a><a href="/about.html">About</a></nav>
+<nav class="site-nav" aria-label="주 메뉴"><a href="/ko/">홈</a><a href="/ko/posts.html">글 목록</a><a href="/ko/about.html">소개</a><a class="site-language-link" href="/" lang="en" hreflang="en">English</a></nav>
 </header>
 <article id="content" class="content">
 <header>
-<h1 class="title">Portfolio</h1>
-</header></article>
+<h1 class="title">이재성</h1>
+<p class="subtitle" role="doc-subtitle">백엔드, 인프라, AI 에이전트</p>
+</header><section>
+<p>
+서비스가 실제 환경에서 안정적으로 동작하도록 만드는 일을 합니다.
+기능을 만든 뒤에도 데이터가 어긋나지 않는지, 권한이 필요 이상으로 넓지 않은지, 결과를 믿을 수 있는지까지 확인합니다.
+</p>
+</section>
+
+<section class="project">
+<h2>Olim: 배포 자동화 플랫폼</h2>
+<p class="meta">SW마에스트로, 3인 팀, 백엔드와 인프라 담당 (Kotlin, Spring Boot, AWS EKS)</p>
+<p>사용자의 코드 저장소를 분석해 애플리케이션을 빌드하고 쿠버네티스에 배포하는 서비스입니다.</p>
+
+<div class="case">
+<h3>재배포할 때 사용자 설정이 사라지는 문제</h3>
+<dl>
+<dt>문제</dt>
+<dd>자원 사양과 환경변수가 코드 분석 결과에 묶여 있어, 새 커밋으로 다시 분석하면 설정이 이어지지 않았습니다.</dd>
+<dt>한 일</dt>
+<dd>설정을 서비스 단위로 저장하도록 구조와 API를 바꾸고, 실행 의도 상태와 배포 및 롤백 이력을 분리했습니다.</dd>
+<dt>결과</dt>
+<dd>재배포 시 직전 설정을 그대로 이어받음.</dd>
+</dl>
+</div>
+
+<div class="case">
+<h3>운영과 스테이징 권한 분리</h3>
+<dl>
+<dt>문제</dt>
+<dd>운영과 스테이징이 같은 AWS 계정에 있어, 시험 작업이 운영 자원에 영향을 줄 수 있었습니다.</dd>
+<dt>한 일</dt>
+<dd>배포 역할을 환경별로 나누고 OIDC 조건으로 브랜치별 사용 범위를 제한했습니다. 스테이징 역할에는 운영 EKS, RDS, 시크릿에 대한 명시적 거부를 넣은 뒤, 스테이징을 별도 계정으로 옮기고 SCP로 운영 권한을 제한했습니다.</dd>
+<dt>결과</dt>
+<dd>개발 권한으로 운영 자원과 기록을 바꿀 수 없는 구조.</dd>
+</dl>
+</div>
+
+<div class="case">
+<h3>장애 대응 AI 에이전트의 판단 검증</h3>
+<dl>
+<dt>문제</dt>
+<dd>정상적으로 반환된 응답만 보면 에이전트의 실패를 놓칩니다.</dd>
+<dt>한 일</dt>
+<dd>조회와 변경 권한을 나누고 Kubernetes RBAC로 실행 범위를 제한했습니다. Python 평가 모듈을 만들어 잘못된 서비스 선택, 오탐, 시간 초과를 구분해 평가했습니다.</dd>
+<dt>결과</dt>
+<dd>정확성과 처리 완료 여부를 따로 보는 평가 기준 마련.</dd>
+</dl>
+</div>
+
+<div class="case">
+<h3>팀 간 API 변경 누락</h3>
+<dl>
+<dt>문제</dt>
+<dd>서버와 프론트엔드를 별도 저장소에서 개발하면서 API 변경이 제때 공유되지 않아 화면 오류가 났습니다.</dd>
+<dt>한 일</dt>
+<dd>코드에서 생성한 OpenAPI 명세를 저장소에 함께 두고, 저장된 명세와 다르면 CI에서 실패하도록 했습니다. 로그와 분산 추적(OpenTelemetry, Loki, Tempo)으로 서비스 간 요청 흐름도 확인할 수 있게 했습니다.</dd>
+<dt>결과</dt>
+<dd>API 변경이 리뷰 단계에서 드러나도록 절차화.</dd>
+</dl>
+</div>
+</section>
+
+<section class="project">
+<h2>똑띠: 산업안전 AI 서비스</h2>
+<p class="meta">SKT FLY AI Challenger, 백엔드와 인프라 담당 (VLM, RAG, Azure)</p>
+<p>현장 영상에서 위험 상황을 분석하고, 관련 안전 규정을 찾아 보고서를 만드는 서비스입니다.</p>
+
+<div class="case">
+<h3>실시간 영상 분석 지연 3초에서 0.7초 미만으로</h3>
+<dl>
+<dt>문제</dt>
+<dd>영상을 계속 클라우드로 보내는 구조라 위험 알림이 약 3초 늦었습니다.</dd>
+<dt>한 일</dt>
+<dd>구간별 시간을 측정해 전송 병목을 확인했습니다. 현장 기기의 경량 YOLO가 의미 있는 변화를 감지할 때만 분석을 요청하게 바꾸고, 서버는 수신과 분석을 비동기로 분리했으며, 메모리 압축으로 반복 입력을 줄였습니다.</dd>
+<dt>결과</dt>
+<dd>응답 지연 0.7초 미만, 긴 영상에서도 문맥 유지.</dd>
+</dl>
+</div>
+
+<div class="case">
+<h3>제한된 예산 안에서 GPU 개발 환경 마련</h3>
+<dl>
+<dt>한 일</dt>
+<dd>RTX 4090 노트북을 팀 공용 서버로 구성하고 Tailscale과 JupyterHub로 원격 사용 환경을 만들었습니다. GitHub Actions와 Azure로 CI/CD를 구축해 팀원 기능을 배포 환경에서 바로 확인하게 했습니다.</dd>
+</dl>
+</div>
+</section>
+
+<section class="project">
+<h2>AI 에이전트 개발 워크플로</h2>
+<p class="meta">팀 개발 방식 개선 (Claude Code, MCP, Jira, Confluence)</p>
+
+<div class="case">
+<h3>회의 결정을 문서와 업무 티켓까지 연결</h3>
+<dl>
+<dt>문제</dt>
+<dd>작업 범위가 자주 바뀌면서 회의 결정이 문서에 늦게 반영되거나 이전 결정과 충돌했습니다.</dd>
+<dt>한 일</dt>
+<dd>회의 녹음을 로컬 음성 인식으로 회의록으로 만들고, 에이전트가 팀 문서와 대조해 Jira 티켓으로 나누게 했습니다. 판단 순서(과거 결정, 코드, 티켓 이력)를 정하고, 정해진 범위 밖의 작업은 hook으로 막았으며, 팀이 검토한 뒤에만 티켓을 만들게 했습니다.</dd>
+<dt>결과</dt>
+<dd>도입 전후 4주 비교, 완료 티켓 약 50% 증가.</dd>
+</dl>
+</div>
+</section>
+
+<section class="project">
+<h2>오픈소스</h2>
+<p>재현 가능한 개발 환경을 위해 GNU Guix로 시스템 전체를 선언적으로 구성했고, 한글 입력기 fcitx5-hangul 패키지를 만들어 Guix에 기여했습니다.</p>
+</section>
+
+<section>
+<h2>기술</h2>
+<table class="skills">
+<tbody>
+<tr><th scope="row">언어</th><td>Python, Kotlin, SQL</td></tr>
+<tr><th scope="row">백엔드</th><td>Spring Boot, MySQL</td></tr>
+<tr><th scope="row">AI</th><td>LangChain, LangGraph, RAG, VLM, Claude Code와 MCP 기반 업무 자동화</td></tr>
+<tr><th scope="row">인프라</th><td>AWS (EKS, IAM, Organizations, SCP), Kubernetes, Docker, Terraform, GitHub Actions</td></tr>
+<tr><th scope="row">관측성</th><td>OpenTelemetry, Grafana, Loki, Tempo</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>자격과 교육</h2>
+<ul>
+<li>정보처리기사, SQLD, TOEIC 990, TOEIC Speaking AM</li>
+<li>SW마에스트로 (2026)</li>
+<li>SKT FLY AI Challenger (2025.12 ~ 2026.02, 400시간)</li>
+<li>고려대학교 건축사회환경공학부, 컴퓨터학과 복수전공 (2026.02 졸업)</li>
+</ul>
+</section>
+
+<section>
+<h2>글</h2>
+<ul>
+<li><a href="articles/system-architecture/url-shortener/v0.html">URL Shortener 설계 시리즈</a>: 단일 서버에서 다중 리전까지 단계별 확장</li>
+<li><a href="articles/google-drive-guix.html">Mounting Google Drive on Linux</a></li>
+</ul>
+<p>연락처: ljaesung99@gmail.com</p>
+</section>
+</article>
 <footer id="postamble" class="status">
-<details class="note-links" open><summary>Connections</summary><table><thead><tr><th scope="col">Referenced by</th><th scope="col">References</th></tr></thead><tbody><tr><td><a href="about.html">About</a></td><td></td></tr></tbody></table></details>
+<details class="note-links" open><summary>연결된 글</summary><table><thead><tr><th scope="col">이 글을 참고하는 글</th><th scope="col">참고한 글</th></tr></thead><tbody><tr><td>연결된 글이 없습니다.</td><td>연결된 글이 없습니다.</td></tr></tbody></table></details>
 </footer>
 </body>
 </html>
